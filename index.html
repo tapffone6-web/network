@@ -208,30 +208,24 @@
 
     <!-- 3. صفحة المهام (Tasks) -->
     <div id="sec-tasks" class="page-section" style="display:none;">
-        <div class="section-title">المهام اليومية</div>
+        <div class="section-title">المهام اليومية (الاشتراك الإجباري)</div>
         
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة MONEY VAULT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="joinTelegramChannel('https://t.me/MoneyVault10')">تنفيذ المهمة</button>
+            <button id="task1Btn" class="action-btn" onclick="completeTask(1, 'https://t.me/MoneyVault10')">تنفيذ المهمة</button>
         </div>
 
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة AksbCash</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="joinTelegramChannel('https://t.me/AksbCash')">تنفيذ المهمة</button>
+            <button id="task2Btn" class="action-btn" onclick="completeTask(2, 'https://t.me/AksbCash')">تنفيذ المهمة</button>
         </div>
 
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة TONVAULT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="joinTelegramChannel('https://t.me/TONVAULT_LordTon1')">تنفيذ المهمة</button>
-        </div>
-
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الاشتراك في قناة اليوتيوب</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="joinTelegramChannel('https://youtube.com/@money32m?si=l0ss3UH9-bWNAIVZ')">اشتراك الآن</button>
+            <button id="task3Btn" class="action-btn" onclick="completeTask(3, 'https://t.me/TONVAULT_LordTon1')">تنفيذ المهمة</button>
         </div>
     </div>
 
@@ -271,7 +265,7 @@
         <div class="section-title">سحب الأرباح</div>
         <div class="card">
             <div style="font-weight: bold; margin-bottom: 8px;">سحب رصيد USDT</div>
-            <p class="section-desc">الحد الأدنى للسحب: 0.2 USDT | الشرط: مشاهدة 25 إعلاناً</p>
+            <p class="section-desc">الحد الأدنى للسحب: 0.2 USDT | الشرط: الاشتراك بالقنوات ومشاهدة الإعلانات</p>
             
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
@@ -312,23 +306,52 @@
     </div>
 
     <script>
-        // قراءة البيانات المحفوظة مسبقاً أو البدء بالقيم الافتراضية
         let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.037;
         let adWatchedCount = parseInt(localStorage.getItem('adWatchedCount')) || 0;
+        
+        // حفظ حالة إتمام المهام (افتراضياً false لم يتم الانضمام)
+        let task1Done = localStorage.getItem('task1Done') === 'true';
+        let task2Done = localStorage.getItem('task2Done') === 'true';
+        let task3Done = localStorage.getItem('task3Done') === 'true';
 
-        // تحديث العرض عند فتح التطبيق
+        // تحديث العرض وحالة الأزرار عند فتح التطبيق
         document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
         document.getElementById('adCount').innerText = adWatchedCount;
+        updateTaskButtons();
 
         function saveData() {
             localStorage.setItem('userBalance', userBalance);
             localStorage.setItem('adWatchedCount', adWatchedCount);
+            localStorage.setItem('task1Done', task1Done);
+            localStorage.setItem('task2Done', task2Done);
+            localStorage.setItem('task3Done', task3Done);
         }
 
         function updateBalanceDisplay() {
             document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
             document.getElementById('adCount').innerText = adWatchedCount;
             saveData();
+        }
+
+        function updateTaskButtons() {
+            if (task1Done) {
+                let btn = document.getElementById('task1Btn');
+                btn.innerText = "تم الانضمام والمكافأة معملة ✅";
+                btn.style.background = "#10b981";
+                btn.disabled = true;
+            }
+            if (task2Done) {
+                let btn = document.getElementById('task2Btn');
+                btn.innerText = "تم الانضمام والمكافأة معملة ✅";
+                btn.style.background = "#10b981";
+                btn.disabled = true;
+            }
+            if (task3Done) {
+                let btn = document.getElementById('task3Btn');
+                btn.innerText = "تم الانضمام والمكافأة معملة ✅";
+                btn.style.background = "#10b981";
+                btn.disabled = true;
+            }
         }
 
         function showPage(pageId, btn) {
@@ -349,12 +372,40 @@
             }
         }
 
-        // دالة تشغيل الإعلانات وحفظ العدد والرصيد بشكل دائم
+        // دالة إتمام المهام (الانضمام للقنوات)
+        function completeTask(taskId, channelUrl) {
+            window.open(channelUrl, '_blank');
+            
+            setTimeout(() => {
+                if (taskId === 1 && !task1Done) {
+                    task1Done = true;
+                    userBalance += 0.003;
+                } else if (taskId === 2 && !task2Done) {
+                    task2Done = true;
+                    userBalance += 0.003;
+                } else if (taskId === 3 && !task3Done) {
+                    task3Done = true;
+                    userBalance += 0.003;
+                }
+                updateBalanceDisplay();
+                updateTaskButtons();
+                alert('شكراً لك! تم التحقق من الاشتراك وإضافة المكافأة بنجاح.');
+            }, 3000);
+        }
+
+        // دالة تشغيل الإعلانات (مع شرط التحقق من الانضمام للقنوات أولاً)
         function watchAd() {
+            // شرط التحقق: يجب أن يكون قد انضم لقناة واحدة على الأقل (أو اشترط الثلاثة معاً بوضع && بدلاً من ||)
+            if (!task1Done && !task2Done && !task3Done) {
+                alert('عذراً! يجب عليك أولاً الانضمام إلى قناة واحدة على الأقل من قسم المهام (Tasks) لكي تتمكن من مشاهدة الإعلانات والحصول على المكافآت.');
+                showPage('tasks');
+                return;
+            }
+
             if (typeof window.showGiga === 'function') {
                 window.showGiga().then(() => {
                     adWatchedCount++;
-                    userBalance += 0.005; // مكافأة مشاهدة الإعلان
+                    userBalance += 0.005; // مكافأة الإعلان
                     updateBalanceDisplay();
                     alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة.');
                 }).catch(e => {
@@ -364,15 +415,6 @@
             } else {
                 alert('جاري تحميل نظام الإعلانات، يرجى الانتظار ثوانٍ معدودة والمحاولة مجدداً.');
             }
-        }
-
-        function joinTelegramChannel(channelUrl) {
-            window.open(channelUrl, '_blank');
-            setTimeout(() => {
-                userBalance += 0.003;
-                updateBalanceDisplay();
-                alert('تم التحقق بنجاح وتم إضافة 0.003 USDT إلى رصيدك!');
-            }, 2000);
         }
 
         function investPackage(requiredAmount, packageName) {
@@ -427,6 +469,12 @@
 
             if (amount < 0.2) {
                 alert('عذراً، الحد الأدنى للسحب هو 0.2 USDT.');
+                return;
+            }
+
+            if (!task1Done || !task2Done || !task3Done) {
+                alert('عذراً، يجب إتمام جميع مهام الاشتراك في القنوات أولاً لتتمكن من السحب!');
+                showPage('tasks');
                 return;
             }
 
