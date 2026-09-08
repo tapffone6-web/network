@@ -53,6 +53,19 @@
     </style>
 </head>
 <body>
+    <div style="background: #131B2E; padding: 15px; border-radius: 15px; margin: 15px; color: white;">
+    <h3 style="margin-bottom: 10px;">سحب الأرباح (USDT)</h3>
+    <p style="color: #8b9bb4; font-size: 13px; margin-bottom: 10px;">أدخل معلومات محفظتك للسحب</p>
+    
+    <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
+    <input type="number" id="withdrawAmount" placeholder="0.00" style="width: 100%; padding: 10px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 8px; margin-bottom: 10px;">
+    
+    <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
+    <input type="text" id="withdrawAddress" placeholder="T..." style="width: 100%; padding: 10px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 8px; margin-bottom: 15px;">
+    
+    <button onclick="alert('تم إرسال طلب السحب بنجاح')" style="width: 100%; background: #0098EA; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">تأكيد السحب</button>
+</div>
+
 
     <!-- 1. صفحة الرئيسية (Home) -->
     <div id="sec-home" class="page-section active">
