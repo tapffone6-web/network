@@ -32,18 +32,18 @@
 
     <div class="card">
         <div class="balance-title">رصيدك الحالي</div>
-        <div class="balance" id="balance">0.000</div>
+        <div class="balance" id="balance">0.001</div>
     </div>
 
-    <!-- زر مشاهدة الإعلان -->
-    <button id="watchAdBtn" style="width: 100%; padding: 14px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px;">
+    <!-- زر الإعلان الفعّال -->
+    <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 25px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
       🎬 مشاهدة إعلان للحصول على مكافأة
     </button>
 
     <script>
-        let userBalance = 0.000;
+        let userBalance = 0.001;
 
-        // تهيئة إعلانات Adsgram بالمعرف الخاص بك
+        // تهيئة إعلانات Adsgram بالمعرف الصحيح
         const AdController = window.Adsgram.init({ 
             blockId: "46739" 
         });
@@ -51,14 +51,13 @@
         const adButton = document.getElementById('watchAdBtn');
 
         adButton.addEventListener('click', () => {
-            // استدعاء عرض الإعلان الحقيقي
             AdController.show().then((result) => {
-                // إذا أكمل المستخدم مشاهدة الإعلان بنجاح
+                // عند مشاهدة الإعلان بنجاح
                 userBalance += 0.001; 
                 document.getElementById('balance').innerText = userBalance.toFixed(3);
                 alert("تهانينا! تمت إضافة +0.001 USDT لربحك.");
             }).catch((result) => {
-                // إذا قام المستخدم بإغلاق الإعلان قبل نهايته
+                // عند إلغاء أو عدم اكتمال الإعلان
                 alert("لم يتم اكتمال مشاهدة الإعلان.");
             });
         });
