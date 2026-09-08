@@ -154,13 +154,13 @@
     <div id="sec-deposit" class="page-section" style="display:none;">
         <div class="section-title">إيداع رصيد USDT</div>
         <div class="card">
-            <div style="font-weight: bold; margin-bottom: 5px;">شبكة التحويل (BEP20)</div>
+            <div style="font-weight: bold; margin-bottom: 5px;">شبكة التحويل (TRC20)</div>
             <p class="section-desc">قم بتحويل مبلغ USDT إلى العنوان أدناه:</p>
             
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px; color: #94a3b8;">عنوان المحفظة:</label>
                 <div style="background: #0b101b; padding: 12px; border-radius: 10px; border: 1px solid #23304a; word-break: break-all; font-family: monospace; color: #38bdf8;" id="walletAddress">
-                    0xa1002027f00068ed0ae2546725f4340357167001
+                    TYourActualUSDTWalletAddressHere123456
                 </div>
             </div>
 
@@ -183,7 +183,7 @@
         </div>
     </div>
 
-    <!-- 2. صفحة الاستثمار (Invest) - مرتبطة بالرصيد الحقيقي -->
+    <!-- 2. صفحة الاستثمار (Invest) -->
     <div id="sec-invest" class="page-section" style="display:none;">
         <div class="section-title">قسم الاستثمار</div>
         
@@ -202,14 +202,14 @@
         </div>
     </div>
 
-    <!-- 3. صفحة المهام (Tasks) -->
+    <!-- 3. صفحة المهام (Tasks) - تم ربطها بقناتك -->
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام اليومية</div>
         
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة التليجرام الرسمية</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="completeTask()">تنفيذ المهمة</button>
+            <button class="action-btn" onclick="joinTelegramChannel('https://t.me/MoneyVault10')">تنفيذ المهمة</button>
         </div>
 
         <div class="card">
@@ -263,7 +263,7 @@
             </div>
             
             <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة BEP20:</label>
+                <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
                 <input type="text" id="withdrawAddress" placeholder="T..." class="input-field">
             </div>
 
@@ -296,7 +296,6 @@
     </div>
 
     <script>
-        // المتغيرات الأساسية
         let userBalance = 0.037;
         let adWatchedCount = 0;
 
@@ -329,6 +328,16 @@
                 document.getElementById('adCount').innerText = adWatchedCount;
                 alert('شكراً لك! تم احتساب مشاهدة الإعلان بنجاح. الإجمالي: ' + adWatchedCount);
             }, 3000);
+        }
+
+        // دالة خاصة لفتح قناتك في التليجرام وإضافة المكافأة
+        function joinTelegramChannel(channelUrl) {
+            window.open(channelUrl, '_blank');
+            setTimeout(() => {
+                userBalance += 0.003;
+                updateBalanceDisplay();
+                alert('تم التحقق من الانضمام بنجاح وتم إضافة 0.003 USDT إلى رصيدك!');
+            }, 2000);
         }
 
         function completeTask() {
