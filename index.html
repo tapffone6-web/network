@@ -98,23 +98,33 @@
             font-weight: bold;
             cursor: not-allowed;
         }
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background: #0b101b;
+            border: 1px solid #23304a;
+            color: white;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1. الصفحة الرئيسية (Home) كما كانت تماماً -->
+    <!-- 1. الصفحة الرئيسية (Home) -->
     <div id="sec-home" class="page-section active">
         <div style="text-align: right; font-size: 22px; font-weight: bold; margin: 10px 15px 20px 0;">Moon Network</div>
         
         <div class="card">
             <div style="font-size: 13px; color: #94a3b8; text-align: right;">رصيدك الحالي</div>
             <div id="balance" style="font-size: 32px; font-weight: bold; margin: 5px 0 15px 0; color: #38bdf8; text-align: right;">0.037</div>
-            <button class="action-btn" style="background: #0098EA; display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <button class="action-btn" onclick="openDeposit()" style="background: #0098EA; display: flex; justify-content: center; align-items: center; gap: 8px;">
                 <span>إيداع USDT</span> <i class="fas fa-wallet"></i>
             </button>
         </div>
 
-        <button class="action-btn" style="margin-bottom: 15px; background: #0098EA; font-size: 15px;">
+        <button class="action-btn" onclick="watchAd()" style="margin-bottom: 15px; background: #0098EA; font-size: 15px;">
             مشاهدة إعلان للحصول على مكافأة 🎬
         </button>
 
@@ -125,7 +135,7 @@
             </div>
             <div class="stat-box">
                 <div class="section-desc" style="font-size: 12px;">إعلانات شاهدتها</div>
-                <div style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">1</div>
+                <div id="adCount" style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">1</div>
             </div>
         </div>
 
@@ -146,7 +156,7 @@
         <div class="card">
             <div style="font-weight: bold;">الباقة الأولى</div>
             <p class="section-desc">ربح يومي 0.6 USDT</p>
-            <button class="action-btn">استثمار الآن</button>
+            <button class="action-btn" onclick="alert('تم تفعيل الباقة بنجاح')">استثمار الآن</button>
         </div>
     </div>
 
@@ -154,8 +164,9 @@
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام اليومية</div>
         <div class="card">
-            <p class="section-desc">شاهد الإعلانات واكسب الأرباح</p>
-            <button class="action-btn">بدء المهمة</button>
+            <div style="font-weight: bold; margin-bottom: 5px;">مشاهدة الإعلانات</div>
+            <p class="section-desc">شاهِد الإعلانات واكسب المكافآت اليومية.</p>
+            <button class="action-btn" onclick="watchAd()">شاهد الإعلان</button>
         </div>
     </div>
 
@@ -164,27 +175,49 @@
         <div class="section-title">برنامج الإحالات</div>
         <div class="card">
             <p class="section-desc">شارك رابطك الخاص واربح عمولة عن كل صديق ينضم.</p>
-            <button class="action-btn">نسخ الرابط</button>
+            <button class="action-btn" onclick="alert('تم نسخ الرابط بنجاح')">نسخ الرابط</button>
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي الأصلي -->
+    <!-- 5. صفحة السحب (Withdraw) - مجهزة ومخفية بعناية لكي نضيفها لاحقاً بلا مشاكل -->
+    <div id="sec-withdraw" class="page-section" style="display:none;">
+        <div class="section-title">سحب الأرباح</div>
+        <div class="card">
+            <div style="font-weight: bold; margin-bottom: 8px;">سحب رصيد USDT</div>
+            <p class="section-desc">أدخل تفاصيل محفظتك للسحب</p>
+            <div style="margin-top: 15px;">
+                <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
+                <input type="number" id="withdrawAmount" placeholder="0.00" class="input-field">
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
+                <input type="text" id="withdrawAddress" placeholder="T..." class="input-field">
+            </div>
+            <button class="action-btn" onclick="alert('تم إرسال طلب السحب بنجاح')">تأكيد السحب</button>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي (بالترتيب الصحيح مع زر السحب في أقصى اليسار) -->
     <div class="nav-bar">
-        <button class="nav-btn active" onclick="showPage('home', this)">
-            <i class="fas fa-house"></i>
-            <span>Home</span>
+        <button class="nav-btn" onclick="showPage('withdraw', this)">
+            <i class="fas fa-wallet"></i>
+            <span>سحب</span>
         </button>
-        <button class="nav-btn" onclick="showPage('invest', this)">
-            <i class="fas fa-chart-line"></i>
-            <span>Invest</span>
+        <button class="nav-btn" onclick="showPage('referrals', this)">
+            <i class="fas fa-users"></i>
+            <span>Referrals</span>
         </button>
         <button class="nav-btn" onclick="showPage('tasks', this)">
             <i class="fas fa-list-check"></i>
             <span>Tasks</span>
         </button>
-        <button class="nav-btn" onclick="showPage('referrals', this)">
-            <i class="fas fa-users"></i>
-            <span>Referrals</span>
+        <button class="nav-btn" onclick="showPage('invest', this)">
+            <i class="fas fa-chart-line"></i>
+            <span>Invest</span>
+        </button>
+        <button class="nav-btn active" onclick="showPage('home', this)">
+            <i class="fas fa-house"></i>
+            <span>Home</span>
         </button>
     </div>
 
@@ -205,6 +238,15 @@
             if (btn) {
                 btn.classList.add('active');
             }
+        }
+
+        function watchAd() {
+            alert('جاري تحميل الإعلان...');
+            // يمكنك إضافة زيادة عداد الإعلانات هنا لاحقاً
+        }
+
+        function openDeposit() {
+            alert('نافذة الإيداع: يرجى تحويل USDT إلى العنوان المخصص.');
         }
     </script>
 </body>
