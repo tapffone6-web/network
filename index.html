@@ -123,25 +123,24 @@
             </div>
         </div>
     </div>
-        <!-- 4. صفحة السحب (Withdraw) -->
+    <!-- صفحة السحب (Withdraw) -->
     <div id="sec-withdraw" class="page-section" style="display:none;">
-
         <div class="section-title">سحب الأرباح</div>
         <div class="card">
-            <div style="font-weight: bold; margin-bottom: 8px;">سحب رصيد USDT</div>
-            <p class="section-desc">أدخل تفاصيل محفظتك للسحب</p>
+            <div style="font-weight: bold; margin-bottom: 8px; color: white;">سحب رصيد USDT</div>
+            <p class="section-desc" style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">أدخل تفاصيل محفظتك للسحب</p>
             
             <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ المراد سحبه:</label>
-                <input type="number" id="withdrawAmount" placeholder="0.00" style="width: 100%; padding: 10px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 8px;">
+                <label style="font-size: 13px; display: block; margin-bottom: 5px; color: white;">المبلغ:</label>
+                <input type="number" id="withdrawAmount" placeholder="0.00" style="width: 100%; padding: 12px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 10px;">
             </div>
 
             <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة USDT (BEP20):</label>
-                <input type="text" id="withdrawAddress" placeholder="أدخل عنوان محفظتك هنا..." style="width: 100%; padding: 10px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 8px;">
+                <label style="font-size: 13px; display: block; margin-bottom: 5px; color: white;">عنوان محفظة TRC20:</label>
+                <input type="text" id="withdrawAddress" placeholder="T..." style="width: 100%; padding: 12px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 10px;">
             </div>
 
-            <button class="action-btn" onclick="alert('تم إرسال طلب السحب بنجاح')" style="width: 100%; margin-top: 15px; background: #0098EA; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">تأكيد السحب</button>
+            <button onclick="alert('تم إرسال طلب السحب بنجاح')" style="width: 100%; margin-top: 20px; background: #0098EA; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">تأكيد السحب</button>
         </div>
     </div>
 
