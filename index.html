@@ -93,13 +93,13 @@
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الأولى</div>
             <p class="section-desc">استثمار 10$ | ربح يومي 0.6$</p>
-            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="alert('تم تفعيل الخطة الأولى بنجاح!')">استثمار الآن</button>
+            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="investPlan(10, 'الخطة الأولى')">استثمار الآن</button>
         </div>
 
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الثانية</div>
             <p class="section-desc">استثمار 15$ | ربح يومي 1$</p>
-            <button style="width: 100%; padding: 12px; background-color: #f59e0b; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="alert('تم تفعيل الخطة الثانية بنجاح!')">استثمار الآن</button>
+            <button style="width: 100%; padding: 12px; background-color: #f59e0b; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="investPlan(15, 'الخطة الثانية')">استثمار الآن</button>
         </div>
     </div>
 
@@ -147,7 +147,6 @@
         document.getElementById('balance').innerText = userBalance.toFixed(3);
         document.getElementById('adsCount').innerText = watchedAdsCount;
 
-        // التحقق من حالة المكافأة اليومية عند فتح التطبيق
         checkDailyClaimStatus();
 
         function showPage(pageName, btnElement) {
@@ -184,14 +183,13 @@
         function claimDaily() {
             const lastClaimTime = localStorage.getItem('lastClaimTime');
             const now = new Date().getTime();
-            const twentyFourHours = 24 * 60 * 60 * 1000; // 24 ساعة بالميلي ثانية
+            const twentyFourHours = 24 * 60 * 60 * 1000;
 
             if (lastClaimTime && (now - lastClaimTime < twentyFourHours)) {
                 alert("لقد استلمت مكافأتك اليومية مسبقاً. يمكنك المطالبة مرة أخرى بعد مرور 24 ساعة.");
                 return;
             }
 
-            // إضافة الرصيد وحفظ وقت المطالبة الحالي
             userBalance += 0.005;
             localStorage.setItem('userBalance', userBalance);
             localStorage.setItem('lastClaimTime', now);
@@ -218,6 +216,21 @@
                 claimBtn.innerText = "مطالبة";
                 dailyDesc.innerText = "احصل على هدية مجانية كل 24 ساعة";
             }
+        }
+
+        // دالة تفعيل الاستثمار مع التحقق من الرصيد
+        function investPlan(requiredAmount, planName) {
+            if (userBalance < requiredAmount) {
+                alert("عذراً، رصيدك الحالي غير كافٍ لتفعيل هذه الخطة.تحتاج إلى " + requiredAmount + " USDT.");
+                return;
+            }
+
+            // خصم المبلغ من رصيد المستخدم
+            userBalance -= requiredAmount;
+            localStorage.setItem('userBalance', userBalance);
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+
+            alert("تم تفعيل " + planName + " بنجاح وتم خصم " + requiredAmount + " USDT من رصيدك!");
         }
     </script>
 </body>
