@@ -76,6 +76,16 @@
             cursor: pointer;
             margin-top: 10px;
         }
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background: #0b101b;
+            border: 1px solid #23304a;
+            color: white;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -89,10 +99,8 @@
         </div>
         <div class="card">
             <div style="font-weight: bold; margin-bottom: 10px;">إيداع USDT</div>
-            <div style="margin-top: 10px;">
-                <label class="section-desc">المبلغ:</label>
-                <input type="number" id="depositAmount" placeholder="0.00" style="width: 100%; padding: 10px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 8px; margin-top: 5px;">
-            </div>
+            <label class="section-desc">المبلغ:</label>
+            <input type="number" id="depositAmount" placeholder="0.00" class="input-field">
             <button class="action-btn" onclick="alert('تم إرسال طلب الإيداع')">تأكيد الإيداع</button>
         </div>
     </div>
@@ -116,24 +124,42 @@
             
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
-                <input type="number" id="withdrawAmount" placeholder="0.00" style="width: 100%; padding: 12px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 10px;">
+                <input type="number" id="withdrawAmount" placeholder="0.00" class="input-field">
             </div>
 
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
-                <input type="text" id="withdrawAddress" placeholder="T..." style="width: 100%; padding: 12px; background: #0b101b; border: 1px solid #23304a; color: white; border-radius: 10px;">
+                <input type="text" id="withdrawAddress" placeholder="T..." class="input-field">
             </div>
 
             <button class="action-btn" onclick="alert('تم إرسال طلب السحب بنجاح')">تأكيد السحب</button>
         </div>
     </div>
 
-    <!-- 4. صفحة المهام (Tasks) -->
+    <!-- 4. صفحة المهام والإعلانات والهدية والبرومو كود (Tasks) -->
     <div id="sec-tasks" class="page-section" style="display:none;">
-        <div class="section-title">المهام اليومية</div>
+        <div class="section-title">المهام والأرباح</div>
+        
+        <!-- مشاهدة الإعلانات -->
         <div class="card">
-            <p class="section-desc">شاهد الإعلانات واكسب الأرباح</p>
-            <button class="action-btn">بدء المهمة</button>
+            <div style="font-weight: bold; margin-bottom: 5px;">مشاهدة الإعلانات</div>
+            <p class="section-desc">شاهِد الإعلانات واكسب المكافآت اليومية.</p>
+            <button class="action-btn" onclick="alert('جاري مشاهدة الإعلان...')">شاهد الإعلان</button>
+        </div>
+
+        <!-- الهدية اليومية -->
+        <div class="card">
+            <div style="font-weight: bold; margin-bottom: 5px;">الهدية اليومية</div>
+            <p class="section-desc">احصل على هديتك المجانية كل يوم.</p>
+            <button class="action-btn" style="background: #10b981;" onclick="alert('تم استلام الهدية بنجاح!')">استلام الهدية</button>
+        </div>
+
+        <!-- البرومو كود -->
+        <div class="card">
+            <div style="font-weight: bold; margin-bottom: 5px;">رمز الاسترداد (Promo Code)</div>
+            <p class="section-desc">أدخل الكود للحصول على رصيد إضافي.</p>
+            <input type="text" id="promoCodeInput" placeholder="أدخل البرومو كود هنا..." class="input-field">
+            <button class="action-btn" onclick="alert('تم تطبيق الكود')">تفعيل الكود</button>
         </div>
     </div>
 
@@ -172,20 +198,17 @@
 
     <script>
         function showPage(pageId, btn) {
-            // إخفاء جميع الأقسام وإزالة التفعيل
             document.querySelectorAll('.page-section').forEach(sec => {
                 sec.style.display = 'none';
                 sec.classList.remove('active');
             });
             
-            // إظهار القسم المستهدف وتفعيله
             const targetSec = document.getElementById('sec-' + pageId);
             if (targetSec) {
                 targetSec.style.display = 'block';
                 targetSec.classList.add('active');
             }
             
-            // تحديث الأزرار في شريط التنقل
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if (btn) {
                 btn.classList.add('active');
