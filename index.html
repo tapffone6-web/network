@@ -51,7 +51,7 @@
             <!-- Ad Reward Box -->
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center shadow">
                 <h3 class="font-bold text-base mb-1">شاهد الإعلانات واكسب</h3>
-                <p class="text-xs text-slate-400 mb-4">اكسب 0.003 USDT لكل إعلان تشاهده</p>
+                <p class="text-xs text-slate-400 mb-4">اكسب 0.001 USDT لكل إعلان تشاهده</p>
                 <button onclick="watchAd()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
                     <i class="fa-solid fa-play ml-2"></i> مشاهدة إعلان
                 </button>
@@ -123,9 +123,10 @@
         <section id="section-withdraw" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
                 <h3 class="font-bold text-lg mb-3 text-amber-400">سحب الأرباح</h3>
+                <p class="text-xs text-slate-400 mb-3 text-amber-300">الحد الأدنى للسحب هو: 1.00 USDT</p>
                 <div class="space-y-3">
                     <input type="text" id="withdraw-address" placeholder="عنوان محفظتك (USDT BEP20)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
-                    <input type="number" id="withdraw-amount" placeholder="المبلغ المراد سحبه" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <input type="number" id="withdraw-amount" placeholder="المبلغ المراد سحبه (الحد الأدنى 1$)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
                     <button onclick="submitWithdraw()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition">طلب سحب</button>
                 </div>
             </div>
@@ -134,8 +135,8 @@
         <!-- 4. Referrals Section -->
         <section id="section-referrals" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
-                <h3 class="font-bold text-lg mb-2 text-amber-400">نظام الإحالة</h3>
-                <p class="text-xs text-slate-400 mb-4">شارك رابطك وادع أصدقاءك للاستفادة</p>
+                <h3 class="font-bold text-lg mb-2 text-amber-400">نظام الإحالة (10%)</h3>
+                <p class="text-xs text-slate-400 mb-4">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
                 <div id="ref-link-box" class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-amber-300 select-all mb-3">
                     جاري تحميل الرابط...
                 </div>
@@ -192,15 +193,26 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // جلب معرف المستخدم الحقيقي أو المعرف المؤقت
+        // جلب معرف المستخدم الحقيقي من تليجرام أو المعرف المؤقت
         let userId = "user_12345";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-            userId = "user_" + window.Telegram.WebApp.initDataUnsafe.user.id;
+        let referrerId = null;
+
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+            if (window.Telegram.WebApp.initDataUnsafe.user) {
+                userId = "user_" + window.Telegram.WebApp.initDataUnsafe.user.id;
+            }
+            // استخراج معرف المُحيل من رابط البوت (start_param) إن وجد
+            if (window.Telegram.WebApp.initDataUnsafe.start_param) {
+                const param = window.Telegram.WebApp.initDataUnsafe.start_param;
+                if (param.startsWith("ref_")) {
+                    referrerId = "user_" + param.replace("ref_", "");
+                }
+            }
         }
 
         let userBalance = 0;
 
-        // تعبئة رابط الإحالة
+        // تعبئة رابط الإحالة الخاص بالمستخدم
         document.getElementById("ref-link-box").innerText = `https://t.me/MoonNetworkBot?start=ref_${userId.replace('user_', '')}`;
 
         function updateUIBalance() {
@@ -208,7 +220,6 @@
             document.getElementById("home-balance").innerText = userBalance.toFixed(3);
         }
 
-        // جلب أو تهيئة بيانات المستخدم من فايربيس مع حماية بـ LocalStorage لضمان عدم التصفير
         async function initUserData() {
             const userRef = doc(db, "users", userId);
             try {
@@ -216,16 +227,20 @@
                 if (docSnap.exists()) {
                     userBalance = docSnap.data().balance || 0;
                 } else {
-                    await setDoc(userRef, { balance: 0, createdAt: new Date() });
+                    // إذا كان مستخدماً جديداً ولديه مُحيل، نحفظه في بياناته
+                    const newUserData = { 
+                        balance: 0, 
+                        referrer: referrerId && referrerId !== userId ? referrerId : null, 
+                        createdAt: new Date() 
+                    };
+                    await setDoc(userRef, newUserData);
                     userBalance = 0;
                 }
             } catch (err) {
-                // إذا فشل الاتصال مؤقتاً، نقرأ من الذاكرة المحلية للجهاز كبديل آمن
                 userBalance = parseFloat(localStorage.getItem("local_balance_" + userId)) || 0;
             }
             updateUIBalance();
 
-            // الاستماع للتغييرات بشكل حي لاحقاً
             onSnapshot(userRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const serverBalance = docSnap.data().balance || 0;
@@ -269,6 +284,12 @@
 
             if(!address || isNaN(amount) || amount <= 0) {
                 alert("الرجاء إدخال تفاصيل صحيحة.");
+                return;
+            }
+
+            // فحص الحد الأدنى للسحب (1 USDT)
+            if(amount < 1) {
+                alert("الحد الأدنى للسحب هو 1.00 USDT.");
                 return;
             }
 
@@ -355,15 +376,31 @@
             document.getElementById("admin-modal").classList.add("hidden");
         };
 
+        // دالة قبول الإيداع مع إرسال 10% للمُحيل تلقائياً
         window.approveDeposit = async function(docId, targetUserId, amount) {
             try {
                 await updateDoc(doc(db, "deposits", docId), { status: "approved" });
                 const userRef = doc(db, "users", targetUserId);
                 const userSnap = await getDoc(userRef);
-                const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
-                await updateDoc(userRef, { balance: currentBal + amount });
+                
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    const currentBal = userData.balance || 0;
+                    await updateDoc(userRef, { balance: currentBal + amount });
 
-                alert("تم قبول الإيداع وشحن الرصيد بنجاح!");
+                    // التحقق مما إذا كان لديه مُحيل لتحويل نسبة 10%
+                    if (userData.referrer) {
+                        const refRef = doc(db, "users", userData.referrer);
+                        const refSnap = await getDoc(refRef);
+                        if (refSnap.exists()) {
+                            const refBonus = amount * 0.10; // 10% من مبلغ الإيداع
+                            const refCurrentBal = refSnap.data().balance || 0;
+                            await updateDoc(refRef, { balance: refCurrentBal + refBonus });
+                        }
+                    }
+                }
+
+                alert("تم قبول الإيداع وشحن الرصيد بنجاح (وتم احتساب مكافأة الإحالة 10%)!");
                 openAdminPanel();
             } catch(e) {
                 alert("حدث خطأ.");
@@ -403,26 +440,24 @@
             openAdminPanel();
         };
 
-        // دالة مشاهدة الإعلان المحسنة مع الحفظ المزدوج (قاعدة البيانات + الذاكرة المحلية)
+        // مكافأة الإعلان أصبحت 0.001
         window.watchAd = function() {
             if (typeof window.showGiga === "function") {
                 window.showGiga()
                     .then(async () => {
-                        userBalance += 0.003;
+                        userBalance += 0.001;
                         updateUIBalance();
                         
-                        // تخزين فوري محلياً لمنع التصفير اللحظي
                         localStorage.setItem("local_balance_" + userId, userBalance);
 
                         try {
                             const userRef = doc(db, "users", userId);
-                            // استخدام updateDoc بدلاً من setDoc لضمان تحديث الحقل الحالي فقط
                             await updateDoc(userRef, { balance: userBalance });
                         } catch (err) {
                             console.log("تم الحفظ محلياً وسيتم المزامنة لاحقاً");
                         }
 
-                        alert("تم إضافة مكافأة الإعلان بنجاح!");
+                        alert("تم إضافة مكافأة الإعلان (0.001 USDT) بنجاح!");
                     })
                     .catch(e => {
                         console.error(e);
@@ -456,7 +491,6 @@
             alert(`تم الاشتراك في الخطة بنجاح! تم خصم ${cost} USDT.`);
         };
 
-        // تشغيل التهيئة عند فتح التطبيق
         initUserData();
 
         window.switchTab = function(tabId) {
