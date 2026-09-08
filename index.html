@@ -3,543 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONEY VAULT</title>
+    <title>Moon Network</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- سكريبت منصة الإعلانات GigaPub المخصص لتطبيقك -->
-    <script src="https://ad.gigapub.tech/script?id=5898"></script>
-    
     <style>
-        body {
-            background-color: #131B2E;
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            padding-bottom: 70px;
-        }
-        .page-section {
-            padding: 15px;
-            display: none;
-        }
-        .page-section.active {
-            display: block;
-        }
-        .section-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .card {
-            background: #1b263b;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #23304a;
-        }
-        .section-desc {
-            color: #94a3b8;
-            font-size: 13px;
-        }
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #0b101b;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #23304a;
-            z-index: 1000;
-        }
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 11px;
-            text-align: center;
-            cursor: pointer;
-        }
-        .nav-btn i {
-            display: block;
-            font-size: 18px;
-            margin-bottom: 4px;
-        }
-        .nav-btn.active {
-            color: #0098EA;
-        }
-        .action-btn {
-            background: #0098EA;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .stats-grid {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .stat-box {
-            flex: 1;
-            background: #1b263b;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #23304a;
-        }
-        .claim-btn {
-            background: #334155;
-            color: #94a3b8;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: not-allowed;
-        }
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            background: #0b101b;
-            border: 1px solid #23304a;
-            color: white;
-            border-radius: 10px;
-            box-sizing: border-box;
-            margin-top: 5px;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .hidden-section { display: none; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between pb-20">
 
-    <!-- 1. الصفحة الرئيسية (Home) -->
-    <div id="sec-home" class="page-section active">
-        <div style="text-align: right; font-size: 22px; font-weight: bold; margin: 10px 15px 20px 0;">Moon Network</div>
-        
-        <div class="card">
-            <div style="font-size: 13px; color: #94a3b8; text-align: right;">رصيدك الحالي</div>
-            <div id="balanceDisplay" style="font-size: 32px; font-weight: bold; margin: 5px 0 15px 0; color: #38bdf8; text-align: right;">0.037</div>
-            <button class="action-btn" onclick="showPage('deposit')" style="background: #0098EA; display: flex; justify-content: center; align-items: center; gap: 8px;">
-                <span>إيداع USDT</span> <i class="fas fa-wallet"></i>
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-2 space-x-reverse">
+            <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-slate-900 font-bold text-xl">🌕</div>
+            <h1 class="font-bold text-lg text-amber-400">Moon Network</h1>
+        </div>
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <button onclick="openAdminPanel()" class="bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold">
+                <i class="fa-solid fa-lock ml-1"></i> لوحة الأدمن
             </button>
-        </div>
-
-        <button class="action-btn" onclick="watchAd()" style="margin-bottom: 15px; background: #0098EA; font-size: 15px;">
-            مشاهدة إعلان للحصول على 0.003 USDT 🎬
-        </button>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="section-desc" style="font-size: 12px;">ترتيبك في الشبكة</div>
-                <div style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">--#</div>
-            </div>
-            <div class="stat-box">
-                <div class="section-desc" style="font-size: 12px;">إعلانات شاهدتها</div>
-                <div id="adCount" style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">0</div>
+            <div class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-sm font-semibold text-amber-400">
+                <span id="user-balance">0.000</span> USDT
             </div>
         </div>
+    </header>
 
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <div style="font-weight: bold; font-size: 16px;">🎁 المكافأة اليومية</div>
-                <div class="section-desc" style="margin-top: 5px;">لقد أخذت مكافأتك اليوم, عد غداً.</div>
-            </div>
-            <div>
-                <button class="claim-btn">تم المطالبة</button>
-            </div>
-        </div>
+    <!-- Main Content Container -->
+    <main class="p-4 max-w-md mx-auto w-full flex-grow">
 
-        <!-- خانة البرومو كود الجديدة أسفل المكافأة اليومية -->
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">🎟️ خانة البرومو كود</div>
-            <div class="section-desc" style="margin-bottom: 10px;">أدخل كود الهدية للحصول على رصيد مجاني</div>
-            <input type="text" id="promoInput" placeholder="أدخل البرومو كود هنا..." class="input-field">
-            <button class="action-btn" onclick="claimPromoCode()" style="margin-top: 10px; background: #10b981;">تفعيل الكود</button>
-        </div>
-    </div>
-
-    <!-- صفحة الإيداع (Deposit) -->
-    <div id="sec-deposit" class="page-section" style="display:none;">
-        <div class="section-title">إيداع رصيد USDT</div>
-        <div class="card">
-            <div style="font-weight: bold; margin-bottom: 5px;">شبكة التحويل (TRC20)</div>
-            <p class="section-desc">قم بتحويل مبلغ USDT إلى العنوان أدناه:</p>
-            
-            <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px; color: #94a3b8;">عنوان المحفظة:</label>
-                <div style="background: #0b101b; padding: 12px; border-radius: 10px; border: 1px solid #23304a; word-break: break-all; font-family: monospace; color: #38bdf8;" id="walletAddress">
-                    TYourActualUSDTWalletAddressHere123456
+        <!-- 1. Home Section -->
+        <section id="section-home" class="space-y-4">
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 p-6 rounded-2xl text-center shadow-lg">
+                <p class="text-slate-400 text-sm">رصيدك الحالي</p>
+                <h2 class="text-3xl font-bold text-amber-400 my-2"><span id="home-balance">0.000</span> USDT</h2>
+                <div class="flex justify-center gap-4 mt-4">
+                    <button onclick="switchTab('deposit')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm transition">إيداع</button>
+                    <button onclick="switchTab('withdraw')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition">سحب</button>
                 </div>
             </div>
 
-            <button class="action-btn" onclick="copyAddress()" style="margin-top: 15px;">
-                <i class="fas fa-copy"></i> نسخ العنوان
-            </button>
-
-            <div style="margin-top: 20px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">أدخل رقم عملية التحويل (TxID):</label>
-                <input type="text" id="txidInput" placeholder="أدخل TxID هنا..." class="input-field">
+            <!-- Ad Reward Box -->
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
+                <h3 class="font-bold text-base mb-1">شاهد الإعلانات واكسب</h3>
+                <p class="text-xs text-slate-400 mb-4">اكسب 0.003 USDT لكل إعلان تشاهده</p>
+                <button onclick="watchAd()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
+                    <i class="fa-solid fa-play ml-2"></i> مشاهدة إعلان
+                </button>
             </div>
 
-            <button class="action-btn" onclick="confirmDeposit()" style="background: #10b981; margin-top: 15px;">
-                <i class="fas fa-check-circle"></i> تأكيد وإرسال الإيداع
-            </button>
-            
-            <button class="action-btn" onclick="showPage('home')" style="background: #334155; margin-top: 10px;">
-                العودة للرئيسية
-            </button>
-        </div>
-    </div>
-
-    <!-- 2. صفحة الاستثمار (Invest) -->
-    <div id="sec-invest" class="page-section" style="display:none;">
-        <div class="section-title">قسم الاستثمار</div>
-        
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الباقة الأولى</div>
-            <div class="section-desc" style="margin-bottom: 3px;">قيمة الإيداع: 10 USDT</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">ربح يومي: 0.6 USDT</div>
-            <button class="action-btn" onclick="investPackage(10, 'الباقة الأولى')">استثمار الآن</button>
-        </div>
-
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الباقة الثانية</div>
-            <div class="section-desc" style="margin-bottom: 3px;">قيمة الإيداع: 15 USDT</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">ربح يومي: 1 USDT</div>
-            <button class="action-btn" onclick="investPackage(15, 'الباقة الثانية')">استثمار الآن</button>
-        </div>
-    </div>
-
-    <!-- 3. صفحة المهام (Tasks) -->
-    <div id="sec-tasks" class="page-section" style="display:none;">
-        <div class="section-title">المهام اليومية (الاشتراك الإجباري)</div>
-        
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة MONEY VAULT</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button id="task1Btn" class="action-btn" onclick="completeTask(1, 'https://t.me/MoneyVault10')">تنفيذ المهمة</button>
-        </div>
-
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة AksbCash</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button id="task2Btn" class="action-btn" onclick="completeTask(2, 'https://t.me/AksbCash')">تنفيذ المهمة</button>
-        </div>
-
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة TONVAULT</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button id="task3Btn" class="action-btn" onclick="completeTask(3, 'https://t.me/TONVAULT_LordTon1')">تنفيذ المهمة</button>
-        </div>
-
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الاشتراك في قناة اليوتيوب</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button id="task4Btn" class="action-btn" onclick="completeTask(4, 'https://youtube.com/@money32m?si=kMPmzaGKBDU2eE5-')">اشتراك الآن</button>
-        </div>
-    </div>
-
-    <!-- 4. صفحة الإحالات (Referrals) -->
-    <div id="sec-referrals" class="page-section" style="display:none;">
-        <div class="section-title">برنامج الإحالات</div>
-        <div class="card">
-            <div style="font-weight: bold; margin-bottom: 5px; font-size: 15px;">اربح 0.01 USDT لكل إحالة</div>
-            <p class="section-desc">شارك رابطك الخاص مع أصدقائك واربح 0.01 USDT عن كل صديق ينضم من خلالك.</p>
-            
-            <div style="margin-top: 15px;">
-                <label style="font-size: 12px; display: block; margin-bottom: 5px; color: #94a3b8;">رابط الإحالة الخاص بك:</label>
-                <div style="background: #0b101b; padding: 10px; border-radius: 8px; border: 1px solid #23304a; word-break: break-all; font-family: monospace; font-size: 12px; color: #38bdf8;" id="refLink">
-                    https://t.me/MoonNetworkBot?start=ref_123456
+            <!-- Promo Code Box -->
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
+                <h3 class="font-bold text-base mb-2">رمز ترويجي (Promo Code)</h3>
+                <div class="flex gap-2">
+                    <input type="text" id="promo-input" placeholder="أدخل الرمز هنا..." class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="applyPromoCode()" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm">تفعيل</button>
                 </div>
             </div>
+        </section>
 
-            <button class="action-btn" onclick="copyRefLink()" style="margin-top: 15px;">
-                <i class="fas fa-copy"></i> نسخ الرابط
-            </button>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="section-desc" style="font-size: 12px;">عدد الإحالات</div>
-                <div style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">0</div>
+        <!-- 2. Deposit Section -->
+        <section id="section-deposit" class="hidden-section space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
+                <h3 class="font-bold text-lg mb-3 text-amber-400">إيداع رصيد (USDT)</h3>
+                <p class="text-xs text-slate-400 mb-4">قم بالتحويل إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:</p>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-slate-300 break-all mb-4 select-all">
+                    0x123456789abcdef0123456789abcdef0123456789
+                </div>
+                <div class="space-y-3">
+                    <input type="text" id="deposit-txid" placeholder="أدخل رقم المعاملة TxID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <input type="number" id="deposit-amount" placeholder="المبلغ (USDT)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="submitDeposit()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition">إرسال للمراجعة</button>
+                </div>
             </div>
-            <div class="stat-box">
-                <div class="section-desc" style="font-size: 12px;">أرباح الإحالات</div>
-                <div style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">0.00 USDT</div>
+        </section>
+
+        <!-- 3. Withdraw Section -->
+        <section id="section-withdraw" class="hidden-section space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
+                <h3 class="font-bold text-lg mb-3 text-amber-400">سحب الأرباح</h3>
+                <div class="space-y-3">
+                    <input type="text" id="withdraw-address" placeholder="عنوان محفظتك (USDT BEP20)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <input type="number" id="withdraw-amount" placeholder="المبلغ المراد سحبه" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="submitWithdraw()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition">طلب سحب</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Tasks Section -->
+        <section id="section-tasks" class="hidden-section space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
+                <h3 class="font-bold text-lg mb-3 text-amber-400">المهام اليومية</h3>
+                <div class="space-y-3">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-sm">اشتراك قناة اليوتيوب</h4>
+                            <p class="text-xs text-slate-400">+0.010 USDT</p>
+                        </div>
+                        <button onclick="completeTask('youtube', 0.01)" class="bg-emerald-600 px-4 py-1.5 rounded-lg text-xs font-bold text-white">إنجاز</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Referrals Section -->
+        <section id="section-referrals" class="hidden-section space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
+                <h3 class="font-bold text-lg mb-2 text-amber-400">نظام الإحالة</h3>
+                <p class="text-xs text-slate-400 mb-4">شارك رابطك وادع أصدقاءك للاستفادة</p>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-amber-300 select-all mb-3">
+                    https://t.me/MoonNetworkBot?start=ref_12345
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Admin Panel Modal / Section -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-lg text-amber-400"><i class="fa-solid fa-user-shield ml-2"></i> لوحة التحكم (الأدمن)</h3>
+                <button onclick="closeAdminPanel()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <h4 class="font-bold text-sm text-slate-300">طلبات الإيداع المعلقة:</h4>
+                <div id="admin-deposits-list" class="space-y-2">
+                    <!-- يتم تعبئتها ديناميكياً من قاعدة البيانات -->
+                    <p class="text-xs text-slate-500 text-center py-4">جاري تحميل الطلبات...</p>
+                </div>
+
+                <h4 class="font-bold text-sm text-slate-300 mt-6">طلبات السحب المعلقة:</h4>
+                <div id="admin-withdraws-list" class="space-y-2">
+                    <!-- يتم تعبئتها ديناميكياً من قاعدة البيانات -->
+                    <p class="text-xs text-slate-500 text-center py-4">جاري تحميل الطلبات...</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 5. صفحة السحب (Withdraw) -->
-    <div id="sec-withdraw" class="page-section" style="display:none;">
-        <div class="section-title">سحب الأرباح</div>
-        <div class="card">
-            <div style="font-weight: bold; margin-bottom: 8px;">سحب رصيد USDT</div>
-            <p class="section-desc">الحد الأدنى للسحب: 0.2 USDT | الشرط: الاشتراك بالقنوات ومشاهدة الإعلانات</p>
-            
-            <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
-                <input type="number" id="withdrawAmount" placeholder="0.20" class="input-field" step="0.01">
-            </div>
-            
-            <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
-                <input type="text" id="withdrawAddress" placeholder="T..." class="input-field">
-            </div>
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-40">
+        <button onclick="switchTab('home')" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i>الرئيسية</button>
+        <button onclick="switchTab('deposit')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i>إيداع</button>
+        <button onclick="switchTab('withdraw')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-money-bill-transfer text-lg mb-1"></i>سحب</button>
+        <button onclick="switchTab('tasks')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-list-check text-lg mb-1"></i>المهام</button>
+        <button onclick="switchTab('referrals')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-users text-lg mb-1"></i>الإحالات</button>
+    </nav>
 
-            <button class="action-btn" onclick="requestWithdraw()" style="margin-top: 20px;">تأكيد السحب</button>
-        </div>
-    </div>
+    <!-- Firebase & App Script Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    <!-- شريط التنقل السفلي -->
-    <div class="nav-bar">
-        <button class="nav-btn" onclick="showPage('withdraw', this)">
-            <i class="fas fa-wallet"></i>
-            <span>سحب</span>
-        </button>
-        <button class="nav-btn" onclick="showPage('referrals', this)">
-            <i class="fas fa-users"></i>
-            <span>Referrals</span>
-        </button>
-        <button class="nav-btn" onclick="showPage('tasks', this)">
-            <i class="fas fa-list-check"></i>
-            <span>Tasks</span>
-        </button>
-        <button class="nav-btn" onclick="showPage('invest', this)">
-            <i class="fas fa-chart-line"></i>
-            <span>Invest</span>
-        </button>
-        <button class="nav-btn active" onclick="showPage('home', this)">
-            <i class="fas fa-house"></i>
-            <span>Home</span>
-        </button>
-    </div>
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+          apiKey: "AIzaSyAjexk-ZbXNNo0oLz29HFLBgdBxeXquiDQ",
+          authDomain: "moneyvault-5c252.firebaseapp.com",
+          projectId: "moneyvault-5c252",
+          storageBucket: "moneyvault-5c252.firebasestorage.app",
+          messagingSenderId: "555271585051",
+          appId: "1:555271585051:web:c419add6662b036e9fa7be",
+          measurementId: "G-VY5PGPHHMS"
+        };
 
-    <script>
-        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.037;
-        let adWatchedCount = parseInt(localStorage.getItem('adWatchedCount')) || 0;
-        
-        let task1Done = localStorage.getItem('task1Done') === 'true';
-        let task2Done = localStorage.getItem('task2Done') === 'true';
-        let task3Done = localStorage.getItem('task3Done') === 'true';
-        let task4Done = localStorage.getItem('task4Done') === 'true';
-        let promoClaimed = localStorage.getItem('promoClaimed') === 'true';
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
-        document.getElementById('adCount').innerText = adWatchedCount;
-        updateTaskButtons();
+        // معرف المستخدم التجريبي الحالي (يمكن ربطه بتلغرام لاحقاً)
+        const userId = "user_12345";
+        let userBalance = 0;
 
-        function saveData() {
-            localStorage.setItem('userBalance', userBalance);
-            localStorage.setItem('adWatchedCount', adWatchedCount);
-            localStorage.setItem('task1Done', task1Done);
-            localStorage.setItem('task2Done', task2Done);
-            localStorage.setItem('task3Done', task3Done);
-            localStorage.setItem('task4Done', task4Done);
-            localStorage.setItem('promoClaimed', promoClaimed);
-        }
-
-        function updateBalanceDisplay() {
-            document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
-            document.getElementById('adCount').innerText = adWatchedCount;
-            saveData();
-        }
-
-        function updateTaskButtons() {
-            if (task1Done) {
-                let btn = document.getElementById('task1Btn');
-                btn.innerText = "تم الانضمام والمكافأة معملة ✅";
-                btn.style.background = "#10b981";
-                btn.disabled = true;
-            }
-            if (task2Done) {
-                let btn = document.getElementById('task2Btn');
-                btn.innerText = "تم الانضمام والمكافأة معملة ✅";
-                btn.style.background = "#10b981";
-                btn.disabled = true;
-            }
-            if (task3Done) {
-                let btn = document.getElementById('task3Btn');
-                btn.innerText = "تم الانضمام والمكافأة معملة ✅";
-                btn.style.background = "#10b981";
-                btn.disabled = true;
-            }
-            if (task4Done) {
-                let btn = document.getElementById('task4Btn');
-                btn.innerText = "تم الاشتراك والمكافأة معملة ✅";
-                btn.style.background = "#10b981";
-                btn.disabled = true;
-            }
-        }
-
-        function showPage(pageId, btn) {
-            document.querySelectorAll('.page-section').forEach(sec => {
-                sec.style.display = 'none';
-                sec.classList.remove('active');
-            });
-            
-            const targetSec = document.getElementById('sec-' + pageId);
-            if (targetSec) {
-                targetSec.style.display = 'block';
-                targetSec.classList.add('active');
-            }
-            
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            if (btn) {
-                btn.classList.add('active');
-            }
-        }
-
-        function completeTask(taskId, channelUrl) {
-            window.open(channelUrl, '_blank');
-            
-            setTimeout(() => {
-                if (taskId === 1 && !task1Done) {
-                    task1Done = true;
-                    userBalance += 0.003;
-                } else if (taskId === 2 && !task2Done) {
-                    task2Done = true;
-                    userBalance += 0.003;
-                } else if (taskId === 3 && !task3Done) {
-                    task3Done = true;
-                    userBalance += 0.003;
-                } else if (taskId === 4 && !task4Done) {
-                    task4Done = true;
-                    userBalance += 0.003;
-                }
-                updateBalanceDisplay();
-                updateTaskButtons();
-                alert('شكراً لك! تم التحقق من الاشتراك وإضافة المكافأة بنجاح.');
-            }, 3000);
-        }
-
-        // دالة تفعيل البرومو كود
-        function claimPromoCode() {
-            const codeInput = document.getElementById('promoInput').value.trim();
-            
-            if (!codeInput) {
-                alert('يرجى إدخال البرومو كود أولاً.');
-                return;
-            }
-
-            if (promoClaimed) {
-                alert('لقد قمت بالفعل باستخدام برومو كود مسبقاً!');
-                return;
-            }
-
-            // يمكنك تغيير الكود هنا (مثلاً MONEY2026) وقيمة الجائزة (0.05)
-            if (codeInput === 'MONEY2026' || codeInput === 'money2026') {
-                promoClaimed = true;
-                userBalance += 0.05; // مكافأة الكود
-                updateBalanceDisplay();
-                document.getElementById('promoInput').value = '';
-                alert('مبروك! تم تفعيل الكود بنجاح وإضافة 0.05 USDT إلى رصيدك.');
+        async function loadUserData() {
+            const userRef = doc(db, "users", userId);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                userBalance = userSnap.data().balance || 0;
             } else {
-                alert('عذراً، البرومو كود غير صحيح أو منتهي الصلاحية.');
+                await setDoc(userRef, { balance: 0 });
+                userBalance = 0;
             }
+            updateUIBalance();
         }
 
-        function watchAd() {
-            if (!task1Done && !task2Done && !task3Done && !task4Done) {
-                alert('عذراً! يجب عليك أولاً إتمام مهمة واحدة على الأقل من قسم المهام (Tasks) لكي تتمكن من مشاهدة الإعلانات.');
-                showPage('tasks');
+        function updateUIBalance() {
+            document.getElementById("user-balance").innerText = userBalance.toFixed(3);
+            document.getElementById("home-balance").innerText = userBalance.toFixed(3);
+        }
+
+        // إرسال طلب إيداع إلى قاعدة البيانات
+        window.submitDeposit = async function() {
+            const txid = document.getElementById("deposit-txid").value.trim();
+            const amount = parseFloat(document.getElementById("deposit-amount").value);
+            
+            if(!txid || isNaN(amount) || amount <= 0) {
+                alert("الرجاء إدخال بيانات صحيحة.");
                 return;
             }
 
-            if (typeof window.showGiga === 'function') {
-                window.showGiga().then(() => {
-                    adWatchedCount++;
-                    userBalance += 0.003; 
-                    updateBalanceDisplay();
-                    alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة (0.003 USDT).');
-                }).catch(e => {
-                    console.error(e);
-                    alert('لم يتم إكمال مشاهدة الإعلان أو حدث خطأ.');
+            try {
+                await addDoc(collection(db, "deposits"), {
+                    userId: userId,
+                    txid: txid,
+                    amount: amount,
+                    status: "pending",
+                    timestamp: new Date()
                 });
+                alert("تم إرسال طلب الإيداع بنجاح، بانتظار مراجعة الأدمن.");
+                document.getElementById("deposit-txid").value = "";
+                document.getElementById("deposit-amount").value = "";
+                switchTab('home');
+            } catch (e) {
+                alert("حدث خطأ أثناء الإرسال.");
+            }
+        };
+
+        // إرسال طلب سحب إلى قاعدة البيانات
+        window.submitWithdraw = async function() {
+            const address = document.getElementById("withdraw-address").value.trim();
+            const amount = parseFloat(document.getElementById("withdraw-amount").value);
+
+            if(!address || isNaN(amount) || amount <= 0) {
+                alert("الرجاء إدخال تفاصيل صحيحة.");
+                return;
+            }
+
+            if(amount > userBalance) {
+                alert("رصيدك غير كافي.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "withdraws"), {
+                    userId: userId,
+                    address: address,
+                    amount: amount,
+                    status: "pending",
+                    timestamp: new Date()
+                });
+                
+                // خصم مؤقت أو انتظار الأدمن (هنا سننتظر موافقة الأدمن لتأكيد الخصم أو خصمه فوراً)
+                alert("تم تقديم طلب السحب بنجاح بانتظار المراجعة.");
+                document.getElementById("withdraw-address").value = "";
+                document.getElementById("withdraw-amount").value = "";
+                switchTab('home');
+            } catch(e) {
+                alert("حدث خطأ أثناء الطلب.");
+            }
+        };
+
+        // تفعيل لوحة الأدمن وقراءة الطلبات المعلقة
+        window.openAdminPanel = async function() {
+            document.getElementById("admin-modal").classList.remove("hidden");
+            
+            // جلب الإيداعات المعلقة
+            const depositsContainer = document.getElementById("admin-deposits-list");
+            depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">جاري التحميل...</p>';
+            const querySnapshot = await getDocs(collection(db, "deposits"));
+            
+            depositsContainer.innerHTML = "";
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                if(data.status === "pending") {
+                    depositsContainer.innerHTML += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <p class="text-amber-400 font-bold">${data.amount} USDT</p>
+                                <p class="text-slate-400">TxID: ${data.txid}</p>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="approveDeposit('${docSnap.id}', '${data.userId}', ${data.amount})" class="bg-emerald-600 text-white px-3 py-1 rounded font-bold">قبول</button>
+                                <button onclick="rejectDeposit('${docSnap.id}')" class="bg-rose-600 text-white px-3 py-1 rounded font-bold">رفض</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            if(depositsContainer.innerHTML === "") {
+                depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد إيداعات معلقة.</p>';
+            }
+
+            // جلب السحوبات المعلقة
+            const withdrawsContainer = document.getElementById("admin-withdraws-list");
+            withdrawsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">جاري التحميل...</p>';
+            const withdrawSnapshot = await getDocs(collection(db, "withdraws"));
+            
+            withdrawsContainer.innerHTML = "";
+            withdrawSnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                if(data.status === "pending") {
+                    withdrawsContainer.innerHTML += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <p class="text-amber-400 font-bold">${data.amount} USDT</p>
+                                <p class="text-slate-400 truncate w-32">إلى: ${data.address}</p>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="approveWithdraw('${docSnap.id}', '${data.userId}', ${data.amount})" class="bg-emerald-600 text-white px-3 py-1 rounded font-bold">قبول</button>
+                                <button onclick="rejectWithdraw('${docSnap.id}')" class="bg-rose-600 text-white px-3 py-1 rounded font-bold">رفض</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            if(withdrawsContainer.innerHTML === "") {
+                withdrawsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد سحوبات معلقة.</p>';
+            }
+        };
+
+        window.closeAdminPanel = function() {
+            document.getElementById("admin-modal").classList.add("hidden");
+        };
+
+        // قبول الإيداع وإضافة الرصيد للمستخدم
+        window.approveDeposit = async function(docId, targetUserId, amount) {
+            try {
+                // تحديث حالة الطلب
+                await updateDoc(doc(db, "deposits", docId), { status: "approved" });
+                
+                // تحديث رصيد المستخدم في قاعدة البيانات
+                const userRef = doc(db, "users", targetUserId);
+                const userSnap = await getDoc(userRef);
+                const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
+                await updateDoc(userRef, { balance: currentBal + amount });
+
+                alert("تم قبول الإيداع وشحن الرصيد بنجاح!");
+                loadUserData();
+                openAdminPanel();
+            } catch(e) {
+                alert("حدث خطأ.");
+            }
+        };
+
+        window.rejectDeposit = async function(docId) {
+            await updateDoc(doc(db, "deposits", docId), { status: "rejected" });
+            alert("تم رفض الإيداع.");
+            openAdminPanel();
+        };
+
+        window.approveWithdraw = async function(docId, targetUserId, amount) {
+            try {
+                // خصم المبلغ من رصيد المستخدم عند الموافقة على السحب
+                const userRef = doc(db, "users", targetUserId);
+                const userSnap = await getDoc(userRef);
+                const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
+                
+                if(currentBal < amount) {
+                    alert("رصيد المستخدم غير كافي لإتمام السحب!");
+                    return;
+                }
+
+                await updateDoc(userRef, { balance: currentBal - amount });
+                await updateDoc(doc(db, "withdraws", docId), { status: "approved" });
+
+                alert("تمت الموافقة على السحب وخصم الرصيد!");
+                loadUserData();
+                openAdminPanel();
+            } catch(e) {
+                alert("حدث خطأ.");
+            }
+        };
+
+        window.rejectWithdraw = async function(docId) {
+            await updateDoc(doc(db, "withdraws", docId), { status: "rejected" });
+            alert("تم رفض السحب.");
+            openAdminPanel();
+        };
+
+        // مهام أخرى وأزرار
+        window.watchAd = function() {
+            userBalance += 0.003;
+            updateUIBalance();
+            // تحديث في فايربيس
+            setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
+            alert("تم إضافة مكافأة الإعلان بنجاح!");
+        };
+
+        window.applyPromoCode = function() {
+            const code = document.getElementById("promo-input").value.trim();
+            if(code === "MONEY2026") {
+                userBalance += 0.05;
+                updateUIBalance();
+                setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
+                alert("تم تفعيل الرمز بنجاح +0.05 USDT!");
+                document.getElementById("promo-input").value = "";
             } else {
-                alert('جاري تحميل نظام الإعلانات، يرجى الانتظار ثوانٍ معدودة والمحاولة مجدداً.');
+                alert("الرمز غير صحيح أو منتهي الصلاحية.");
             }
-        }
+        };
 
-        function investPackage(requiredAmount, packageName) {
-            if (userBalance < requiredAmount) {
-                alert('عذراً، رصيد غير كافٍ. رصيدك الحالي هو ' + userBalance.toFixed(3) + ' USDT.');
-                return;
-            }
+        window.completeTask = function(taskId, reward) {
+            userBalance += reward;
+            updateUIBalance();
+            setDoc(doc, { balance: userBalance }, { merge: true });
+            alert("تم إنجاز المهمة وإضافة المكافأة!");
+        };
 
-            userBalance -= requiredAmount;
-            updateBalanceDisplay();
-            alert('تم تفعيل ' + packageName + ' بنجاح واقتطاع مبلغ الاستثمار!');
-        }
+        // تحميل بيانات المستخدم عند فتح التطبيق
+        loadUserData();
+    </script>
 
-        function copyAddress() {
-            const addressText = document.getElementById('walletAddress').innerText;
-            navigator.clipboard.writeText(addressText).then(() => {
-                alert('تم نسخ عنوان المحفظة بنجاح!');
-            });
-        }
-
-        function copyRefLink() {
-            const refText = document.getElementById('refLink').innerText;
-            navigator.clipboard.writeText(refText).then(() => {
-                alert('تم نسخ رابط الإحالة بنجاح!');
-            });
-        }
-
-        function confirmDeposit() {
-            const txid = document.getElementById('txidInput').value;
-            if(!txid) {
-                alert('يرجى إدخال رقم عملية التحويل (TxID) أولاً');
-                return;
-            }
-            alert('تم إرسال طلب تأكيد الإيداع بنجاح.');
-            document.getElementById('txidInput').value = '';
-            showPage('home');
-        }
-
-        function requestWithdraw() {
-            const amount = parseFloat(document.getElementById('withdrawAmount').value);
-            const address = document.getElementById('withdrawAddress').value;
-
-            if (!amount || isNaN(amount)) {
-                alert('يرجى إدخال مبلغ صالح للسحب.');
-                return;
-            }
-
-            if (!address) {
-                alert('يرجى إدخال عنوان محفظة TRC20.');
-                return;
-            }
-
-            if (amount < 0.2) {
-                alert('عذراً، الحد الأدنى للسحب هو 0.2 USDT.');
-                return;
-            }
-
-            if (!task1Done || !task2Done || !task3Done || !task4Done) {
-                alert('عذراً، يجب إتمام جميع المهام (القنوات واليوتيوب) أولاً لتتمكن من السحب!');
-                showPage('tasks');
-                return;
-            }
-
-            if (adWatchedCount < 25) {
-                alert('عذراً، شرط السحب غير مكتمل. لقد شاهدت ' + adWatchedCount + ' إعلان فقط، ويجب مشاهدة 25 إعلاناً على الأقل.');
-                return;
-            }
-
-            if (amount > userBalance) {
-                alert('عذراً، الرصيد غير كافٍ لإتمام عملية السحب.');
-                return;
-            }
-
-            alert('تم تقديم طلب السحب بنجاح!');
-            document.getElementById('withdrawAmount').value = '';
-            document.getElementById('withdrawAddress').value = '';
-            showPage('home');
+    <!-- Navigation Switching Script -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden-section'));
+            document.getElementById('section-' + tabId).classList.remove('hidden-section');
         }
     </script>
 </body>
