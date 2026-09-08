@@ -118,7 +118,7 @@
         
         <div class="card">
             <div style="font-size: 13px; color: #94a3b8; text-align: right;">رصيدك الحالي</div>
-            <div id="balance" style="font-size: 32px; font-weight: bold; margin: 5px 0 15px 0; color: #38bdf8; text-align: right;">0.037</div>
+            <div id="balanceDisplay" style="font-size: 32px; font-weight: bold; margin: 5px 0 15px 0; color: #38bdf8; text-align: right;">0.037</div>
             <button class="action-btn" onclick="showPage('deposit')" style="background: #0098EA; display: flex; justify-content: center; align-items: center; gap: 8px;">
                 <span>إيداع USDT</span> <i class="fas fa-wallet"></i>
             </button>
@@ -183,7 +183,7 @@
         </div>
     </div>
 
-    <!-- 2. صفحة الاستثمار (Invest) -->
+    <!-- 2. صفحة الاستثمار (Invest) - مرتبطة بالرصيد الحقيقي -->
     <div id="sec-invest" class="page-section" style="display:none;">
         <div class="section-title">قسم الاستثمار</div>
         
@@ -191,14 +191,14 @@
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الباقة الأولى</div>
             <div class="section-desc" style="margin-bottom: 3px;">قيمة الإيداع: 10 USDT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">ربح يومي: 0.6 USDT</div>
-            <button class="action-btn" onclick="alert('تم تفعيل الباقة الأولى بنجاح')">استثمار الآن</button>
+            <button class="action-btn" onclick="investPackage(10, 'الباقة الأولى')">استثمار الآن</button>
         </div>
 
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الباقة الثانية</div>
             <div class="section-desc" style="margin-bottom: 3px;">قيمة الإيداع: 15 USDT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">ربح يومي: 1 USDT</div>
-            <button class="action-btn" onclick="alert('تم تفعيل الباقة الثانية بنجاح')">استثمار الآن</button>
+            <button class="action-btn" onclick="investPackage(15, 'الباقة الثانية')">استثمار الآن</button>
         </div>
     </div>
 
@@ -296,8 +296,13 @@
     </div>
 
     <script>
-        // العداد يبدأ من 0 بشكل حقيقي
+        // المتغيرات الأساسية
+        let userBalance = 0.037;
         let adWatchedCount = 0;
+
+        function updateBalanceDisplay() {
+            document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
+        }
 
         function showPage(pageId, btn) {
             document.querySelectorAll('.page-section').forEach(sec => {
@@ -318,20 +323,29 @@
         }
 
         function watchAd() {
-            // فتح رابط الإعلان (يمكنك استبدال الرابط أدناه برابط شبكة الإعلانات الخاص بك)
-            // سيتم فتح الإعلان في تبويب جديد، وعندما يعود المستخدم ستحتسب المشاهدة
-            let adWindow = window.open('https://www.example.com', '_blank');
-            
-            // محاكاة تأكيد العودة ومشاهدة الإعلان الفعلية
+            window.open('https://www.example.com', '_blank');
             setTimeout(() => {
                 adWatchedCount++;
                 document.getElementById('adCount').innerText = adWatchedCount;
                 alert('شكراً لك! تم احتساب مشاهدة الإعلان بنجاح. الإجمالي: ' + adWatchedCount);
-            }, 3000); // تضاف بعد 3 ثوانٍ كمحاكاة لمشاهدة الإعلان
+            }, 3000);
         }
 
         function completeTask() {
-            alert('تم تنفيذ المهمة بنجاح وإضافة 0.003 USDT إلى رصيدك!');
+            userBalance += 0.003;
+            updateBalanceDisplay();
+            alert('تم تنفيذ المهمة بنجاح وتم إضافة 0.003 USDT إلى رصيدك!');
+        }
+
+        function investPackage(requiredAmount, packageName) {
+            if (userBalance < requiredAmount) {
+                alert('عذراً، رصيد غير كافٍ. رصيدك الحالي هو ' + userBalance.toFixed(3) + ' USDT، بينما تتطلب ' + packageName + ' مبلغ ' + requiredAmount + ' USDT. يرجى إيداع رصيد أولاً.');
+                return;
+            }
+
+            userBalance -= requiredAmount;
+            updateBalanceDisplay();
+            alert('تم تفعيل ' + packageName + ' بنجاح واقتطاع مبلغ الاستثمار من رصيدك!');
         }
 
         function copyAddress() {
@@ -373,15 +387,18 @@
                 return;
             }
 
-            // فحص الحد الأدنى (0.2)
             if (amount < 0.2) {
                 alert('عذراً، الحد الأدنى للسحب هو 0.2 USDT.');
                 return;
             }
 
-            // فحص شرط مشاهدة 25 إعلان
             if (adWatchedCount < 25) {
                 alert('عذراً، شرط السحب غير مكتمل. لقد شاهدت ' + adWatchedCount + ' إعلان فقط، ويجب مشاهدة 25 إعلاناً على الأقل.');
+                return;
+            }
+
+            if (amount > userBalance) {
+                alert('عذراً، الرصيد غير كافٍ لإتمام عملية السحب.');
                 return;
             }
 
