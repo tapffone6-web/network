@@ -119,9 +119,15 @@
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
                 <h3 class="font-bold text-lg mb-3 text-amber-400">إيداع رصيد (USDT)</h3>
                 <p class="text-xs text-slate-400 mb-4">قم بالتحويل إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:</p>
-                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-slate-300 break-all mb-4 select-all">
-                    0x123456789abcdef0123456789abcdef0123456789
+                
+                <!-- حقل عنوان المحفظة مع زر النسخ -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between mb-4">
+                    <span id="wallet-address" class="text-xs text-slate-300 break-all select-all font-mono">0x123456789abcdef0123456789abcdef0123456789</span>
+                    <button onclick="copyWalletAddress()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shrink-0 ml-2">
+                        <i class="fa-regular fa-copy"></i> نسخ
+                    </button>
                 </div>
+
                 <div class="space-y-3">
                     <input type="text" id="deposit-txid" placeholder="أدخل رقم المعاملة TxID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
                     <input type="number" id="deposit-amount" placeholder="المبلغ (USDT)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
@@ -231,6 +237,16 @@
             document.getElementById("home-balance").innerText = userBalance.toFixed(3);
         }
 
+        // دالة نسخ عنوان المحفظة
+        window.copyWalletAddress = function() {
+            const addressText = document.getElementById("wallet-address").innerText;
+            navigator.clipboard.writeText(addressText).then(() => {
+                alert("تم نسخ عنوان المحفظة بنجاح!");
+            }).catch(err => {
+                alert("فشل النسخ، يرجى نسخه يدويّاً.");
+            });
+        };
+
         async function initUserData() {
             const userRef = doc(db, "users", userId);
             try {
@@ -293,7 +309,6 @@
                 return;
             }
 
-            // تشغيل العداد التنازلي الحي
             if (timerInterval) clearInterval(timerInterval);
 
             updateTimersHtml();
@@ -306,7 +321,6 @@
             const now = new Date();
 
             activeInvestments.forEach(inv => {
-                // نفترض أن دورة الربح كل 24 ساعة (86400000 ملي ثانية) من وقت الاشتراك أو آخر ربح
                 const nextProfitTime = new Date(inv.timestamp.getTime() + 24 * 60 * 60 * 1000);
                 const diff = nextProfitTime - now;
 
