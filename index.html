@@ -6,6 +6,8 @@
     <title>Moon Network - Money Vault</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- سكربت إعلانات Giga Pub -->
+    <script src="https://ad.gigapub.tech/script?id=5898"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
@@ -380,11 +382,23 @@
             openAdminPanel();
         };
 
+        // دالة عرض إعلان Giga Pub الحقيقي
         window.watchAd = function() {
-            userBalance += 0.003;
-            updateUIBalance();
-            setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
-            alert("تم إضافة مكافأة الإعلان بنجاح!");
+            if (typeof window.showGiga === "function") {
+                window.showGiga()
+                    .then(async () => {
+                        userBalance += 0.003;
+                        updateUIBalance();
+                        await setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
+                        alert("تم إضافة مكافأة الإعلان بنجاح!");
+                    })
+                    .catch(e => {
+                        console.error(e);
+                        alert("عذراً، لم يتم إكمال الإعلان أو حدث خطأ.");
+                    });
+            } else {
+                alert("نظام الإعلانات غير متصل حالياً، يرجى المحاولة لاحقاً.");
+            }
         };
 
         window.investPlan = async function(cost, dailyProfit) {
