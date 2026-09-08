@@ -128,7 +128,6 @@
             </button>
         </div>
 
-        <!-- تم تحديث النص هنا ليوضح للمستخدم كم سيربح (0.003 USDT) -->
         <button class="action-btn" onclick="watchAd()" style="margin-bottom: 15px; background: #0098EA; font-size: 15px;">
             مشاهدة إعلان للحصول على 0.003 USDT 🎬
         </button>
@@ -152,6 +151,14 @@
             <div>
                 <button class="claim-btn">تم المطالبة</button>
             </div>
+        </div>
+
+        <!-- خانة البرومو كود الجديدة أسفل المكافأة اليومية -->
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">🎟️ خانة البرومو كود</div>
+            <div class="section-desc" style="margin-bottom: 10px;">أدخل كود الهدية للحصول على رصيد مجاني</div>
+            <input type="text" id="promoInput" placeholder="أدخل البرومو كود هنا..." class="input-field">
+            <button class="action-btn" onclick="claimPromoCode()" style="margin-top: 10px; background: #10b981;">تفعيل الكود</button>
         </div>
     </div>
 
@@ -320,6 +327,7 @@
         let task2Done = localStorage.getItem('task2Done') === 'true';
         let task3Done = localStorage.getItem('task3Done') === 'true';
         let task4Done = localStorage.getItem('task4Done') === 'true';
+        let promoClaimed = localStorage.getItem('promoClaimed') === 'true';
 
         document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
         document.getElementById('adCount').innerText = adWatchedCount;
@@ -332,6 +340,7 @@
             localStorage.setItem('task2Done', task2Done);
             localStorage.setItem('task3Done', task3Done);
             localStorage.setItem('task4Done', task4Done);
+            localStorage.setItem('promoClaimed', promoClaimed);
         }
 
         function updateBalanceDisplay() {
@@ -408,6 +417,32 @@
             }, 3000);
         }
 
+        // دالة تفعيل البرومو كود
+        function claimPromoCode() {
+            const codeInput = document.getElementById('promoInput').value.trim();
+            
+            if (!codeInput) {
+                alert('يرجى إدخال البرومو كود أولاً.');
+                return;
+            }
+
+            if (promoClaimed) {
+                alert('لقد قمت بالفعل باستخدام برومو كود مسبقاً!');
+                return;
+            }
+
+            // يمكنك تغيير الكود هنا (مثلاً MONEY2026) وقيمة الجائزة (0.05)
+            if (codeInput === 'MONEY2026' || codeInput === 'money2026') {
+                promoClaimed = true;
+                userBalance += 0.05; // مكافأة الكود
+                updateBalanceDisplay();
+                document.getElementById('promoInput').value = '';
+                alert('مبروك! تم تفعيل الكود بنجاح وإضافة 0.05 USDT إلى رصيدك.');
+            } else {
+                alert('عذراً، البرومو كود غير صحيح أو منتهي الصلاحية.');
+            }
+        }
+
         function watchAd() {
             if (!task1Done && !task2Done && !task3Done && !task4Done) {
                 alert('عذراً! يجب عليك أولاً إتمام مهمة واحدة على الأقل من قسم المهام (Tasks) لكي تتمكن من مشاهدة الإعلانات.');
@@ -418,7 +453,7 @@
             if (typeof window.showGiga === 'function') {
                 window.showGiga().then(() => {
                     adWatchedCount++;
-                    userBalance += 0.003; // تم تعديل مكافأة الإعلان لتصبح 0.003 بالضبط
+                    userBalance += 0.003; 
                     updateBalanceDisplay();
                     alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة (0.003 USDT).');
                 }).catch(e => {
