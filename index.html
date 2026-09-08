@@ -135,7 +135,7 @@
             </div>
             <div class="stat-box">
                 <div class="section-desc" style="font-size: 12px;">إعلانات شاهدتها</div>
-                <div id="adCount" style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">1</div>
+                <div id="adCount" style="font-size: 20px; font-weight: bold; color: #38bdf8; margin-top: 5px;">0</div>
             </div>
         </div>
 
@@ -250,7 +250,7 @@
         </div>
     </div>
 
-    <!-- 5. صفحة السحب المحدثة (Withdraw) - حد أدنى 0.2 وشترط 25 إعلان -->
+    <!-- 5. صفحة السحب (Withdraw) -->
     <div id="sec-withdraw" class="page-section" style="display:none;">
         <div class="section-title">سحب الأرباح</div>
         <div class="card">
@@ -296,8 +296,8 @@
     </div>
 
     <script>
-        // متغيرات النظام
-        let adWatchedCount = 1;
+        // العداد يبدأ من 0 بشكل حقيقي
+        let adWatchedCount = 0;
 
         function showPage(pageId, btn) {
             document.querySelectorAll('.page-section').forEach(sec => {
@@ -318,9 +318,16 @@
         }
 
         function watchAd() {
-            adWatchedCount++;
-            document.getElementById('adCount').innerText = adWatchedCount;
-            alert('تم مشاهدة الإعلان بنجاح! إجمالي الإعلانات المشاهدة: ' + adWatchedCount);
+            // فتح رابط الإعلان (يمكنك استبدال الرابط أدناه برابط شبكة الإعلانات الخاص بك)
+            // سيتم فتح الإعلان في تبويب جديد، وعندما يعود المستخدم ستحتسب المشاهدة
+            let adWindow = window.open('https://www.example.com', '_blank');
+            
+            // محاكاة تأكيد العودة ومشاهدة الإعلان الفعلية
+            setTimeout(() => {
+                adWatchedCount++;
+                document.getElementById('adCount').innerText = adWatchedCount;
+                alert('شكراً لك! تم احتساب مشاهدة الإعلان بنجاح. الإجمالي: ' + adWatchedCount);
+            }, 3000); // تضاف بعد 3 ثوانٍ كمحاكاة لمشاهدة الإعلان
         }
 
         function completeTask() {
