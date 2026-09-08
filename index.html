@@ -24,10 +24,17 @@
             <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-slate-900 font-bold text-xl">🌕</div>
             <h1 class="font-bold text-lg text-amber-400">Moon Network</h1>
         </div>
-        <div class="flex items-center space-x-3 space-x-reverse">
+        <div class="flex items-center space-x-2 space-x-reverse">
+            <!-- قائمة اختيار اللغات -->
+            <select id="lang-selector" onchange="changeLanguage(this.value)" class="bg-slate-800 text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold focus:outline-none">
+                <option value="ar">العربية</option>
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+                <option value="zh">中文</option>
+            </select>
             <!-- زر الأدمن مخفي ولا يظهر إلا للأيدي الخاص بك -->
             <button id="admin-btn" onclick="openAdminPanel()" class="hidden bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold hover:bg-slate-700 transition">
-                <i class="fa-solid fa-lock ml-1"></i> لوحة الأدمن
+                <i class="fa-solid fa-lock ml-1"></i> <span data-i18n="admin_panel">لوحة الأدمن</span>
             </button>
             <div class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-sm font-semibold text-amber-400">
                 <span id="user-balance">0.000</span> USDT
@@ -41,65 +48,65 @@
         <!-- 1. Home Section -->
         <section id="section-home" class="space-y-4">
             <div class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 p-6 rounded-2xl text-center shadow-lg">
-                <p class="text-slate-400 text-sm">رصيدك الحالي</p>
+                <p class="text-slate-400 text-sm" data-i18n="current_balance">رصيدك الحالي</p>
                 <h2 class="text-3xl font-bold text-amber-400 my-2"><span id="home-balance">0.000</span> USDT</h2>
                 <div class="flex justify-center gap-4 mt-4">
-                    <button onclick="switchTab('deposit')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm transition">إيداع</button>
-                    <button onclick="switchTab('withdraw')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition">سحب</button>
+                    <button onclick="switchTab('deposit')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm transition" data-i18n="deposit_btn">إيداع</button>
+                    <button onclick="switchTab('withdraw')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-5 py-2 rounded-xl text-sm transition" data-i18n="withdraw_btn">سحب</button>
                 </div>
             </div>
 
             <!-- Ad Reward Box -->
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center shadow">
-                <h3 class="font-bold text-base mb-1">شاهد الإعلانات واكسب</h3>
-                <p class="text-xs text-slate-400 mb-4">اكسب 0.001 USDT لكل إعلان تشاهده</p>
+                <h3 class="font-bold text-base mb-1" data-i18n="watch_ads_title">شاهد الإعلانات واكسب</h3>
+                <p class="text-xs text-slate-400 mb-4" data-i18n="watch_ads_desc">اكسب 0.001 USDT لكل إعلان تشاهده</p>
                 <button onclick="watchAd()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
-                    <i class="fa-solid fa-play ml-2"></i> مشاهدة إعلان
+                    <i class="fa-solid fa-play ml-2"></i> <span data-i18n="watch_ad_btn">مشاهدة إعلان</span>
                 </button>
             </div>
 
             <!-- Investment Plans Section -->
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow space-y-3">
-                <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-chart-line ml-1"></i> خطط الاستثمار</h3>
+                <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-chart-line ml-1"></i> <span data-i18n="investment_plans">خطط الاستثمار</span></h3>
                 
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
-                        <h4 class="font-bold text-sm text-amber-300">الخطة الأولى</h4>
-                        <p class="text-xs text-slate-400">إيداع: 5$ | الربح: 0.5$ يومياً</p>
+                        <h4 class="font-bold text-sm text-amber-300" data-i18n="plan_1_title">الخطة الأولى</h4>
+                        <p class="text-xs text-slate-400" data-i18n="plan_1_desc">إيداع: 5$ | الربح: 0.5$ يومياً</p>
                     </div>
-                    <button onclick="investPlan('الخطة الأولى', 5, 0.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                    <button onclick="investPlan('الخطة الأولى', 5, 0.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition" data-i18n="invest_btn">استثمار</button>
                 </div>
 
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
-                        <h4 class="font-bold text-sm text-amber-300">الخطة الثانية</h4>
-                        <p class="text-xs text-slate-400">إيداع: 10$ | الربح: 1$ يومياً</p>
+                        <h4 class="font-bold text-sm text-amber-300" data-i18n="plan_2_title">الخطة الثانية</h4>
+                        <p class="text-xs text-slate-400" data-i18n="plan_2_desc">إيداع: 10$ | الربح: 1$ يومياً</p>
                     </div>
-                    <button onclick="investPlan('الخطة الثانية', 10, 1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                    <button onclick="investPlan('الخطة الثانية', 10, 1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition" data-i18n="invest_btn">استثمار</button>
                 </div>
 
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
-                        <h4 class="font-bold text-sm text-amber-300">الخطة الثالثة</h4>
-                        <p class="text-xs text-slate-400">إيداع: 20$ | الربح: 2$ يومياً</p>
+                        <h4 class="font-bold text-sm text-amber-300" data-i18n="plan_3_title">الخطة الثالثة</h4>
+                        <p class="text-xs text-slate-400" data-i18n="plan_3_desc">إيداع: 20$ | الربح: 2$ يومياً</p>
                     </div>
-                    <button onclick="investPlan('الخطة الثالثة', 20, 2)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                    <button onclick="investPlan('الخطة الثالثة', 20, 2)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition" data-i18n="invest_btn">استثمار</button>
                 </div>
 
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
-                        <h4 class="font-bold text-sm text-amber-300">الخطة الرابعة</h4>
-                        <p class="text-xs text-slate-400">إيداع: 50$ | الربح: 3.5$ يومياً</p>
+                        <h4 class="font-bold text-sm text-amber-300" data-i18n="plan_4_title">الخطة الرابعة</h4>
+                        <p class="text-xs text-slate-400" data-i18n="plan_4_desc">إيداع: 50$ | الربح: 3.5$ يومياً</p>
                     </div>
-                    <button onclick="investPlan('الخطة الرابعة', 50, 3.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                    <button onclick="investPlan('الخطة الرابعة', 50, 3.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition" data-i18n="invest_btn">استثمار</button>
                 </div>
 
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
-                        <h4 class="font-bold text-sm text-amber-300">الخطة الخامسة</h4>
-                        <p class="text-xs text-slate-400">إيداع: 100$ | الربح: 7.5$ يومياً</p>
+                        <h4 class="font-bold text-sm text-amber-300" data-i18n="plan_5_title">الخطة الخامسة</h4>
+                        <p class="text-xs text-slate-400" data-i18n="plan_5_desc">إيداع: 100$ | الربح: 7.5$ يومياً</p>
                     </div>
-                    <button onclick="investPlan('الخطة الخامسة', 100, 7.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                    <button onclick="investPlan('الخطة الخامسة', 100, 7.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition" data-i18n="invest_btn">استثمار</button>
                 </div>
             </div>
         </section>
@@ -107,10 +114,10 @@
         <!-- 2. My Investments Section -->
         <section id="section-investments" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
-                <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-clock-rotate-left ml-1"></i> استثماراتي النشطة</h3>
-                <p class="text-xs text-slate-400 mb-4 text-center">تابع هنا الوقت المتبقي لحصولك على أرباحك اليومية</p>
+                <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-clock-rotate-left ml-1"></i> <span data-i18n="my_active_investments">استثماراتي النشطة</span></h3>
+                <p class="text-xs text-slate-400 mb-4 text-center" data-i18n="my_investments_desc">تابع هنا الوقت المتبقي لحصولك على أرباحك اليومية</p>
                 <div id="investments-list" class="space-y-3">
-                    <p class="text-xs text-slate-500 text-center py-6">جاري تحميل استثماراتي...</p>
+                    <p class="text-xs text-slate-500 text-center py-6" data-i18n="loading_investments">جاري تحميل استثماراتي...</p>
                 </div>
             </div>
         </section>
@@ -118,22 +125,21 @@
         <!-- 3. Deposit Section -->
         <section id="section-deposit" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
-                <h3 class="font-bold text-lg mb-2 text-amber-400">إيداع رصيد (USDT BEP20)</h3>
-                <p class="text-xs text-slate-400 mb-1">قم بالتحويل عبر شبكة <strong class="text-amber-300">BEP20</strong> إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:</p>
-                <p class="text-xs text-amber-400 font-bold mb-4">الحد الأدنى للإيداع هو: 5.00 USDT</p>
+                <h3 class="font-bold text-lg mb-2 text-amber-400" data-i18n="deposit_title">إيداع رصيد (USDT BEP20)</h3>
+                <p class="text-xs text-slate-400 mb-1" data-i18n="deposit_desc1">قم بالتحويل عبر شبكة <strong class="text-amber-300">BEP20</strong> إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:</p>
+                <p class="text-xs text-amber-400 font-bold mb-4" data-i18n="deposit_min">الحد الأدنى للإيداع هو: 5.00 USDT</p>
                 
-                <!-- حقل عنوان المحفظة مع زر النسخ -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between mb-4">
                     <span id="wallet-address" class="text-xs text-slate-300 break-all select-all font-mono">0x123456789abcdef0123456789abcdef0123456789</span>
                     <button onclick="copyText('wallet-address', 'تم نسخ عنوان المحفظة بنجاح!')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shrink-0 ml-2">
-                        <i class="fa-regular fa-copy"></i> نسخ
+                        <i class="fa-regular fa-copy"></i> <span data-i18n="copy_btn">نسخ</span>
                     </button>
                 </div>
 
                 <div class="space-y-3">
-                    <input type="text" id="deposit-txid" placeholder="أدخل رقم المعاملة TxID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
-                    <input type="number" id="deposit-amount" placeholder="المبلغ (الحد الأدنى 5 USDT)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
-                    <button onclick="submitDeposit()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition">إرسال للمراجعة</button>
+                    <input type="text" id="deposit-txid" data-i18n-placeholder="txid_placeholder" placeholder="أدخل رقم المعاملة TxID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <input type="number" id="deposit-amount" data-i18n-placeholder="deposit_amount_placeholder" placeholder="المبلغ (الحد الأدنى 5 USDT)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="submitDeposit()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition" data-i18n="submit_deposit_btn">إرسال للمراجعة</button>
                 </div>
             </div>
         </section>
@@ -141,12 +147,12 @@
         <!-- 4. Withdraw Section -->
         <section id="section-withdraw" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
-                <h3 class="font-bold text-lg mb-3 text-amber-400">سحب الأرباح</h3>
-                <p class="text-xs text-slate-400 mb-3 text-amber-300">الحد الأدنى للسحب هو: 1.00 USDT</p>
+                <h3 class="font-bold text-lg mb-3 text-amber-400" data-i18n="withdraw_title">سحب الأرباح</h3>
+                <p class="text-xs text-slate-400 mb-3 text-amber-300" data-i18n="withdraw_min">الحد الأدنى للسحب هو: 1.00 USDT</p>
                 <div class="space-y-3">
-                    <input type="text" id="withdraw-address" placeholder="عنوان محفظتك (USDT BEP20)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
-                    <input type="number" id="withdraw-amount" placeholder="المبلغ المراد سحبه (الحد الأدنى 1$)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
-                    <button onclick="submitWithdraw()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition">طلب سحب</button>
+                    <input type="text" id="withdraw-address" data-i18n-placeholder="withdraw_address_placeholder" placeholder="عنوان محفظتك (USDT BEP20)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <input type="number" id="withdraw-amount" data-i18n-placeholder="withdraw_amount_placeholder" placeholder="المبلغ المراد سحبه (الحد الأدنى 1$)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <button onclick="submitWithdraw()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition" data-i18n="submit_withdraw_btn">طلب سحب</button>
                 </div>
             </div>
         </section>
@@ -154,26 +160,24 @@
         <!-- 5. Referrals Section -->
         <section id="section-referrals" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4">
-                <h3 class="font-bold text-lg mb-1 text-amber-400 text-center">نظام الإحالة (10%)</h3>
-                <p class="text-xs text-slate-400 mb-2 text-center">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
+                <h3 class="font-bold text-lg mb-1 text-amber-400 text-center" data-i18n="ref_title">نظام الإحالة (10%)</h3>
+                <p class="text-xs text-slate-400 mb-2 text-center" data-i18n="ref_desc">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
                 
-                <!-- إحصائيات الإحالات الجديدة -->
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
-                        <p class="text-xs text-slate-400">عدد الإحالات</p>
+                        <p class="text-xs text-slate-400" data-i18n="ref_count_label">عدد الإحالات</p>
                         <h4 id="ref-count" class="text-xl font-bold text-amber-400 mt-1">0</h4>
                     </div>
                     <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
-                        <p class="text-xs text-slate-400">أرباح الإحالات</p>
+                        <p class="text-xs text-slate-400" data-i18n="ref_earnings_label">أرباح الإحالات</p>
                         <h4 id="ref-earnings" class="text-xl font-bold text-emerald-400 mt-1">0.000 USDT</h4>
                     </div>
                 </div>
 
-                <!-- حقل رابط الإحالة مع زر النسخ -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
-                    <span id="ref-link-box" class="text-xs text-amber-300 break-all select-all font-mono">جاري تحميل الرابط...</span>
+                    <span id="ref-link-box" class="text-xs text-amber-300 break-all select-all font-mono" data-i18n="loading_link">جاري تحميل الرابط...</span>
                     <button onclick="copyText('ref-link-box', 'تم نسخ رابط الإحالة بنجاح!')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shrink-0 ml-2">
-                        <i class="fa-regular fa-copy"></i> نسخ
+                        <i class="fa-regular fa-copy"></i> <span data-i18n="copy_btn">نسخ</span>
                     </button>
                 </div>
             </div>
@@ -185,19 +189,19 @@
     <div id="admin-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-5 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-lg text-amber-400"><i class="fa-solid fa-user-shield ml-2"></i> لوحة التحكم (الأدمن)</h3>
+                <h3 class="font-bold text-lg text-amber-400"><i class="fa-solid fa-user-shield ml-2"></i> <span data-i18n="admin_panel_title">لوحة التحكم (الأدمن)</span></h3>
                 <button onclick="closeAdminPanel()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
             <div class="space-y-4">
-                <h4 class="font-bold text-sm text-slate-300">طلبات الإيداع المعلقة:</h4>
+                <h4 class="font-bold text-sm text-slate-300" data-i18n="pending_deposits">طلبات الإيداع المعلقة:</h4>
                 <div id="admin-deposits-list" class="space-y-2">
-                    <p class="text-xs text-slate-500 text-center py-4">جاري تحميل الطلبات...</p>
+                    <p class="text-xs text-slate-500 text-center py-4" data-i18n="loading_requests">جاري تحميل الطلبات...</p>
                 </div>
 
-                <h4 class="font-bold text-sm text-slate-300 mt-6">طلبات السحب المعلقة:</h4>
+                <h4 class="font-bold text-sm text-slate-300 mt-6" data-i18n="pending_withdraws">طلبات السحب المعلقة:</h4>
                 <div id="admin-withdraws-list" class="space-y-2">
-                    <p class="text-xs text-slate-500 text-center py-4">جاري تحميل الطلبات...</p>
+                    <p class="text-xs text-slate-500 text-center py-4" data-i18n="loading_requests">جاري تحميل الطلبات...</p>
                 </div>
             </div>
         </div>
@@ -205,11 +209,11 @@
 
     <!-- Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-40">
-        <button onclick="switchTab('home')" id="btn-home" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i>الرئيسية</button>
-        <button onclick="switchTab('investments')" id="btn-investments" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-chart-pie text-lg mb-1"></i>استثماراتي</button>
-        <button onclick="switchTab('deposit')" id="btn-deposit" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i>إيداع</button>
-        <button onclick="switchTab('withdraw')" id="btn-withdraw" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-money-bill-transfer text-lg mb-1"></i>سحب</button>
-        <button onclick="switchTab('referrals')" id="btn-referrals" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-users text-lg mb-1"></i>الإحالات</button>
+        <button onclick="switchTab('home')" id="btn-home" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i><span data-i18n="nav_home">الرئيسية</span></button>
+        <button onclick="switchTab('investments')" id="btn-investments" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-chart-pie text-lg mb-1"></i><span data-i18n="nav_investments">استثماراتي</span></button>
+        <button onclick="switchTab('deposit')" id="btn-deposit" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i><span data-i18n="nav_deposit">إيداع</span></button>
+        <button onclick="switchTab('withdraw')" id="btn-withdraw" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-money-bill-transfer text-lg mb-1"></i><span data-i18n="nav_withdraw">سحب</span></button>
+        <button onclick="switchTab('referrals')" id="btn-referrals" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-users text-lg mb-1"></i><span data-i18n="nav_referrals">الإحالات</span></button>
     </nav>
 
     <!-- Script Logic -->
@@ -231,6 +235,246 @@
         const db = getFirestore(app);
 
         const ADMIN_TELEGRAM_ID = "1985474484"; 
+
+        // نظام الترجمة
+        const translations = {
+            ar: {
+                admin_panel: "لوحة الأدمن",
+                current_balance: "رصيدك الحالي",
+                deposit_btn: "إيداع",
+                withdraw_btn: "سحب",
+                watch_ads_title: "شاهد الإعلانات واكسب",
+                watch_ads_desc: "اكسب 0.001 USDT لكل إعلان تشاهده",
+                watch_ad_btn: "مشاهدة إعلان",
+                investment_plans: "خطط الاستثمار",
+                plan_1_title: "الخطة الأولى",
+                plan_1_desc: "إيداع: 5$ | الربح: 0.5$ يومياً",
+                plan_2_title: "الخطة الثانية",
+                plan_2_desc: "إيداع: 10$ | الربح: 1$ يومياً",
+                plan_3_title: "الخطة الثالثة",
+                plan_3_desc: "إيداع: 20$ | الربح: 2$ يومياً",
+                plan_4_title: "الخطة الرابعة",
+                plan_4_desc: "إيداع: 50$ | الربح: 3.5$ يومياً",
+                plan_5_title: "الخطة الخامسة",
+                plan_5_desc: "إيداع: 100$ | الربح: 7.5$ يومياً",
+                invest_btn: "استثمار",
+                my_active_investments: "استثماراتي النشطة",
+                my_investments_desc: "تابع هنا الوقت المتبقي لحصولك على أرباحك اليومية",
+                loading_investments: "جاري تحميل استثماراتي...",
+                deposit_title: "إيداع رصيد (USDT BEP20)",
+                deposit_desc1: "قم بالتحويل عبر شبكة BEP20 إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:",
+                deposit_min: "الحد الأدنى للإيداع هو: 5.00 USDT",
+                copy_btn: "نسخ",
+                txid_placeholder: "أدخل رقم المعاملة TxID",
+                deposit_amount_placeholder: "المبلغ (الحد الأدنى 5 USDT)",
+                submit_deposit_btn: "إرسال للمراجعة",
+                withdraw_title: "سحب الأرباح",
+                withdraw_min: "الحد الأدنى للسحب هو: 1.00 USDT",
+                withdraw_address_placeholder: "عنوان محفظتك (USDT BEP20)",
+                withdraw_amount_placeholder: "المبلغ المراد سحبه (الحد الأدنى 1$)",
+                submit_withdraw_btn: "طلب سحب",
+                ref_title: "نظام الإحالة (10%)",
+                ref_desc: "شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم",
+                ref_count_label: "عدد الإحالات",
+                ref_earnings_label: "أرباح الإحالات",
+                loading_link: "جاري تحميل الرابط...",
+                admin_panel_title: "لوحة التحكم (الأدمن)",
+                pending_deposits: "طلبات الإيداع المعلقة:",
+                pending_withdraws: "طلبات السحب المعلقة:",
+                loading_requests: "جاري تحميل الطلبات...",
+                nav_home: "الرئيسية",
+                nav_investments: "استثماراتي",
+                nav_deposit: "إيداع",
+                nav_withdraw: "سحب",
+                nav_referrals: "الإحالات"
+            },
+            en: {
+                admin_panel: "Admin Panel",
+                current_balance: "Current Balance",
+                deposit_btn: "Deposit",
+                withdraw_btn: "Withdraw",
+                watch_ads_title: "Watch Ads & Earn",
+                watch_ads_desc: "Earn 0.001 USDT for each ad you watch",
+                watch_ad_btn: "Watch Ad",
+                investment_plans: "Investment Plans",
+                plan_1_title: "Plan 1",
+                plan_1_desc: "Deposit: $5 | Profit: $0.5 daily",
+                plan_2_title: "Plan 2",
+                plan_2_desc: "Deposit: $10 | Profit: $1 daily",
+                plan_3_title: "Plan 3",
+                plan_3_desc: "Deposit: $20 | Profit: $2 daily",
+                plan_4_title: "Plan 4",
+                plan_4_desc: "Deposit: $50 | Profit: $3.5 daily",
+                plan_5_title: "Plan 5",
+                plan_5_desc: "Deposit: $100 | Profit: $7.5 daily",
+                invest_btn: "Invest",
+                my_active_investments: "My Active Investments",
+                my_investments_desc: "Track the remaining time for your daily profits here",
+                loading_investments: "Loading investments...",
+                deposit_title: "Deposit Balance (USDT BEP20)",
+                deposit_desc1: "Transfer via BEP20 network to the address below, then enter TxID for review:",
+                deposit_min: "Minimum deposit is: 5.00 USDT",
+                copy_btn: "Copy",
+                txid_placeholder: "Enter TxID",
+                deposit_amount_placeholder: "Amount (Min 5 USDT)",
+                submit_deposit_btn: "Submit for Review",
+                withdraw_title: "Withdraw Profits",
+                withdraw_min: "Minimum withdrawal is: 1.00 USDT",
+                withdraw_address_placeholder: "Your Wallet Address (USDT BEP20)",
+                withdraw_amount_placeholder: "Amount to withdraw (Min $1)",
+                submit_withdraw_btn: "Request Withdrawal",
+                ref_title: "Referral System (10%)",
+                ref_desc: "Share your link, invite friends and earn 10% of their deposits",
+                ref_count_label: "Referrals Count",
+                ref_earnings_label: "Referral Earnings",
+                loading_link: "Loading link...",
+                admin_panel_title: "Control Panel (Admin)",
+                pending_deposits: "Pending Deposits:",
+                pending_withdraws: "Pending Withdrawals:",
+                loading_requests: "Loading requests...",
+                nav_home: "Home",
+                nav_investments: "Investments",
+                nav_deposit: "Deposit",
+                nav_withdraw: "Withdraw",
+                nav_referrals: "Referrals"
+            },
+            ru: {
+                admin_panel: "Админ панель",
+                current_balance: "Текущий баланс",
+                deposit_btn: "Депозит",
+                withdraw_btn: "Вывод",
+                watch_ads_title: "Смотрите рекламу и зарабатывайте",
+                watch_ads_desc: "Получайте 0.001 USDT за каждый просмотр",
+                watch_ad_btn: "Смотреть рекламу",
+                investment_plans: "Инвестиционные планы",
+                plan_1_title: "План 1",
+                plan_1_desc: "Депозит: $5 | Прибыль: $0.5 в день",
+                plan_2_title: "План 2",
+                plan_2_desc: "Депозит: $10 | Прибыль: $1 в день",
+                plan_3_title: "План 3",
+                plan_3_desc: "Депозит: $20 | Прибыль: $2 в день",
+                plan_4_title: "План 4",
+                plan_4_desc: "Депозит: $50 | Прибыль: $3.5 в день",
+                plan_5_title: "План 5",
+                plan_5_desc: "Депозит: $100 | Прибыль: $7.5 в день",
+                invest_btn: "Инвестировать",
+                my_active_investments: "Мои инвестиции",
+                my_investments_desc: "Здесь отслеживайте время до получения прибыли",
+                loading_investments: "Загрузка инвестиций...",
+                deposit_title: "Пополнить баланс (USDT BEP20)",
+                deposit_desc1: "Переведите через сеть BEP20 на адрес ниже, затем введите TxID:",
+                deposit_min: "Минимальный депозит: 5.00 USDT",
+                copy_btn: "Копировать",
+                txid_placeholder: "Введите TxID",
+                deposit_amount_placeholder: "Сумма (Мин 5 USDT)",
+                submit_deposit_btn: "Отправить на проверку",
+                withdraw_title: "Вывод средств",
+                withdraw_min: "Минимальный вывод: 1.00 USDT",
+                withdraw_address_placeholder: "Адрес кошелька (USDT BEP20)",
+                withdraw_amount_placeholder: "Сумма вывода (Мин $1)",
+                submit_withdraw_btn: "Запросить вывод",
+                ref_title: "Реферальная система (10%)",
+                ref_desc: "Делитесь ссылкой, приглашайте друзей и получайте 10%",
+                ref_count_label: "Количество рефералов",
+                ref_earnings_label: "Реферальный доход",
+                loading_link: "Загрузка ссылки...",
+                admin_panel_title: "Панель управления (Админ)",
+                pending_deposits: "Ожидающие депозиты:",
+                pending_withdraws: "Ожидающие выводы:",
+                loading_requests: "Загрузка запросов...",
+                nav_home: "Главная",
+                nav_investments: "Инвестиции",
+                nav_deposit: "Депозит",
+                nav_withdraw: "Вывод",
+                nav_referrals: "Рефералы"
+            },
+            zh: {
+                admin_panel: "管理面板",
+                current_balance: "当前余额",
+                deposit_btn: "存款",
+                withdraw_btn: "提现",
+                watch_ads_title: "观看广告赚钱",
+                watch_ads_desc: "每次观看可赚取 0.001 USDT",
+                watch_ad_btn: "观看广告",
+                investment_plans: "投资计划",
+                plan_1_title: "计划一",
+                plan_1_desc: "存款：$5 | 每日收益：$0.5",
+                plan_2_title: "计划二",
+                plan_2_desc: "存款：$10 | 每日收益：$1",
+                plan_3_title: "计划三",
+                plan_3_desc: "存款：$20 | 每日收益：$2",
+                plan_4_title: "计划四",
+                plan_4_desc: "存款：$50 | 每日收益：$3.5",
+                plan_5_title: "计划五",
+                plan_5_desc: "存款：$100 | 每日收益：$7.5",
+                invest_btn: "投资",
+                my_active_investments: "我的活跃投资",
+                my_investments_desc: "在此跟踪每日利润的剩余时间",
+                loading_investments: "正在加载投资...",
+                deposit_title: "充值余额 (USDT BEP20)",
+                deposit_desc1: "通过 BEP20 网络转账到以下地址，然后输入交易哈希 (TxID)：",
+                deposit_min: "最低充值：5.00 USDT",
+                copy_btn: "复制",
+                txid_placeholder: "输入 TxID",
+                deposit_amount_placeholder: "金额（最低 5 USDT）",
+                submit_deposit_btn: "提交审核",
+                withdraw_title: "提现利润",
+                withdraw_min: "最低提现：1.00 USDT",
+                withdraw_address_placeholder: "您的钱包地址 (USDT BEP20)",
+                withdraw_amount_placeholder: "提现金额（最低 $1）",
+                submit_withdraw_btn: "申请提现",
+                ref_title: "推荐系统 (10%)",
+                ref_desc: "分享您的链接，邀请好友并赚取他们存款的 10%",
+                ref_count_label: "推荐人数",
+                ref_earnings_label: "推荐收益",
+                loading_link: "正在加载链接...",
+                admin_panel_title: "控制面板 (管理员)",
+                pending_deposits: "待处理存款：",
+                pending_withdraws: "待处理提现：",
+                loading_requests: "正在加载请求...",
+                nav_home: "首页",
+                nav_investments: "投资",
+                nav_deposit: "存款",
+                nav_withdraw: "提现",
+                nav_referrals: "推荐"
+            }
+        };
+
+        let currentLang = localStorage.getItem("app_lang") || "ar";
+        document.getElementById("lang-selector").value = currentLang;
+
+        window.changeLanguage = function(lang) {
+            currentLang = lang;
+            localStorage.setItem("app_lang", lang);
+            
+            // ضبط اتجاه الصفحة حسب اللغة
+            if (lang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', lang);
+            }
+
+            // تحديث النصوص العادية
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+
+            // تحديث النصوص الوهمية (Placeholders)
+            document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+                const key = el.getAttribute("data-i18n-placeholder");
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+        }
+
+        // تطبيق اللغة المحفوظة عند التشغيل
+        changeLanguage(currentLang);
 
         let userId = "user_12345";
         let rawTelegramId = "";
@@ -293,7 +537,7 @@
             }
             updateUIBalance();
             loadUserInvestments();
-            loadReferralStats(); // جلب إحصائيات الإحالات
+            loadReferralStats();
 
             onSnapshot(userRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -306,16 +550,12 @@
             });
         }
 
-        // دالة لجلب إحصائيات الإحالات من قاعدة البيانات
         async function loadReferralStats() {
             try {
-                // حساب عدد الأشخاص الذين سجلوا برابطك
                 const q = query(collection(db, "users"), where("referrer", "==", userId));
                 const querySnapshot = await getDocs(q);
-                const refCount = querySnapshot.size;
-                document.getElementById("ref-count").innerText = refCount;
+                document.getElementById("ref-count").innerText = querySnapshot.size;
 
-                // حساب الأرباح المكتسبة من الإحالات (يمكن حفظها في حقل خاص أو جلبها)
                 const userRef = doc(db, "users", userId);
                 const userDoc = await getDoc(userRef);
                 if (userDoc.exists()) {
@@ -323,7 +563,7 @@
                     document.getElementById("ref-earnings").innerText = refEarnings.toFixed(3) + " USDT";
                 }
             } catch (e) {
-                console.error("خطأ في تحميل إحصائيات الإحالات", e);
+                console.error("خطأ في تحميل الإحصائيات", e);
             }
         }
 
@@ -351,12 +591,10 @@
         function renderInvestmentsList() {
             const container = document.getElementById("investments-list");
             if (activeInvestments.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">ليس لديك أي خطط استثمارية نشطة حالياً.</p>';
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">${translations[currentLang].loading_investments}</p>`;
                 return;
             }
-
             if (timerInterval) clearInterval(timerInterval);
-
             updateTimersHtml();
             timerInterval = setInterval(updateTimersHtml, 1000);
         }
@@ -391,7 +629,7 @@
                             <span>تاريخ الاشتراك: ${inv.timestamp.toLocaleDateString()}</span>
                         </div>
                         <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
-                            <span class="text-slate-400">الوقت المتبقي للربح القادم:</span>
+                            <span class="text-slate-400">الوقت المتبقي:</span>
                             ${timeStr}
                         </div>
                     </div>
@@ -404,13 +642,8 @@
             const txid = document.getElementById("deposit-txid").value.trim();
             const amount = parseFloat(document.getElementById("deposit-amount").value);
             
-            if(!txid || isNaN(amount)) {
-                alert("الرجاء إدخال بيانات صحيحة.");
-                return;
-            }
-
-            if(amount < 5) {
-                alert("الحد الأدنى للإيداع هو 5.00 USDT.");
+            if(!txid || isNaN(amount) || amount < 5) {
+                alert("الرجاء إدخال بيانات صحيحة (الحد الأدنى 5 USDT).");
                 return;
             }
 
@@ -422,7 +655,7 @@
                     status: "pending",
                     timestamp: new Date()
                 });
-                alert("تم إرسال طلب الإيداع بنجاح، بانتظار مراجعة الأدمن.");
+                alert("تم إرسال طلب الإيداع بنجاح.");
                 document.getElementById("deposit-txid").value = "";
                 document.getElementById("deposit-amount").value = "";
                 switchTab('home');
@@ -435,18 +668,8 @@
             const address = document.getElementById("withdraw-address").value.trim();
             const amount = parseFloat(document.getElementById("withdraw-amount").value);
 
-            if(!address || isNaN(amount) || amount <= 0) {
-                alert("الرجاء إدخال تفاصيل صحيحة.");
-                return;
-            }
-
-            if(amount < 1) {
-                alert("الحد الأدنى للسحب هو 1.00 USDT.");
-                return;
-            }
-
-            if(amount > userBalance) {
-                alert("رصيدك غير كافي.");
+            if(!address || isNaN(amount) || amount < 1 || amount > userBalance) {
+                alert("الرجاء التأكد من صحة البيانات أو الرصيد (الحد الأدنى 1$).");
                 return;
             }
 
@@ -458,7 +681,7 @@
                     status: "pending",
                     timestamp: new Date()
                 });
-                alert("تم تقديم طلب السحب بنجاح بانتظار المراجعة.");
+                alert("تم تقديم طلب السحب بنجاح.");
                 document.getElementById("withdraw-address").value = "";
                 document.getElementById("withdraw-amount").value = "";
                 switchTab('home');
@@ -468,17 +691,11 @@
         };
 
         window.openAdminPanel = async function() {
-            if (rawTelegramId !== ADMIN_TELEGRAM_ID) {
-                alert("غير مصرح لك بالدخول إلى هذه اللوحة!");
-                return;
-            }
-
+            if (rawTelegramId !== ADMIN_TELEGRAM_ID) return;
             document.getElementById("admin-modal").classList.remove("hidden");
             
             const depositsContainer = document.getElementById("admin-deposits-list");
-            depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">جاري التحميل...</p>';
             const querySnapshot = await getDocs(collection(db, "deposits"));
-            
             depositsContainer.innerHTML = "";
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
@@ -487,7 +704,6 @@
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
                             <div>
                                 <p class="text-amber-400 font-bold">${data.amount} USDT</p>
-                                <p class="text-slate-400">مستخدم: ${data.userId}</p>
                                 <p class="text-slate-400">TxID: ${data.txid}</p>
                             </div>
                             <div class="flex gap-1">
@@ -498,14 +714,10 @@
                     `;
                 }
             });
-            if(depositsContainer.innerHTML === "") {
-                depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد إيداعات معلقة.</p>';
-            }
+            if(depositsContainer.innerHTML === "") depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد إيداعات معلقة.</p>';
 
             const withdrawsContainer = document.getElementById("admin-withdraws-list");
-            withdrawsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">جاري التحميل...</p>';
             const withdrawSnapshot = await getDocs(collection(db, "withdraws"));
-            
             withdrawsContainer.innerHTML = "";
             withdrawSnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
@@ -524,9 +736,7 @@
                     `;
                 }
             });
-            if(withdrawsContainer.innerHTML === "") {
-                withdrawsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد سحوبات معلقة.</p>';
-            }
+            if(withdrawsContainer.innerHTML === "") withdrawsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد سحوبات معلقة.</p>';
         };
 
         window.closeAdminPanel = function() {
@@ -534,39 +744,28 @@
         };
 
         window.approveDeposit = async function(docId, targetUserId, amount) {
-            try {
-                await updateDoc(doc(db, "deposits", docId), { status: "approved" });
-                const userRef = doc(db, "users", targetUserId);
-                const userSnap = await getDoc(userRef);
-                
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    const currentBal = userData.balance || 0;
-                    await updateDoc(userRef, { balance: currentBal + amount });
+            await updateDoc(doc(db, "deposits", docId), { status: "approved" });
+            const userRef = doc(db, "users", targetUserId);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+                await updateDoc(userRef, { balance: (userData.balance || 0) + amount });
 
-                    if (userData.referrer) {
-                        const refRef = doc(db, "users", userData.referrer);
-                        const refSnap = await getDoc(refRef);
-                        if (refSnap.exists()) {
-                            const refBonus = amount * 0.10;
-                            const refData = refSnap.data();
-                            const refCurrentBal = refData.balance || 0;
-                            const currentRefEarnings = refData.refEarnings || 0;
-                            
-                            // تحديث رصيد المحيل وأرباح الإحالات الخاصة به
-                            await updateDoc(refRef, { 
-                                balance: refCurrentBal + refBonus,
-                                refEarnings: currentRefEarnings + refBonus
-                            });
-                        }
+                if (userData.referrer) {
+                    const refRef = doc(db, "users", userData.referrer);
+                    const refSnap = await getDoc(refRef);
+                    if (refSnap.exists()) {
+                        const refBonus = amount * 0.10;
+                        const refData = refSnap.data();
+                        await updateDoc(refRef, { 
+                            balance: (refData.balance || 0) + refBonus,
+                            refEarnings: (refData.refEarnings || 0) + refBonus
+                        });
                     }
                 }
-
-                alert("تم قبول الإيداع وشحن الرصيد بنجاح (وتم احتساب مكافأة الإحالة 10%)!");
-                openAdminPanel();
-            } catch(e) {
-                alert("حدث خطأ.");
             }
+            alert("تم قبول الإيداع بنجاح!");
+            openAdminPanel();
         };
 
         window.rejectDeposit = async function(docId) {
@@ -576,24 +775,17 @@
         };
 
         window.approveWithdraw = async function(docId, targetUserId, amount) {
-            try {
-                const userRef = doc(db, "users", targetUserId);
-                const userSnap = await getDoc(userRef);
-                const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
-                
-                if(currentBal < amount) {
-                    alert("رصيد المستخدم غير كافي لإتمام السحب!");
-                    return;
-                }
-
-                await updateDoc(userRef, { balance: currentBal - amount });
-                await updateDoc(doc(db, "withdraws", docId), { status: "approved" });
-
-                alert("تمت الموافقة على السحب وخصم الرصيد!");
-                openAdminPanel();
-            } catch(e) {
-                alert("حدث خطأ.");
+            const userRef = doc(db, "users", targetUserId);
+            const userSnap = await getDoc(userRef);
+            const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
+            if(currentBal < amount) {
+                alert("رصيد المستخدم غير كافي!");
+                return;
             }
+            await updateDoc(userRef, { balance: currentBal - amount });
+            await updateDoc(doc(db, "withdraws", docId), { status: "approved" });
+            alert("تمت الموافقة على السحب!");
+            openAdminPanel();
         };
 
         window.rejectWithdraw = async function(docId) {
@@ -604,40 +796,30 @@
 
         window.watchAd = function() {
             if (typeof window.showGiga === "function") {
-                window.showGiga()
-                    .then(async () => {
-                        userBalance += 0.001;
-                        updateUIBalance();
-                        
-                        localStorage.setItem("local_balance_" + userId, userBalance);
-
-                        try {
-                            const userRef = doc(db, "users", userId);
-                            await updateDoc(userRef, { balance: userBalance });
-                        } catch (err) {
-                            console.log("تم الحفظ محلياً وسيتم المزامنة لاحقاً");
-                        }
-
-                        alert("تم إضافة مكافأة الإعلان (0.001 USDT) بنجاح!");
-                    })
-                    .catch(e => {
-                        console.error(e);
-                        alert("عذراً، لم يتم إكمال الإعلان أو حدث خطأ.");
-                    });
+                window.showGiga().then(async () => {
+                    userBalance += 0.001;
+                    updateUIBalance();
+                    localStorage.setItem("local_balance_" + userId, userBalance);
+                    try {
+                        await updateDoc(doc(db, "users", userId), { balance: userBalance });
+                    } catch (err) {}
+                    alert("تمت إضافة مكافأة الإعلان (0.001 USDT)!");
+                }).catch(e => {
+                    alert("لم يتم إكمال الإعلان.");
+                });
             } else {
-                alert("نظام الإعلانات غير متصل حالياً، يرجى المحاولة لاحقاً.");
+                alert("نظام الإعلانات غير متصل حالياً.");
             }
         };
 
         window.investPlan = async function(planName, cost, dailyProfit) {
             if(userBalance < cost) {
-                alert("رصيدك غير كافي للاشتراك في هذه الخطة!");
+                alert("رصيدك غير كافي للاشتراك!");
                 return;
             }
             userBalance -= cost;
             updateUIBalance();
             localStorage.setItem("local_balance_" + userId, userBalance);
-
             try {
                 await updateDoc(doc(db, "users", userId), { balance: userBalance });
             } catch(e) {}
@@ -649,8 +831,7 @@
                 dailyProfit: dailyProfit,
                 timestamp: new Date()
             });
-
-            alert(`تم الاشتراك في ${planName} بنجاح! تم خصم ${cost} USDT.`);
+            alert("تم الاشتراك بنجاح!");
             loadUserInvestments();
         };
 
@@ -659,7 +840,6 @@
         window.switchTab = function(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden-section'));
             document.getElementById('section-' + tabId).classList.remove('hidden-section');
-            
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-amber-400');
                 btn.classList.add('text-slate-400');
