@@ -128,8 +128,9 @@
             </button>
         </div>
 
+        <!-- تم تحديث النص هنا ليوضح للمستخدم كم سيربح (0.003 USDT) -->
         <button class="action-btn" onclick="watchAd()" style="margin-bottom: 15px; background: #0098EA; font-size: 15px;">
-            مشاهدة إعلان للحصول على مكافأة 🎬
+            مشاهدة إعلان للحصول على 0.003 USDT 🎬
         </button>
 
         <div class="stats-grid">
@@ -315,13 +316,11 @@
         let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.037;
         let adWatchedCount = parseInt(localStorage.getItem('adWatchedCount')) || 0;
         
-        // حفظ حالة إتمام المهام الأربع
         let task1Done = localStorage.getItem('task1Done') === 'true';
         let task2Done = localStorage.getItem('task2Done') === 'true';
         let task3Done = localStorage.getItem('task3Done') === 'true';
         let task4Done = localStorage.getItem('task4Done') === 'true';
 
-        // تحديث العرض وحالة الأزرار عند فتح التطبيق
         document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
         document.getElementById('adCount').innerText = adWatchedCount;
         updateTaskButtons();
@@ -386,7 +385,6 @@
             }
         }
 
-        // دالة إتمام المهام
         function completeTask(taskId, channelUrl) {
             window.open(channelUrl, '_blank');
             
@@ -410,7 +408,6 @@
             }, 3000);
         }
 
-        // دالة تشغيل الإعلانات (مع شرط الانضمام للقنوات أولاً)
         function watchAd() {
             if (!task1Done && !task2Done && !task3Done && !task4Done) {
                 alert('عذراً! يجب عليك أولاً إتمام مهمة واحدة على الأقل من قسم المهام (Tasks) لكي تتمكن من مشاهدة الإعلانات.');
@@ -421,9 +418,9 @@
             if (typeof window.showGiga === 'function') {
                 window.showGiga().then(() => {
                     adWatchedCount++;
-                    userBalance += 0.005; 
+                    userBalance += 0.003; // تم تعديل مكافأة الإعلان لتصبح 0.003 بالضبط
                     updateBalanceDisplay();
-                    alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة.');
+                    alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة (0.003 USDT).');
                 }).catch(e => {
                     console.error(e);
                     alert('لم يتم إكمال مشاهدة الإعلان أو حدث خطأ.');
