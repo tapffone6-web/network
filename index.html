@@ -25,7 +25,8 @@
             <h1 class="font-bold text-lg text-amber-400">Moon Network</h1>
         </div>
         <div class="flex items-center space-x-3 space-x-reverse">
-            <button onclick="openAdminPanel()" class="bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold hover:bg-slate-700 transition">
+            <!-- زر الأدمن مخفي افتراضياً ولا يظهر إلا للأيدي الخاص بك -->
+            <button id="admin-btn" onclick="openAdminPanel()" class="hidden bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold hover:bg-slate-700 transition">
                 <i class="fa-solid fa-lock ml-1"></i> لوحة الأدمن
             </button>
             <div class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-sm font-semibold text-amber-400">
@@ -217,12 +218,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // تم تعيين أيدي الأدمن الخاص بك هنا
+        const ADMIN_TELEGRAM_ID = "1985474484"; 
+
         let userId = "user_12345";
+        let rawTelegramId = "";
         let referrerId = null;
 
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
             if (window.Telegram.WebApp.initDataUnsafe.user) {
-                userId = "user_" + window.Telegram.WebApp.initDataUnsafe.user.id;
+                rawTelegramId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
+                userId = "user_" + rawTelegramId;
             }
             if (window.Telegram.WebApp.initDataUnsafe.start_param) {
                 const param = window.Telegram.WebApp.initDataUnsafe.start_param;
@@ -230,6 +236,11 @@
                     referrerId = "user_" + param.replace("ref_", "");
                 }
             }
+        }
+
+        // إظهار زر لوحة الأدمن فقط إذا كان الأيدي مطابقاً لأيديك
+        if (rawTelegramId === ADMIN_TELEGRAM_ID) {
+            document.getElementById("admin-btn").classList.remove("hidden");
         }
 
         let userBalance = 0;
@@ -425,6 +436,12 @@
         };
 
         window.openAdminPanel = async function() {
+            // حماية صارمة تمنع فتح لوحة الأدمن لأي مستخدم آخر نهائياً
+            if (rawTelegramId !== ADMIN_TELEGRAM_ID) {
+                alert("غير مصرح لك بالدخول إلى هذه اللوحة!");
+                return;
+            }
+
             document.getElementById("admin-modal").classList.remove("hidden");
             
             const depositsContainer = document.getElementById("admin-deposits-list");
