@@ -138,8 +138,13 @@
     </div>
 
     <script>
-        let userBalance = 0.001;
-        let watchedAdsCount = 0;
+        // قراءة الرصيد والإعلانات المحفوظة مسبقاً، أو البدء بالقيم الافتراضية
+        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.001;
+        let watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount')) || 0;
+
+        // عرض القيم الحالية على الشاشة فور فتح التطبيق
+        document.getElementById('balance').innerText = userBalance.toFixed(3);
+        document.getElementById('adsCount').innerText = watchedAdsCount;
 
         function showPage(pageName, btnElement) {
             document.querySelectorAll('.page-section').forEach(sec => {
@@ -160,6 +165,11 @@
             AdController.show().then((result) => {
                 userBalance += 0.001; 
                 watchedAdsCount += 1;
+
+                // حفظ القيم الجديدة في ذاكرة المتصفح
+                localStorage.setItem('userBalance', userBalance);
+                localStorage.setItem('watchedAdsCount', watchedAdsCount);
+
                 document.getElementById('balance').innerText = userBalance.toFixed(3);
                 document.getElementById('adsCount').innerText = watchedAdsCount;
                 alert("تهانينا! تمت إضافة +0.001 USDT لربحك.");
@@ -170,6 +180,10 @@
 
         function claimDaily() {
             userBalance += 0.005;
+            
+            // حفظ الرصيد الجديد
+            localStorage.setItem('userBalance', userBalance);
+
             document.getElementById('balance').innerText = userBalance.toFixed(3);
             alert("تمت إضافة مكافأة اليوم بنجاح (+0.005 USDT)!");
         }
