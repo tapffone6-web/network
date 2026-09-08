@@ -37,6 +37,10 @@
         
         .section-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; color: #f8fafc; }
         .section-desc { color: #94a3b8; font-size: 14px; line-height: 1.5; }
+        
+        .stats-grid { display: flex; gap: 10px; margin-top: 15px; }
+        .stat-box { flex: 1; background: #131b2e; border: 1px solid #1e293b; padding: 12px; border-radius: 14px; text-align: center; }
+        .stat-num { font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -52,23 +56,43 @@
             <div class="balance" id="balance">0.001</div>
         </div>
 
-        <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
+        <!-- زر الإعلان -->
+        <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
           🎬 مشاهدة إعلان للحصول على مكافأة
         </button>
+
+        <!-- مربعات الإحصائيات السريعة -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #94a3b8;">إعلانات شاهدتها</div>
+                <div class="stat-num" id="adsCount">0</div>
+            </div>
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #94a3b8;">ترتيبك في الشبكة</div>
+                <div class="stat-num">#--</div>
+            </div>
+        </div>
+
+        <!-- صندوق المكافأة اليومية -->
+        <div class="card" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-weight: bold; font-size: 15px; color: #f8fafc;">🎁 المكافأة اليومية</div>
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;">احصل على هدية مجانية كل 24 ساعة</div>
+            </div>
+            <button style="background: #10b981; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="claimDaily()">مطالبة</button>
+        </div>
     </div>
 
     <!-- 2. صفحة الاستثمار (Invest) -->
     <div id="sec-invest" class="page-section">
         <div class="section-title">قسم الاستثمار</div>
         
-        <!-- الخطة الأولى -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الأولى</div>
             <p class="section-desc">استثمار 10$ | ربح يومي 0.6$</p>
             <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="alert('تم تفعيل الخطة الأولى بنجاح!')">استثمار الآن</button>
         </div>
 
-        <!-- الخطة الثانية -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الثانية</div>
             <p class="section-desc">استثمار 15$ | ربح يومي 1$</p>
@@ -115,6 +139,7 @@
 
     <script>
         let userBalance = 0.001;
+        let watchedAdsCount = 0;
 
         function showPage(pageName, btnElement) {
             document.querySelectorAll('.page-section').forEach(sec => {
@@ -134,12 +159,20 @@
         adButton.addEventListener('click', () => {
             AdController.show().then((result) => {
                 userBalance += 0.001; 
+                watchedAdsCount += 1;
                 document.getElementById('balance').innerText = userBalance.toFixed(3);
+                document.getElementById('adsCount').innerText = watchedAdsCount;
                 alert("تهانينا! تمت إضافة +0.001 USDT لربحك.");
             }).catch((result) => {
                 alert("لم يتم اكتمال مشاهدة الإعلان.");
             });
         });
+
+        function claimDaily() {
+            userBalance += 0.005;
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+            alert("تمت إضافة مكافأة اليوم بنجاح (+0.005 USDT)!");
+        }
     </script>
 </body>
 </html>
