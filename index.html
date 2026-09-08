@@ -12,7 +12,7 @@
         body {
             background-color: #080b11; color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 15px 15px 80px 15px;
+            margin: 0; padding: 15px 15px 90px 15px;
         }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card {
@@ -23,28 +23,28 @@
         .balance-title { color: #94a3b8; font-size: 14px; }
         .balance { font-size: 34px; font-weight: bold; margin: 5px 0; color: #38bdf8; }
         
-        /* إخفاء وإظهار الأقسام */
-        .section { display: none; }
-        .section.active { display: block; }
+        /* الأقسام المخفية والظاهرة */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
 
-        /* شريط التنقل السفلي */
+        /* شريط التنقل السفلي الثابت */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
             background-color: #0f172a; display: flex; justify-content: space-around;
-            padding: 12px 0; border-top: 1px solid #1e293b; z-index: 100;
+            padding: 12px 0; border-top: 1px solid #1e293b; z-index: 999;
         }
-        .nav-item { text-align: center; color: #94a3b8; font-size: 12px; text-decoration: none; cursor: pointer; background: none; border: none; }
-        .nav-item i { display: block; font-size: 18px; margin-bottom: 4px; }
-        .nav-item.active { color: #38bdf8; }
+        .nav-btn { background: none; border: none; text-align: center; color: #94a3b8; font-size: 12px; cursor: pointer; }
+        .nav-btn i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .nav-btn.active { color: #38bdf8; }
         
-        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #f8fafc; }
-        .section-desc { color: #94a3b8; font-size: 14px; }
+        .section-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; color: #f8fafc; }
+        .section-desc { color: #94a3b8; font-size: 14px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <!-- قسم الصفحة الرئيسية (Home) -->
-    <div id="home-section" class="section active">
+    <!-- 1. صفحة الرئيسية (Home) -->
+    <div id="sec-home" class="page-section active">
         <div class="header">
             <h2>Moon Network</h2>
         </div>
@@ -54,67 +54,79 @@
             <div class="balance" id="balance">0.001</div>
         </div>
 
-        <!-- زر الإعلان الفعّال -->
+        <!-- زر الإعلان -->
         <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
           🎬 مشاهدة إعلان للحصول على مكافأة
         </button>
     </div>
 
-    <!-- قسم الاستثمار (Invest) -->
-    <div id="invest-section" class="section">
+    <!-- 2. صفحة الاستثمار (Invest) -->
+    <div id="sec-invest" class="page-section">
         <div class="section-title">قسم الاستثمار</div>
         <div class="card">
-            <p class="section-desc">استثمر أموالك واحصل على أرباح يومية تصاعدية مع شبكة Moon.</p>
-            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px;">بدء الاستثمار</button>
+            <p class="section-desc">استثمر عملاتك الرقمية واحصل على عوائد أسبوعية ويومية مضمونة.</p>
+            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer;">بدء خطة الاستثمار</button>
         </div>
     </div>
 
-    <!-- قسم المهام (Tasks) -->
-    <div id="tasks-section" class="section">
+    <!-- 3. صفحة المهام (Tasks) -->
+    <div id="sec-tasks" class="page-section">
         <div class="section-title">المهام اليومية</div>
         <div class="card">
-            <p class="section-desc">أتمم المهام التالية لزيادة أرباحك من الـ USDT.</p>
-            <div style="background: #080b11; padding: 12px; border-radius: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                <span>انضم لقناة التليجرام (+0.005)</span>
-                <button style="background: #38bdf8; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; color: #080b11;">تنفيذ</button>
+            <p class="section-desc">أكمل المهام أدناه لزيادة رصيدك من الـ USDT فوراً.</p>
+            <div style="background: #080b11; padding: 15px; border-radius: 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 14px;">انضم لقناة التليجرام (+0.005)</span>
+                <button style="background: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; color: #080b11; cursor: pointer;">تنفيذ</button>
             </div>
         </div>
     </div>
 
-    <!-- قسم الإحالات (Referrals) -->
-    <div id="referrals-section" class="section">
+    <!-- 4. صفحة الإحالات (Referrals) -->
+    <div id="sec-referrals" class="page-section">
         <div class="section-title">برنامج الإحالات</div>
         <div class="card">
-            <p class="section-desc">ادع أصدقائك واحصُد نسبة من أرباحهم مباشرة.</p>
-            <button style="width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px;" onclick="alert('تم نسخ رابط الإحالة بنجاح!')">نسخ رابط الإحالة</button>
+            <p class="section-desc">شارك رابطك الخاص مع أصدقائك واربح عمولة عن كل شخص ينضم.</p>
+            <button style="width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer;" onclick="alert('تم نسخ رابط الإحالة بنجاح!')">نسخ رابط الإحالة</button>
         </div>
     </div>
 
     <!-- شريط التنقل السفلي -->
     <div class="nav-bar">
-        <button class="nav-item" onclick="switchTab('referrals', this)"><i class="fa-solid fa-users"></i>Referrals</button>
-        <button class="nav-item" onclick="switchTab('tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
-        <button class="nav-item" onclick="switchTab('invest', this)"><i class="fa-solid fa-chart-line"></i>Invest</button>
-        <button class="nav-item active" onclick="switchTab('home', this)"><i class="fa-solid fa-house"></i>Home</button>
+        <button class="nav-btn" onclick="showPage('referrals', this)">
+            <i class="fa-solid fa-users"></i>Referrals
+        </button>
+        <button class="nav-btn" onclick="showPage('tasks', this)">
+            <i class="fa-solid fa-list-check"></i>Tasks
+        </button>
+        <button class="nav-btn" onclick="showPage('invest', this)">
+            <i class="fa-solid fa-chart-line"></i>Invest
+        </button>
+        <button class="nav-btn active" onclick="showPage('home', this)">
+            <i class="fa-solid fa-house"></i>Home
+        </button>
     </div>
 
     <script>
         let userBalance = 0.001;
 
-        // دالة التنقل بين الأقسام
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            document.getElementById(tabName + '-section').classList.add('active');
-            element.classList.add('active');
+        // دالة التبديل بين الصفحات المعزولة
+        function showPage(pageName, btnElement) {
+            // إخفاء كل الأقسام
+            document.querySelectorAll('.page-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            // إزالة الأيقونة النشطة من الأزرار
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+
+            // إظهار القسم المطلوب وتنشيط الزر
+            document.getElementById('sec-' + pageName).classList.add('active');
+            btnElement.classList.add('active');
         }
 
-        // تشغيل إعلانات Adsgram
-        const AdController = window.Adsgram.init({ 
-            blockId: "46739" 
-        });
-
+        // إعلانات Adsgram
+        const AdController = window.Adsgram.init({ blockId: "46739" });
         const adButton = document.getElementById('watchAdBtn');
 
         adButton.addEventListener('click', () => {
