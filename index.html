@@ -1,4 +1,98 @@
-        <!-- صندوق البرومو كود -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Network</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #080b11; color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 15px 15px 90px 15px;
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card {
+            background: linear-gradient(145deg, #131b2e, #0f172a);
+            border-radius: 20px; padding: 20px; margin-top: 15px;
+            border: 1px solid #1e293b; box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .balance-title { color: #94a3b8; font-size: 14px; }
+        .balance { font-size: 34px; font-weight: bold; margin: 5px 0; color: #38bdf8; }
+        
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: #0f172a; display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid #1e293b; z-index: 999;
+        }
+        .nav-btn { background: none; border: none; text-align: center; color: #94a3b8; font-size: 12px; cursor: pointer; }
+        .nav-btn i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .nav-btn.active { color: #38bdf8; }
+        
+        .section-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; color: #f8fafc; }
+        .section-desc { color: #94a3b8; font-size: 14px; line-height: 1.5; }
+        
+        .stats-grid { display: flex; gap: 10px; margin-top: 15px; }
+        .stat-box { flex: 1; background: #131b2e; border: 1px solid #1e293b; padding: 12px; border-radius: 14px; text-align: center; }
+        .stat-num { font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 5px; }
+        
+        .action-btn { background: #38bdf8; color: #080b11; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .claim-btn { background: #10b981; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .claim-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+        .input-field {
+            width: 100%; padding: 12px; background: #080b11; border: 1px solid #1e293b;
+            border-radius: 10px; color: white; margin-top: 10px; outline: none; font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. صفحة الرئيسية (Home) -->
+    <div id="sec-home" class="page-section active">
+        <div class="header">
+            <h2>Moon Network</h2>
+        </div>
+
+        <div class="card">
+            <div class="balance-title">رصيدك الحالي</div>
+            <div class="balance" id="balance">0.001</div>
+            <button class="action-btn" onclick="switchNav('deposit')">💳 إيداع USDT</button>
+        </div>
+
+        <!-- زر الإعلان -->
+        <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
+          🎬 مشاهدة إعلان للحصول على مكافأة
+        </button>
+
+        <!-- مربعات الإحصائيات السريعة -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #94a3b8;">إعلانات شاهدتها</div>
+                <div class="stat-num" id="adsCount">0</div>
+            </div>
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #94a3b8;">ترتيبك في الشبكة</div>
+                <div class="stat-num">#--</div>
+            </div>
+        </div>
+
+        <!-- صندوق المكافأة اليومية -->
+        <div class="card" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-weight: bold; font-size: 15px; color: #f8fafc;">🎁 المكافأة اليومية</div>
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;" id="dailyDesc">احصل على هدية مجانية كل 24 ساعة</div>
+            </div>
+            <button id="claimBtn" class="claim-btn" onclick="claimDaily()">مطالبة</button>
+        </div>
+
+        <!-- صندوق البرومو كود أسفل المكافأة اليومية مباشرة -->
         <div class="card" style="margin-top: 15px;">
             <div style="font-weight: bold; font-size: 15px; color: #f8fafc; margin-bottom: 8px;">🎟️ رمز القسيمة (Promo Code)</div>
             <div style="display: flex; gap: 8px;">
@@ -6,3 +100,247 @@
                 <button class="action-btn" onclick="applyPromoCode()" style="margin-top: 0; width: 100px; background: #8b5cf6; color: white;">تفعيل</button>
             </div>
         </div>
+    </div>
+
+    <!-- 2. صفحة الإيداع (Deposit) -->
+    <div id="sec-deposit" class="page-section">
+        <div class="section-title">شحن الرصيد (USDT)</div>
+        <div class="card">
+            <p class="section-desc">قم بتحويل المبلغ المطلوبة على شبكة TON أو TRC20 إلى العنوان أدناه، ثم أرسل رقم العملية:</p>
+            
+            <div style="background: #080b11; padding: 12px; border-radius: 10px; margin: 10px 0; word-break: break-all; font-family: monospace; font-size: 13px; color: #38bdf8;" id="walletAddress">
+                0xa1002027f00068ed0ae2546725f4340357167001
+            </div>
+            <button class="action-btn" style="background: #10b981; color: white;" onclick="copyWallet()">📋 نسخ عنوان المحفظة</button>
+
+            <div style="margin-top: 15px;">
+                <label style="font-size: 13px; color: #94a3b8;">أدخل المبلغ الذي أرسلته (USDT):</label>
+                <input type="number" id="depositAmount" class="input-field" placeholder="مثال: 10">
+                
+                <label style="font-size: 13px; color: #94a3b8; display: block; margin-top: 10px;">رقم المعاملة (TxID):</label>
+                <input type="text" id="txIdInput" class="input-field" placeholder="ألصق كود التحويل هنا">
+
+                <button class="action-btn" onclick="submitDeposit()" style="margin-top: 15px;">تأكيد الإيداع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. صفحة الاستثمار (Invest) -->
+    <div id="sec-invest" class="page-section">
+        <div class="section-title">قسم الاستثمار</div>
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الأولى</div>
+            <p class="section-desc">استثمار 10$ | ربح يومي 0.6$</p>
+            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="investPlan(10, 'الخطة الأولى')">استثمار الآن</button>
+        </div>
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الثانية</div>
+            <p class="section-desc">استثمار 15$ | ربح يومي 1$</p>
+            <button style="width: 100%; padding: 12px; background-color: #f59e0b; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="investPlan(15, 'الخطة الثانية')">استثمار الآن</button>
+        </div>
+    </div>
+
+    <!-- 4. صفحة المهام (Tasks) -->
+    <div id="sec-tasks" class="page-section">
+        <div class="section-title">المهام اليومية</div>
+        <div class="card">
+            <p class="section-desc">أكمل المهام أدناه لزيادة رصيدك من الـ USDT فوراً.</p>
+            <div style="background: #080b11; padding: 15px; border-radius: 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 14px;">انضم لقناة التليجرام (+0.005)</span>
+                <button style="background: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; color: #080b11; cursor: pointer;" onclick="completeTask(0.005, 'https://t.me/your_channel')">تنفيذ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. صفحة الإحالات (Referrals) -->
+    <div id="sec-referrals" class="page-section">
+        <div class="section-title">برنامج الإحالات</div>
+        <div class="card">
+            <p class="section-desc">شارك رابطك الخاص مع أصدقائك واربح عمولة عن كل شخص ينضم.</p>
+            <button style="width: 100%; padding: 12px; background-color: #8b5cf6; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer;" onclick="alert('تم نسخ رابط الإحالة بنجاح!')">نسخ رابط الإحالة</button>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="nav-bar">
+        <button class="nav-btn" onclick="showPage('referrals', this)">
+            <i class="fa-solid fa-users"></i>Referrals
+        </button>
+        <button class="nav-btn" onclick="showPage('tasks', this)">
+            <i class="fa-solid fa-list-check"></i>Tasks
+        </button>
+        <button class="nav-btn" onclick="showPage('invest', this)">
+            <i class="fa-solid fa-chart-line"></i>Invest
+        </button>
+        <button class="nav-btn active" onclick="showPage('home', this)">
+            <i class="fa-solid fa-house"></i>Home
+        </button>
+    </div>
+
+    <script>
+        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.001;
+        let watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount')) || 0;
+
+        document.getElementById('balance').innerText = userBalance.toFixed(3);
+        document.getElementById('adsCount').innerText = watchedAdsCount;
+
+        checkDailyClaimStatus();
+
+        function showPage(pageName, btnElement) {
+            document.querySelectorAll('.page-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+
+            document.getElementById('sec-' + pageName).classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
+        }
+
+        function switchNav(pageName) {
+            showPage(pageName, null);
+        }
+
+        const AdController = window.Adsgram.init({ blockId: "46739" });
+        const adButton = document.getElementById('watchAdBtn');
+
+        adButton.addEventListener('click', () => {
+            AdController.show().then((result) => {
+                userBalance += 0.001; 
+                watchedAdsCount += 1;
+
+                localStorage.setItem('userBalance', userBalance);
+                localStorage.setItem('watchedAdsCount', watchedAdsCount);
+
+                document.getElementById('balance').innerText = userBalance.toFixed(3);
+                document.getElementById('adsCount').innerText = watchedAdsCount;
+                alert("تهانينا! تمت إضافة +0.001 USDT لربحك.");
+            }).catch((result) => {
+                alert("لم يتم اكتمال مشاهدة الإعلان.");
+            });
+        });
+
+        function claimDaily() {
+            const lastClaimTime = localStorage.getItem('lastClaimTime');
+            const now = new Date().getTime();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+
+            if (lastClaimTime && (now - lastClaimTime < twentyFourHours)) {
+                alert("لقد استلمت مكافأتك اليومية مسبقاً. يمكنك المطالبة مرة أخرى بعد مرور 24 ساعة.");
+                return;
+            }
+
+            userBalance += 0.005;
+            localStorage.setItem('userBalance', userBalance);
+            localStorage.setItem('lastClaimTime', now);
+
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+            alert("تمت إضافة مكافأة اليوم بنجاح (+0.005 USDT)!");
+            checkDailyClaimStatus();
+        }
+
+        function checkDailyClaimStatus() {
+            const lastClaimTime = localStorage.getItem('lastClaimTime');
+            const now = new Date().getTime();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            const claimBtn = document.getElementById('claimBtn');
+            const dailyDesc = document.getElementById('dailyDesc');
+
+            if (lastClaimTime && (now - lastClaimTime < twentyFourHours)) {
+                claimBtn.disabled = true;
+                claimBtn.innerText = "تمت المطالبة";
+                dailyDesc.innerText = "لقد أخذت مكافأتك اليوم، عد غداً.";
+            } else {
+                claimBtn.disabled = false;
+                claimBtn.innerText = "مطالبة";
+                dailyDesc.innerText = "احصل على هدية مجانية كل 24 ساعة";
+            }
+        }
+
+        function applyPromoCode() {
+            const codeInput = document.getElementById('promoInput');
+            const codeValue = codeInput.value.trim();
+
+            if (!codeValue) {
+                alert("يرجى إدخال البرومو كود أولاً.");
+                return;
+            }
+
+            const validCodes = {
+                "MOON2026": 0.050,
+                "FREE10": 0.100,
+                "WELCOME": 0.020
+            };
+
+            let usedCodes = JSON.parse(localStorage.getItem('usedPromoCodes')) || [];
+            if (usedCodes.includes(codeValue)) {
+                alert("لقد قمت باستخدام هذا البرومو كود مسبقاً!");
+                return;
+            }
+
+            if (validCodes.hasOwnProperty(codeValue)) {
+                const reward = validCodes[codeValue];
+                userBalance += reward;
+                localStorage.setItem('userBalance', userBalance);
+                
+                usedCodes.push(codeValue);
+                localStorage.setItem('usedPromoCodes', JSON.stringify(usedCodes));
+
+                document.getElementById('balance').innerText = userBalance.toFixed(3);
+                alert("تهانينا! تم تفعيل البرومو كود بنجاح وإضافة +" + reward + " USDT إلى رصيدك.");
+                codeInput.value = '';
+            } else {
+                alert("عذراً، البرومو كود غير صحيح أو منتهي الصلاحية.");
+            }
+        }
+
+        function copyWallet() {
+            const walletText = document.getElementById('walletAddress').innerText;
+            navigator.clipboard.writeText(walletText).then(() => {
+                alert("تم نسخ عنوان المحفظة بنجاح!");
+            });
+        }
+
+        function submitDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            const txId = document.getElementById('txIdInput').value;
+
+            if (!amount || amount <= 0 || !txId) {
+                alert("يرجى إدخال المبلغ ورقم المعاملة (TxID) بشكل صحيح.");
+                return;
+            }
+
+            userBalance += amount;
+            localStorage.setItem('userBalance', userBalance);
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+
+            alert("تم إرسال طلب الإيداع بنجاح! وإضافة " + amount + " USDT إلى رصيدك.");
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('txIdInput').value = '';
+            showPage('home', document.querySelector('.nav-btn.active'));
+        }
+
+        function investPlan(requiredAmount, planName) {
+            if (userBalance < requiredAmount) {
+                alert("عذراً، رصيدك الحالي غير كافٍ لتفعيل هذه الخطة. تحتاج إلى " + requiredAmount + " USDT. يرجى شحن رصيدك أولاً.");
+                return;
+            }
+
+            userBalance -= requiredAmount;
+            localStorage.setItem('userBalance', userBalance);
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+
+            alert("تم تفعيل " + planName + " بنجاح وتم خصم " + requiredAmount + " USDT من رصيدك!");
+        }
+
+        function completeTask(reward, link) {
+            window.open(link, '_blank');
+            userBalance += reward;
+            localStorage.setItem('userBalance', userBalance);
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+            alert("تهانينا! تم إنجاز المهمة وإضافة +" + reward + " USDT إلى رصيدك.");
+        }
+    </script>
+</body>
+</html>
