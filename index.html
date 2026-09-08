@@ -123,7 +123,7 @@
                 <!-- حقل عنوان المحفظة مع زر النسخ -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between mb-4">
                     <span id="wallet-address" class="text-xs text-slate-300 break-all select-all font-mono">0x123456789abcdef0123456789abcdef0123456789</span>
-                    <button onclick="copyWalletAddress()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shrink-0 ml-2">
+                    <button onclick="copyText('wallet-address', 'تم نسخ عنوان المحفظة بنجاح!')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shrink-0 ml-2">
                         <i class="fa-regular fa-copy"></i> نسخ
                     </button>
                 </div>
@@ -151,11 +151,16 @@
 
         <!-- 5. Referrals Section -->
         <section id="section-referrals" class="hidden-section space-y-4">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
-                <h3 class="font-bold text-lg mb-2 text-amber-400">نظام الإحالة (10%)</h3>
-                <p class="text-xs text-slate-400 mb-4">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
-                <div id="ref-link-box" class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-amber-300 select-all mb-3">
-                    جاري تحميل الرابط...
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
+                <h3 class="font-bold text-lg mb-2 text-amber-400 text-center">نظام الإحالة (10%)</h3>
+                <p class="text-xs text-slate-400 mb-4 text-center">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
+                
+                <!-- حقل رابط الإحالة مع زر النسخ -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
+                    <span id="ref-link-box" class="text-xs text-amber-300 break-all select-all font-mono">جاري تحميل الرابط...</span>
+                    <button onclick="copyText('ref-link-box', 'تم نسخ رابط الإحالة بنجاح!')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 shrink-0 ml-2">
+                        <i class="fa-regular fa-copy"></i> نسخ
+                    </button>
                 </div>
             </div>
         </section>
@@ -237,11 +242,11 @@
             document.getElementById("home-balance").innerText = userBalance.toFixed(3);
         }
 
-        // دالة نسخ عنوان المحفظة
-        window.copyWalletAddress = function() {
-            const addressText = document.getElementById("wallet-address").innerText;
-            navigator.clipboard.writeText(addressText).then(() => {
-                alert("تم نسخ عنوان المحفظة بنجاح!");
+        // دالة عامة لنسخ النصوص مع رسالة نجاح مخصصة
+        window.copyText = function(elementId, successMessage) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert(successMessage);
             }).catch(err => {
                 alert("فشل النسخ، يرجى نسخه يدويّاً.");
             });
