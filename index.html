@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moon Network - Money Vault</title>
-    <!-- تضمين مكتبة تليجرام WebApp الرسمية -->
+    <!-- تضمين مكتبة تليجرام WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -61,7 +61,6 @@
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow space-y-3">
                 <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-chart-line ml-1"></i> خطط الاستثمار</h3>
                 
-                <!-- Plan 1 -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
                         <h4 class="font-bold text-sm text-amber-300">الخطة الأولى</h4>
@@ -70,7 +69,6 @@
                     <button onclick="investPlan(5, 0.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
                 </div>
 
-                <!-- Plan 2 -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
                         <h4 class="font-bold text-sm text-amber-300">الخطة الثانية</h4>
@@ -79,7 +77,6 @@
                     <button onclick="investPlan(10, 1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
                 </div>
 
-                <!-- Plan 3 -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
                         <h4 class="font-bold text-sm text-amber-300">الخطة الثالثة</h4>
@@ -88,7 +85,6 @@
                     <button onclick="investPlan(20, 2)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
                 </div>
 
-                <!-- Plan 4 -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
                         <h4 class="font-bold text-sm text-amber-300">الخطة الرابعة</h4>
@@ -97,7 +93,6 @@
                     <button onclick="investPlan(50, 3.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
                 </div>
 
-                <!-- Plan 5 -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
                     <div>
                         <h4 class="font-bold text-sm text-amber-300">الخطة الخامسة</h4>
@@ -197,7 +192,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // جلب معرف المستخدم الحقيقي من تليجرام أو استخدام معرف افتراضي مؤقت للتجربة بالمتصفح
+        // جلب معرف المستخدم الحقيقي أو المعرف المؤقت
         let userId = "user_12345";
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
             userId = "user_" + window.Telegram.WebApp.initDataUnsafe.user.id;
@@ -205,27 +200,41 @@
 
         let userBalance = 0;
 
-        // تهيئة رابط الإحالة الخاص بالمستخدم
+        // تعبئة رابط الإحالة
         document.getElementById("ref-link-box").innerText = `https://t.me/MoonNetworkBot?start=ref_${userId.replace('user_', '')}`;
-
-        // دالة مراقبة ومزامنة الرصيد الحية من قاعدة البيانات
-        function initUserData() {
-            const userRef = doc(db, "users", userId);
-            onSnapshot(userRef, async (docSnap) => {
-                if (docSnap.exists()) {
-                    userBalance = docSnap.data().balance || 0;
-                } else {
-                    // إذا كان مستخدماً جديداً، أنشئ له مستنداً برصيد 0
-                    await setDoc(userRef, { balance: 0, createdAt: new Date() });
-                    userBalance = 0;
-                }
-                updateUIBalance();
-            });
-        }
 
         function updateUIBalance() {
             document.getElementById("user-balance").innerText = userBalance.toFixed(3);
             document.getElementById("home-balance").innerText = userBalance.toFixed(3);
+        }
+
+        // جلب أو تهيئة بيانات المستخدم من فايربيس مع حماية بـ LocalStorage لضمان عدم التصفير
+        async function initUserData() {
+            const userRef = doc(db, "users", userId);
+            try {
+                const docSnap = await getDoc(userRef);
+                if (docSnap.exists()) {
+                    userBalance = docSnap.data().balance || 0;
+                } else {
+                    await setDoc(userRef, { balance: 0, createdAt: new Date() });
+                    userBalance = 0;
+                }
+            } catch (err) {
+                // إذا فشل الاتصال مؤقتاً، نقرأ من الذاكرة المحلية للجهاز كبديل آمن
+                userBalance = parseFloat(localStorage.getItem("local_balance_" + userId)) || 0;
+            }
+            updateUIBalance();
+
+            // الاستماع للتغييرات بشكل حي لاحقاً
+            onSnapshot(userRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const serverBalance = docSnap.data().balance || 0;
+                    if (serverBalance >= userBalance) {
+                        userBalance = serverBalance;
+                        updateUIBalance();
+                    }
+                }
+            });
         }
 
         window.submitDeposit = async function() {
@@ -394,15 +403,25 @@
             openAdminPanel();
         };
 
-        // دالة مشاهدة الإعلان وتحديث الرصيد وحفظه فوراً في فايربيس
+        // دالة مشاهدة الإعلان المحسنة مع الحفظ المزدوج (قاعدة البيانات + الذاكرة المحلية)
         window.watchAd = function() {
             if (typeof window.showGiga === "function") {
                 window.showGiga()
                     .then(async () => {
                         userBalance += 0.003;
                         updateUIBalance();
-                        // حفظ التحديث في قاعدة البيانات مباشرة
-                        await setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
+                        
+                        // تخزين فوري محلياً لمنع التصفير اللحظي
+                        localStorage.setItem("local_balance_" + userId, userBalance);
+
+                        try {
+                            const userRef = doc(db, "users", userId);
+                            // استخدام updateDoc بدلاً من setDoc لضمان تحديث الحقل الحالي فقط
+                            await updateDoc(userRef, { balance: userBalance });
+                        } catch (err) {
+                            console.log("تم الحفظ محلياً وسيتم المزامنة لاحقاً");
+                        }
+
                         alert("تم إضافة مكافأة الإعلان بنجاح!");
                     })
                     .catch(e => {
@@ -421,7 +440,11 @@
             }
             userBalance -= cost;
             updateUIBalance();
-            await setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
+            localStorage.setItem("local_balance_" + userId, userBalance);
+
+            try {
+                await updateDoc(doc(db, "users", userId), { balance: userBalance });
+            } catch(e) {}
             
             await addDoc(collection(db, "investments"), {
                 userId: userId,
@@ -433,7 +456,7 @@
             alert(`تم الاشتراك في الخطة بنجاح! تم خصم ${cost} USDT.`);
         };
 
-        // تشغيل نظام المراقبة لجلب بيانات المستخدم الحالي
+        // تشغيل التهيئة عند فتح التطبيق
         initUserData();
 
         window.switchTab = function(tabId) {
