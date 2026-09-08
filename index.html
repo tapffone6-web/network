@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moon Network</title>
+    <title>Moon Network - Money Vault</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,7 +12,7 @@
         .hidden-section { display: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pb-20">
+<body class="min-h-screen flex flex-col justify-between pb-24">
 
     <!-- Header -->
     <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
@@ -21,7 +21,7 @@
             <h1 class="font-bold text-lg text-amber-400">Moon Network</h1>
         </div>
         <div class="flex items-center space-x-3 space-x-reverse">
-            <button onclick="openAdminPanel()" class="bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold">
+            <button onclick="openAdminPanel()" class="bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold hover:bg-slate-700 transition">
                 <i class="fa-solid fa-lock ml-1"></i> لوحة الأدمن
             </button>
             <div class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 text-sm font-semibold text-amber-400">
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Ad Reward Box -->
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center shadow">
                 <h3 class="font-bold text-base mb-1">شاهد الإعلانات واكسب</h3>
                 <p class="text-xs text-slate-400 mb-4">اكسب 0.003 USDT لكل إعلان تشاهده</p>
                 <button onclick="watchAd()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg">
@@ -54,11 +54,11 @@
             </div>
 
             <!-- Promo Code Box -->
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow">
                 <h3 class="font-bold text-base mb-2">رمز ترويجي (Promo Code)</h3>
                 <div class="flex gap-2">
                     <input type="text" id="promo-input" placeholder="أدخل الرمز هنا..." class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-amber-500">
-                    <button onclick="applyPromoCode()" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm">تفعيل</button>
+                    <button onclick="applyPromoCode()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition">تفعيل</button>
                 </div>
             </div>
         </section>
@@ -101,7 +101,7 @@
                             <h4 class="font-bold text-sm">اشتراك قناة اليوتيوب</h4>
                             <p class="text-xs text-slate-400">+0.010 USDT</p>
                         </div>
-                        <button onclick="completeTask('youtube', 0.01)" class="bg-emerald-600 px-4 py-1.5 rounded-lg text-xs font-bold text-white">إنجاز</button>
+                        <button onclick="completeTask(0.01)" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-1.5 rounded-lg text-xs font-bold text-white transition">إنجاز</button>
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
 
     </main>
 
-    <!-- Admin Panel Modal / Section -->
+    <!-- Admin Panel Modal -->
     <div id="admin-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-5 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
@@ -131,34 +131,31 @@
             <div class="space-y-4">
                 <h4 class="font-bold text-sm text-slate-300">طلبات الإيداع المعلقة:</h4>
                 <div id="admin-deposits-list" class="space-y-2">
-                    <!-- يتم تعبئتها ديناميكياً من قاعدة البيانات -->
                     <p class="text-xs text-slate-500 text-center py-4">جاري تحميل الطلبات...</p>
                 </div>
 
                 <h4 class="font-bold text-sm text-slate-300 mt-6">طلبات السحب المعلقة:</h4>
                 <div id="admin-withdraws-list" class="space-y-2">
-                    <!-- يتم تعبئتها ديناميكياً من قاعدة البيانات -->
                     <p class="text-xs text-slate-500 text-center py-4">جاري تحميل الطلبات...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar (Fixed Order) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-40">
-        <button onclick="switchTab('home')" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i>الرئيسية</button>
-        <button onclick="switchTab('deposit')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i>إيداع</button>
-        <button onclick="switchTab('withdraw')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-money-bill-transfer text-lg mb-1"></i>سحب</button>
-        <button onclick="switchTab('tasks')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-list-check text-lg mb-1"></i>المهام</button>
-        <button onclick="switchTab('referrals')" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-users text-lg mb-1"></i>الإحالات</button>
+        <button onclick="switchTab('home')" id="btn-home" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i>الرئيسية</button>
+        <button onclick="switchTab('deposit')" id="btn-deposit" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i>إيداع</button>
+        <button onclick="switchTab('withdraw')" id="btn-withdraw" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-money-bill-transfer text-lg mb-1"></i>سحب</button>
+        <button onclick="switchTab('tasks')" id="btn-tasks" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-list-check text-lg mb-1"></i>المهام</button>
+        <button onclick="switchTab('referrals')" id="btn-referrals" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-users text-lg mb-1"></i>الإحالات</button>
     </nav>
 
-    <!-- Firebase & App Script Logic -->
+    <!-- Script Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // إعدادات Firebase الخاصة بك
         const firebaseConfig = {
           apiKey: "AIzaSyAjexk-ZbXNNo0oLz29HFLBgdBxeXquiDQ",
           authDomain: "moneyvault-5c252.firebaseapp.com",
@@ -172,7 +169,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // معرف المستخدم التجريبي الحالي (يمكن ربطه بتلغرام لاحقاً)
         const userId = "user_12345";
         let userBalance = 0;
 
@@ -193,7 +189,6 @@
             document.getElementById("home-balance").innerText = userBalance.toFixed(3);
         }
 
-        // إرسال طلب إيداع إلى قاعدة البيانات
         window.submitDeposit = async function() {
             const txid = document.getElementById("deposit-txid").value.trim();
             const amount = parseFloat(document.getElementById("deposit-amount").value);
@@ -220,7 +215,6 @@
             }
         };
 
-        // إرسال طلب سحب إلى قاعدة البيانات
         window.submitWithdraw = async function() {
             const address = document.getElementById("withdraw-address").value.trim();
             const amount = parseFloat(document.getElementById("withdraw-amount").value);
@@ -243,8 +237,6 @@
                     status: "pending",
                     timestamp: new Date()
                 });
-                
-                // خصم مؤقت أو انتظار الأدمن (هنا سننتظر موافقة الأدمن لتأكيد الخصم أو خصمه فوراً)
                 alert("تم تقديم طلب السحب بنجاح بانتظار المراجعة.");
                 document.getElementById("withdraw-address").value = "";
                 document.getElementById("withdraw-amount").value = "";
@@ -254,11 +246,9 @@
             }
         };
 
-        // تفعيل لوحة الأدمن وقراءة الطلبات المعلقة
         window.openAdminPanel = async function() {
             document.getElementById("admin-modal").classList.remove("hidden");
             
-            // جلب الإيداعات المعلقة
             const depositsContainer = document.getElementById("admin-deposits-list");
             depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">جاري التحميل...</p>';
             const querySnapshot = await getDocs(collection(db, "deposits"));
@@ -285,7 +275,6 @@
                 depositsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">لا توجد إيداعات معلقة.</p>';
             }
 
-            // جلب السحوبات المعلقة
             const withdrawsContainer = document.getElementById("admin-withdraws-list");
             withdrawsContainer.innerHTML = '<p class="text-xs text-slate-500 text-center">جاري التحميل...</p>';
             const withdrawSnapshot = await getDocs(collection(db, "withdraws"));
@@ -317,13 +306,9 @@
             document.getElementById("admin-modal").classList.add("hidden");
         };
 
-        // قبول الإيداع وإضافة الرصيد للمستخدم
         window.approveDeposit = async function(docId, targetUserId, amount) {
             try {
-                // تحديث حالة الطلب
                 await updateDoc(doc(db, "deposits", docId), { status: "approved" });
-                
-                // تحديث رصيد المستخدم في قاعدة البيانات
                 const userRef = doc(db, "users", targetUserId);
                 const userSnap = await getDoc(userRef);
                 const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
@@ -345,7 +330,6 @@
 
         window.approveWithdraw = async function(docId, targetUserId, amount) {
             try {
-                // خصم المبلغ من رصيد المستخدم عند الموافقة على السحب
                 const userRef = doc(db, "users", targetUserId);
                 const userSnap = await getDoc(userRef);
                 const currentBal = userSnap.exists() ? userSnap.data().balance : 0;
@@ -372,11 +356,9 @@
             openAdminPanel();
         };
 
-        // مهام أخرى وأزرار
         window.watchAd = function() {
             userBalance += 0.003;
             updateUIBalance();
-            // تحديث في فايربيس
             setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
             alert("تم إضافة مكافأة الإعلان بنجاح!");
         };
@@ -394,23 +376,26 @@
             }
         };
 
-        window.completeTask = function(taskId, reward) {
+        window.completeTask = function(reward) {
             userBalance += reward;
             updateUIBalance();
-            setDoc(doc, { balance: userBalance }, { merge: true });
+            setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
             alert("تم إنجاز المهمة وإضافة المكافأة!");
         };
 
-        // تحميل بيانات المستخدم عند فتح التطبيق
         loadUserData();
-    </script>
 
-    <!-- Navigation Switching Script -->
-    <script>
-        function switchTab(tabId) {
+        window.switchTab = function(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden-section'));
             document.getElementById('section-' + tabId).classList.remove('hidden-section');
-        }
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-amber-400');
+                btn.classList.add('text-slate-400');
+            });
+            document.getElementById('btn-' + tabId).classList.remove('text-slate-400');
+            document.getElementById('btn-' + tabId).classList.add('text-amber-400');
+        };
     </script>
 </body>
 </html>
