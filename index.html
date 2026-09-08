@@ -41,6 +41,9 @@
         .stats-grid { display: flex; gap: 10px; margin-top: 15px; }
         .stat-box { flex: 1; background: #131b2e; border: 1px solid #1e293b; padding: 12px; border-radius: 14px; text-align: center; }
         .stat-num { font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 5px; }
+        
+        .claim-btn { background: #10b981; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .claim-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -77,9 +80,9 @@
         <div class="card" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <div style="font-weight: bold; font-size: 15px; color: #f8fafc;">🎁 المكافأة اليومية</div>
-                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;">احصل على هدية مجانية كل 24 ساعة</div>
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px;" id="dailyDesc">احصل على هدية مجانية كل 24 ساعة</div>
             </div>
-            <button style="background: #10b981; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer;" onclick="claimDaily()">مطالبة</button>
+            <button id="claimBtn" class="claim-btn" onclick="claimDaily()">مطالبة</button>
         </div>
     </div>
 
@@ -138,13 +141,14 @@
     </div>
 
     <script>
-        // قراءة الرصيد والإعلانات المحفوظة مسبقاً، أو البدء بالقيم الافتراضية
         let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.001;
         let watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount')) || 0;
 
-        // عرض القيم الحالية على الشاشة فور فتح التطبيق
         document.getElementById('balance').innerText = userBalance.toFixed(3);
         document.getElementById('adsCount').innerText = watchedAdsCount;
+
+        // التحقق من حالة المكافأة اليومية عند فتح التطبيق
+        checkDailyClaimStatus();
 
         function showPage(pageName, btnElement) {
             document.querySelectorAll('.page-section').forEach(sec => {
@@ -166,7 +170,6 @@
                 userBalance += 0.001; 
                 watchedAdsCount += 1;
 
-                // حفظ القيم الجديدة في ذاكرة المتصفح
                 localStorage.setItem('userBalance', userBalance);
                 localStorage.setItem('watchedAdsCount', watchedAdsCount);
 
@@ -179,13 +182,42 @@
         });
 
         function claimDaily() {
+            const lastClaimTime = localStorage.getItem('lastClaimTime');
+            const now = new Date().getTime();
+            const twentyFourHours = 24 * 60 * 60 * 1000; // 24 ساعة بالميلي ثانية
+
+            if (lastClaimTime && (now - lastClaimTime < twentyFourHours)) {
+                alert("لقد استلمت مكافأتك اليومية مسبقاً. يمكنك المطالبة مرة أخرى بعد مرور 24 ساعة.");
+                return;
+            }
+
+            // إضافة الرصيد وحفظ وقت المطالبة الحالي
             userBalance += 0.005;
-            
-            // حفظ الرصيد الجديد
             localStorage.setItem('userBalance', userBalance);
+            localStorage.setItem('lastClaimTime', now);
 
             document.getElementById('balance').innerText = userBalance.toFixed(3);
             alert("تمت إضافة مكافأة اليوم بنجاح (+0.005 USDT)!");
+            
+            checkDailyClaimStatus();
+        }
+
+        function checkDailyClaimStatus() {
+            const lastClaimTime = localStorage.getItem('lastClaimTime');
+            const now = new Date().getTime();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            const claimBtn = document.getElementById('claimBtn');
+            const dailyDesc = document.getElementById('dailyDesc');
+
+            if (lastClaimTime && (now - lastClaimTime < twentyFourHours)) {
+                claimBtn.disabled = true;
+                claimBtn.innerText = "تمت المطالبة";
+                dailyDesc.innerText = "لقد أخذت مكافأتك اليوم، عد غداً.";
+            } else {
+                claimBtn.disabled = false;
+                claimBtn.innerText = "مطالبة";
+                dailyDesc.innerText = "احصل على هدية مجانية كل 24 ساعة";
+            }
         }
     </script>
 </body>
