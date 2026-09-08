@@ -210,28 +210,24 @@
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام اليومية</div>
         
-        <!-- القناة الأولى -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة MONEY VAULT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
             <button class="action-btn" onclick="joinTelegramChannel('https://t.me/MoneyVault10')">تنفيذ المهمة</button>
         </div>
 
-        <!-- القناة الثانية -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة AksbCash</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
             <button class="action-btn" onclick="joinTelegramChannel('https://t.me/AksbCash')">تنفيذ المهمة</button>
         </div>
 
-        <!-- القناة الثالثة -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة TONVAULT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
             <button class="action-btn" onclick="joinTelegramChannel('https://t.me/TONVAULT_LordTon1')">تنفيذ المهمة</button>
         </div>
 
-        <!-- قناة اليوتيوب -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الاشتراك في قناة اليوتيوب</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
@@ -316,11 +312,23 @@
     </div>
 
     <script>
-        let userBalance = 0.037;
-        let adWatchedCount = 0;
+        // قراءة البيانات المحفوظة مسبقاً أو البدء بالقيم الافتراضية
+        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.037;
+        let adWatchedCount = parseInt(localStorage.getItem('adWatchedCount')) || 0;
+
+        // تحديث العرض عند فتح التطبيق
+        document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
+        document.getElementById('adCount').innerText = adWatchedCount;
+
+        function saveData() {
+            localStorage.setItem('userBalance', userBalance);
+            localStorage.setItem('adWatchedCount', adWatchedCount);
+        }
 
         function updateBalanceDisplay() {
             document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
+            document.getElementById('adCount').innerText = adWatchedCount;
+            saveData();
         }
 
         function showPage(pageId, btn) {
@@ -341,21 +349,15 @@
             }
         }
 
-        // دالة تشغيل إعلانات GigaPub الحقيقية عند النقر على الزر
+        // دالة تشغيل الإعلانات وحفظ العدد والرصيد بشكل دائم
         function watchAd() {
             if (typeof window.showGiga === 'function') {
                 window.showGiga().then(() => {
-                    // عندما يشاهد المستخدم الإعلان بالكامل بنجاح
                     adWatchedCount++;
-                    document.getElementById('adCount').innerText = adWatchedCount;
-                    
-                    // يمكنك هنا إضافة مكافأة رصيد للمستخدم مقابل مشاهدة الإعلان إذا أردت
-                    userBalance += 0.005; 
+                    userBalance += 0.005; // مكافأة مشاهدة الإعلان
                     updateBalanceDisplay();
-                    
-                    alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة لرصيدك.');
+                    alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة.');
                 }).catch(e => {
-                    // في حال حدث خطأ أو أغلق المستخدم الإعلان قبل اكتماله
                     console.error(e);
                     alert('لم يتم إكمال مشاهدة الإعلان أو حدث خطأ.');
                 });
@@ -375,13 +377,13 @@
 
         function investPackage(requiredAmount, packageName) {
             if (userBalance < requiredAmount) {
-                alert('عذراً، رصيد غير كافٍ. رصيدك الحالي هو ' + userBalance.toFixed(3) + ' USDT، بينما تتطلب ' + packageName + ' مبلغ ' + requiredAmount + ' USDT.');
+                alert('عذراً، رصيد غير كافٍ. رصيدك الحالي هو ' + userBalance.toFixed(3) + ' USDT.');
                 return;
             }
 
             userBalance -= requiredAmount;
             updateBalanceDisplay();
-            alert('تم تفعيل ' + packageName + ' بنجاح واقتطاع مبلغ الاستثمار من رصيدك!');
+            alert('تم تفعيل ' + packageName + ' بنجاح واقتطاع مبلغ الاستثمار!');
         }
 
         function copyAddress() {
@@ -404,7 +406,7 @@
                 alert('يرجى إدخال رقم عملية التحويل (TxID) أولاً');
                 return;
             }
-            alert('تم إرسال طلب تأكيد الإيداع بنجاح، سيتم مراجعته وإضافة الرصيد قريباً.');
+            alert('تم إرسال طلب تأكيد الإيداع بنجاح.');
             document.getElementById('txidInput').value = '';
             showPage('home');
         }
@@ -438,7 +440,7 @@
                 return;
             }
 
-            alert('تم تقديم طلب السحب بنجاح وسيتم معالجته قريباً!');
+            alert('تم تقديم طلب السحب بنجاح!');
             document.getElementById('withdrawAmount').value = '';
             document.getElementById('withdrawAddress').value = '';
             showPage('home');
