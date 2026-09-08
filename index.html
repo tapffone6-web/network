@@ -227,6 +227,12 @@
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
             <button id="task3Btn" class="action-btn" onclick="completeTask(3, 'https://t.me/TONVAULT_LordTon1')">تنفيذ المهمة</button>
         </div>
+
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الاشتراك في قناة اليوتيوب</div>
+            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
+            <button id="task4Btn" class="action-btn" onclick="completeTask(4, 'https://youtube.com/@money32m?si=kMPmzaGKBDU2eE5-')">اشتراك الآن</button>
+        </div>
     </div>
 
     <!-- 4. صفحة الإحالات (Referrals) -->
@@ -309,10 +315,11 @@
         let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0.037;
         let adWatchedCount = parseInt(localStorage.getItem('adWatchedCount')) || 0;
         
-        // حفظ حالة إتمام المهام (افتراضياً false لم يتم الانضمام)
+        // حفظ حالة إتمام المهام الأربع
         let task1Done = localStorage.getItem('task1Done') === 'true';
         let task2Done = localStorage.getItem('task2Done') === 'true';
         let task3Done = localStorage.getItem('task3Done') === 'true';
+        let task4Done = localStorage.getItem('task4Done') === 'true';
 
         // تحديث العرض وحالة الأزرار عند فتح التطبيق
         document.getElementById('balanceDisplay').innerText = userBalance.toFixed(3);
@@ -325,6 +332,7 @@
             localStorage.setItem('task1Done', task1Done);
             localStorage.setItem('task2Done', task2Done);
             localStorage.setItem('task3Done', task3Done);
+            localStorage.setItem('task4Done', task4Done);
         }
 
         function updateBalanceDisplay() {
@@ -352,6 +360,12 @@
                 btn.style.background = "#10b981";
                 btn.disabled = true;
             }
+            if (task4Done) {
+                let btn = document.getElementById('task4Btn');
+                btn.innerText = "تم الاشتراك والمكافأة معملة ✅";
+                btn.style.background = "#10b981";
+                btn.disabled = true;
+            }
         }
 
         function showPage(pageId, btn) {
@@ -372,7 +386,7 @@
             }
         }
 
-        // دالة إتمام المهام (الانضمام للقنوات)
+        // دالة إتمام المهام
         function completeTask(taskId, channelUrl) {
             window.open(channelUrl, '_blank');
             
@@ -386,6 +400,9 @@
                 } else if (taskId === 3 && !task3Done) {
                     task3Done = true;
                     userBalance += 0.003;
+                } else if (taskId === 4 && !task4Done) {
+                    task4Done = true;
+                    userBalance += 0.003;
                 }
                 updateBalanceDisplay();
                 updateTaskButtons();
@@ -393,11 +410,10 @@
             }, 3000);
         }
 
-        // دالة تشغيل الإعلانات (مع شرط التحقق من الانضمام للقنوات أولاً)
+        // دالة تشغيل الإعلانات (مع شرط الانضمام للقنوات أولاً)
         function watchAd() {
-            // شرط التحقق: يجب أن يكون قد انضم لقناة واحدة على الأقل (أو اشترط الثلاثة معاً بوضع && بدلاً من ||)
-            if (!task1Done && !task2Done && !task3Done) {
-                alert('عذراً! يجب عليك أولاً الانضمام إلى قناة واحدة على الأقل من قسم المهام (Tasks) لكي تتمكن من مشاهدة الإعلانات والحصول على المكافآت.');
+            if (!task1Done && !task2Done && !task3Done && !task4Done) {
+                alert('عذراً! يجب عليك أولاً إتمام مهمة واحدة على الأقل من قسم المهام (Tasks) لكي تتمكن من مشاهدة الإعلانات.');
                 showPage('tasks');
                 return;
             }
@@ -405,7 +421,7 @@
             if (typeof window.showGiga === 'function') {
                 window.showGiga().then(() => {
                     adWatchedCount++;
-                    userBalance += 0.005; // مكافأة الإعلان
+                    userBalance += 0.005; 
                     updateBalanceDisplay();
                     alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة.');
                 }).catch(e => {
@@ -472,8 +488,8 @@
                 return;
             }
 
-            if (!task1Done || !task2Done || !task3Done) {
-                alert('عذراً، يجب إتمام جميع مهام الاشتراك في القنوات أولاً لتتمكن من السحب!');
+            if (!task1Done || !task2Done || !task3Done || !task4Done) {
+                alert('عذراً، يجب إتمام جميع المهام (القنوات واليوتيوب) أولاً لتتمكن من السحب!');
                 showPage('tasks');
                 return;
             }
