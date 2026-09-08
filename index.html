@@ -42,8 +42,14 @@
         .stat-box { flex: 1; background: #131b2e; border: 1px solid #1e293b; padding: 12px; border-radius: 14px; text-align: center; }
         .stat-num { font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 5px; }
         
+        .action-btn { background: #38bdf8; color: #080b11; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
         .claim-btn { background: #10b981; color: white; border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .claim-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
+        .input-field {
+            width: 100%; padding: 12px; background: #080b11; border: 1px solid #1e293b;
+            border-radius: 10px; color: white; margin-top: 10px; outline: none; font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -57,6 +63,9 @@
         <div class="card">
             <div class="balance-title">رصيدك الحالي</div>
             <div class="balance" id="balance">0.001</div>
+            
+            <!-- زر الانتقال السريع للإيداع -->
+            <button class="action-btn" onclick="switchNav('deposit')">💳 إيداع USDT</button>
         </div>
 
         <!-- زر الإعلان -->
@@ -86,7 +95,30 @@
         </div>
     </div>
 
-    <!-- 2. صفحة الاستثمار (Invest) -->
+    <!-- 2. صفحة الإيداع (Deposit) -->
+    <div id="sec-deposit" class="page-section">
+        <div class="section-title">شحن الرصيد (USDT)</div>
+        <div class="card">
+            <p class="section-desc">قم بتحويل المبلغ المطلوبة على شبكة TON أو TRC20 إلى العنوان أدناه، ثم أرسل رقم العملية:</p>
+            
+            <div style="background: #080b11; padding: 12px; border-radius: 10px; margin: 10px 0; word-break: break-all; font-family: monospace; font-size: 13px; color: #38bdf8;" id="walletAddress">
+                EQD...ضع_عنوان_محفظتك_هنا...
+            </div>
+            <button class="action-btn" style="background: #10b981; color: white;" onclick="copyWallet()">📋 نسخ عنوان المحفظة</button>
+
+            <div style="margin-top: 15px;">
+                <label style="font-size: 13px; color: #94a3b8;">أدخل المبلغ الذي أرسلته (USDT):</label>
+                <input type="number" id="depositAmount" class="input-field" placeholder="مثال: 10">
+                
+                <label style="font-size: 13px; color: #94a3b8; display: block; margin-top: 10px;">رقم المعاملة (TxID):</label>
+                <input type="text" id="txIdInput" class="input-field" placeholder="ألصق كود التحويل هنا">
+
+                <button class="action-btn" onclick="submitDeposit()" style="margin-top: 15px;">تأكيد الإيداع</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. صفحة الاستثمار (Invest) -->
     <div id="sec-invest" class="page-section">
         <div class="section-title">قسم الاستثمار</div>
         
@@ -103,7 +135,7 @@
         </div>
     </div>
 
-    <!-- 3. صفحة المهام (Tasks) -->
+    <!-- 4. صفحة المهام (Tasks) -->
     <div id="sec-tasks" class="page-section">
         <div class="section-title">المهام اليومية</div>
         <div class="card">
@@ -115,7 +147,7 @@
         </div>
     </div>
 
-    <!-- 4. صفحة الإحالات (Referrals) -->
+    <!-- 5. صفحة الإحالات (Referrals) -->
     <div id="sec-referrals" class="page-section">
         <div class="section-title">برنامج الإحالات</div>
         <div class="card">
@@ -158,7 +190,11 @@
             });
 
             document.getElementById('sec-' + pageName).classList.add('active');
-            btnElement.classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
+        }
+
+        function switchNav(pageName) {
+            showPage(pageName, null);
         }
 
         const AdController = window.Adsgram.init({ blockId: "46739" });
@@ -218,14 +254,39 @@
             }
         }
 
-        // دالة تفعيل الاستثمار مع التحقق من الرصيد
-        function investPlan(requiredAmount, planName) {
-            if (userBalance < requiredAmount) {
-                alert("عذراً، رصيدك الحالي غير كافٍ لتفعيل هذه الخطة.تحتاج إلى " + requiredAmount + " USDT.");
+        function copyWallet() {
+            const walletText = document.getElementById('walletAddress').innerText;
+            navigator.clipboard.writeText(walletText).then(() => {
+                alert("تم نسخ عنوان المحفظة بنجاح!");
+            });
+        }
+
+        function submitDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            const txId = document.getElementById('txIdInput').value;
+
+            if (!amount || amount <= 0 || !txId) {
+                alert("يرجى إدخال المبلغ ورقم المعاملة (TxID) بشكل صحيح.");
                 return;
             }
 
-            // خصم المبلغ من رصيد المستخدم
+            // محاكاة إضافة الرصيد فوراً (أو يمكنك ربطها بـ Backend لاحقاً للمراجعة اليدوية)
+            userBalance += amount;
+            localStorage.setItem('userBalance', userBalance);
+            document.getElementById('balance').innerText = userBalance.toFixed(3);
+
+            alert("تم إرسال طلب الإيداع بنجاح! وإضافة " + amount + " USDT إلى رصيدك.");
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('txIdInput').value = '';
+            showPage('home', document.querySelector('.nav-btn.active'));
+        }
+
+        function investPlan(requiredAmount, planName) {
+            if (userBalance < requiredAmount) {
+                alert("عذراً، رصيدك الحالي غير كافٍ لتفعيل هذه الخطة. تحتاج إلى " + requiredAmount + " USDT. يرجى شحن رصيدك أولاً.");
+                return;
+            }
+
             userBalance -= requiredAmount;
             localStorage.setItem('userBalance', userBalance);
             document.getElementById('balance').innerText = userBalance.toFixed(3);
