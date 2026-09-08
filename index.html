@@ -109,7 +109,7 @@
                 <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-clock-rotate-left ml-1"></i> استثماراتي النشطة</h3>
                 <p class="text-xs text-slate-400 mb-4 text-center">تابع هنا الوقت المتبقي لحصولك على أرباحك اليومية</p>
                 <div id="investments-list" class="space-y-3">
-                    <p class="text-xs text-slate-500 text-center py-6">جاري تحميل استثماراتی...</p>
+                    <p class="text-xs text-slate-500 text-center py-6">جاري تحميل استثماراتي...</p>
                 </div>
             </div>
         </section>
@@ -117,8 +117,9 @@
         <!-- 3. Deposit Section -->
         <section id="section-deposit" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
-                <h3 class="font-bold text-lg mb-3 text-amber-400">إيداع رصيد (USDT)</h3>
-                <p class="text-xs text-slate-400 mb-4">قم بالتحويل إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:</p>
+                <h3 class="font-bold text-lg mb-2 text-amber-400">إيداع رصيد (USDT BEP20)</h3>
+                <p class="text-xs text-slate-400 mb-1">قم بالتحويل عبر شبكة <strong class="text-amber-300">BEP20</strong> إلى العنوان أدناه، ثم أدخل رقم المعاملة (TxID) للمراجعة:</p>
+                <p class="text-xs text-amber-400 font-bold mb-4">الحد الأدنى للإيداع هو: 5.00 USDT</p>
                 
                 <!-- حقل عنوان المحفظة مع زر النسخ -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between mb-4">
@@ -130,7 +131,7 @@
 
                 <div class="space-y-3">
                     <input type="text" id="deposit-txid" placeholder="أدخل رقم المعاملة TxID" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
-                    <input type="number" id="deposit-amount" placeholder="المبلغ (USDT)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
+                    <input type="number" id="deposit-amount" placeholder="المبلغ (الحد الأدنى 5 USDT)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500">
                     <button onclick="submitDeposit()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition">إرسال للمراجعة</button>
                 </div>
             </div>
@@ -242,7 +243,6 @@
             document.getElementById("home-balance").innerText = userBalance.toFixed(3);
         }
 
-        // دالة عامة لنسخ النصوص مع رسالة نجاح مخصصة
         window.copyText = function(elementId, successMessage) {
             const textToCopy = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(textToCopy).then(() => {
@@ -284,7 +284,6 @@
             });
         }
 
-        // تحميل استثمارات المستخدم وعرضها
         async function loadUserInvestments() {
             try {
                 const q = query(collection(db, "investments"), where("userId", "==", userId));
@@ -306,7 +305,6 @@
             }
         }
 
-        // تحديث العد التنازلي للربح (كل 24 ساعة للربح اليومي)
         function renderInvestmentsList() {
             const container = document.getElementById("investments-list");
             if (activeInvestments.length === 0) {
@@ -363,8 +361,13 @@
             const txid = document.getElementById("deposit-txid").value.trim();
             const amount = parseFloat(document.getElementById("deposit-amount").value);
             
-            if(!txid || isNaN(amount) || amount <= 0) {
+            if(!txid || isNaN(amount)) {
                 alert("الرجاء إدخال بيانات صحيحة.");
+                return;
+            }
+
+            if(amount < 5) {
+                alert("الحد الأدنى للإيداع هو 5.00 USDT.");
                 return;
             }
 
