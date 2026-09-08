@@ -202,20 +202,20 @@
         </div>
     </div>
 
-    <!-- 3. صفحة المهام المحدثة (Tasks) - مهام بربح 0.003 لكل مهمة -->
+    <!-- 3. صفحة المهام (Tasks) -->
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام اليومية</div>
         
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة التليجرام الرسمية</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="alert('تم تنفيذ المهمة بنجاح وإضافة المكافأة!')">تنفيذ المهمة</button>
+            <button class="action-btn" onclick="completeTask()">تنفيذ المهمة</button>
         </div>
 
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">متابعة حسابنا على منصة إكس</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="alert('تم تنفيذ المهمة بنجاح وإضافة المكافأة!')">تنفيذ المهمة</button>
+            <button class="action-btn" onclick="completeTask()">تنفيذ المهمة</button>
         </div>
     </div>
 
@@ -250,21 +250,24 @@
         </div>
     </div>
 
-    <!-- 5. صفحة السحب (Withdraw) -->
+    <!-- 5. صفحة السحب المحدثة (Withdraw) - حد أدنى 0.2 وشترط 25 إعلان -->
     <div id="sec-withdraw" class="page-section" style="display:none;">
         <div class="section-title">سحب الأرباح</div>
         <div class="card">
             <div style="font-weight: bold; margin-bottom: 8px;">سحب رصيد USDT</div>
-            <p class="section-desc">أدخل تفاصيل محفظتك للسحب</p>
+            <p class="section-desc">الحد الأدنى للسحب: 0.2 USDT | الشرط: مشاهدة 25 إعلاناً</p>
+            
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
-                <input type="number" id="withdrawAmount" placeholder="0.00" class="input-field">
+                <input type="number" id="withdrawAmount" placeholder="0.20" class="input-field" step="0.01">
             </div>
+            
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
                 <input type="text" id="withdrawAddress" placeholder="T..." class="input-field">
             </div>
-            <button class="action-btn" onclick="alert('تم إرسال طلب السحب بنجاح')">تأكيد السحب</button>
+
+            <button class="action-btn" onclick="requestWithdraw()" style="margin-top: 20px;">تأكيد السحب</button>
         </div>
     </div>
 
@@ -293,6 +296,9 @@
     </div>
 
     <script>
+        // متغيرات النظام
+        let adWatchedCount = 1;
+
         function showPage(pageId, btn) {
             document.querySelectorAll('.page-section').forEach(sec => {
                 sec.style.display = 'none';
@@ -312,7 +318,13 @@
         }
 
         function watchAd() {
-            alert('جاري تحميل الإعلان...');
+            adWatchedCount++;
+            document.getElementById('adCount').innerText = adWatchedCount;
+            alert('تم مشاهدة الإعلان بنجاح! إجمالي الإعلانات المشاهدة: ' + adWatchedCount);
+        }
+
+        function completeTask() {
+            alert('تم تنفيذ المهمة بنجاح وإضافة 0.003 USDT إلى رصيدك!');
         }
 
         function copyAddress() {
@@ -337,6 +349,38 @@
             }
             alert('تم إرسال طلب تأكيد الإيداع بنجاح، سيتم مراجعته وإضافة الرصيد قريباً.');
             document.getElementById('txidInput').value = '';
+            showPage('home');
+        }
+
+        function requestWithdraw() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const address = document.getElementById('withdrawAddress').value;
+
+            if (!amount || isNaN(amount)) {
+                alert('يرجى إدخال مبلغ صالح للسحب.');
+                return;
+            }
+
+            if (!address) {
+                alert('يرجى إدخال عنوان محفظة TRC20.');
+                return;
+            }
+
+            // فحص الحد الأدنى (0.2)
+            if (amount < 0.2) {
+                alert('عذراً، الحد الأدنى للسحب هو 0.2 USDT.');
+                return;
+            }
+
+            // فحص شرط مشاهدة 25 إعلان
+            if (adWatchedCount < 25) {
+                alert('عذراً، شرط السحب غير مكتمل. لقد شاهدت ' + adWatchedCount + ' إعلان فقط، ويجب مشاهدة 25 إعلاناً على الأقل.');
+                return;
+            }
+
+            alert('تم تقديم طلب السحب بنجاح وسيتم معالجته قريباً!');
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('withdrawAddress').value = '';
             showPage('home');
         }
     </script>
