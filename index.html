@@ -150,7 +150,7 @@
         </div>
     </div>
 
-    <!-- صفحة الإيداع الجديدة (Deposit) -->
+    <!-- صفحة الإيداع الحقيقية (Deposit) -->
     <div id="sec-deposit" class="page-section" style="display:none;">
         <div class="section-title">إيداع رصيد USDT</div>
         <div class="card">
@@ -160,12 +160,21 @@
             <div style="margin-top: 15px;">
                 <label style="font-size: 13px; display: block; margin-bottom: 5px; color: #94a3b8;">عنوان المحفظة:</label>
                 <div style="background: #0b101b; padding: 12px; border-radius: 10px; border: 1px solid #23304a; word-break: break-all; font-family: monospace; color: #38bdf8;" id="walletAddress">
-                    TXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                    TYourActualUSDTWalletAddressHere123456
                 </div>
             </div>
 
             <button class="action-btn" onclick="copyAddress()" style="margin-top: 15px;">
                 <i class="fas fa-copy"></i> نسخ العنوان
+            </button>
+
+            <div style="margin-top: 20px;">
+                <label style="font-size: 13px; display: block; margin-bottom: 5px;">أدخل رقم عملية التحويل (TxID):</label>
+                <input type="text" id="txidInput" placeholder="أدخل TxID هنا..." class="input-field">
+            </div>
+
+            <button class="action-btn" onclick="confirmDeposit()" style="background: #10b981; margin-top: 15px;">
+                <i class="fas fa-check-circle"></i> تأكيد وإرسال الإيداع
             </button>
             
             <button class="action-btn" onclick="showPage('home')" style="background: #334155; margin-top: 10px;">
@@ -282,6 +291,17 @@
             navigator.clipboard.writeText(addressText).then(() => {
                 alert('تم نسخ عنوان المحفظة بنجاح!');
             });
+        }
+
+        function confirmDeposit() {
+            const txid = document.getElementById('txidInput').value;
+            if(!txid) {
+                alert('يرجى إدخال رقم عملية التحويل (TxID) أولاً');
+                return;
+            }
+            alert('تم إرسال طلب تأكيد الإيداع بنجاح، سيتم مراجعته وإضافة الرصيد قريباً.');
+            document.getElementById('txidInput').value = '';
+            showPage('home');
         }
     </script>
 </body>
