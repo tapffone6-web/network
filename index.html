@@ -25,7 +25,7 @@
             <h1 class="font-bold text-lg text-amber-400">Moon Network</h1>
         </div>
         <div class="flex items-center space-x-3 space-x-reverse">
-            <!-- زر الأدمن مخفي افتراضياً ولا يظهر إلا للأيدي الخاص بك -->
+            <!-- زر الأدمن مخفي ولا يظهر إلا للأيدي الخاص بك -->
             <button id="admin-btn" onclick="openAdminPanel()" class="hidden bg-slate-800 text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-amber-400 font-semibold hover:bg-slate-700 transition">
                 <i class="fa-solid fa-lock ml-1"></i> لوحة الأدمن
             </button>
@@ -153,10 +153,22 @@
 
         <!-- 5. Referrals Section -->
         <section id="section-referrals" class="hidden-section space-y-4">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
-                <h3 class="font-bold text-lg mb-2 text-amber-400 text-center">نظام الإحالة (10%)</h3>
-                <p class="text-xs text-slate-400 mb-4 text-center">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4">
+                <h3 class="font-bold text-lg mb-1 text-amber-400 text-center">نظام الإحالة (10%)</h3>
+                <p class="text-xs text-slate-400 mb-2 text-center">شارك رابطك وادع أصدقاءك واكسب 10% من قيمة إيداعاتهم</p>
                 
+                <!-- إحصائيات الإحالات الجديدة -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+                        <p class="text-xs text-slate-400">عدد الإحالات</p>
+                        <h4 id="ref-count" class="text-xl font-bold text-amber-400 mt-1">0</h4>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+                        <p class="text-xs text-slate-400">أرباح الإحالات</p>
+                        <h4 id="ref-earnings" class="text-xl font-bold text-emerald-400 mt-1">0.000 USDT</h4>
+                    </div>
+                </div>
+
                 <!-- حقل رابط الإحالة مع زر النسخ -->
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
                     <span id="ref-link-box" class="text-xs text-amber-300 break-all select-all font-mono">جاري تحميل الرابط...</span>
@@ -218,7 +230,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // تم تعيين أيدي الأدمن الخاص بك هنا
         const ADMIN_TELEGRAM_ID = "1985474484"; 
 
         let userId = "user_12345";
@@ -238,7 +249,6 @@
             }
         }
 
-        // إظهار زر لوحة الأدمن فقط إذا كان الأيدي مطابقاً لأيديك
         if (rawTelegramId === ADMIN_TELEGRAM_ID) {
             document.getElementById("admin-btn").classList.remove("hidden");
         }
@@ -283,6 +293,7 @@
             }
             updateUIBalance();
             loadUserInvestments();
+            loadReferralStats(); // جلب إحصائيات الإحالات
 
             onSnapshot(userRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -293,6 +304,27 @@
                     }
                 }
             });
+        }
+
+        // دالة لجلب إحصائيات الإحالات من قاعدة البيانات
+        async function loadReferralStats() {
+            try {
+                // حساب عدد الأشخاص الذين سجلوا برابطك
+                const q = query(collection(db, "users"), where("referrer", "==", userId));
+                const querySnapshot = await getDocs(q);
+                const refCount = querySnapshot.size;
+                document.getElementById("ref-count").innerText = refCount;
+
+                // حساب الأرباح المكتسبة من الإحالات (يمكن حفظها في حقل خاص أو جلبها)
+                const userRef = doc(db, "users", userId);
+                const userDoc = await getDoc(userRef);
+                if (userDoc.exists()) {
+                    const refEarnings = userDoc.data().refEarnings || 0;
+                    document.getElementById("ref-earnings").innerText = refEarnings.toFixed(3) + " USDT";
+                }
+            } catch (e) {
+                console.error("خطأ في تحميل إحصائيات الإحالات", e);
+            }
         }
 
         async function loadUserInvestments() {
@@ -436,7 +468,6 @@
         };
 
         window.openAdminPanel = async function() {
-            // حماية صارمة تمنع فتح لوحة الأدمن لأي مستخدم آخر نهائياً
             if (rawTelegramId !== ADMIN_TELEGRAM_ID) {
                 alert("غير مصرح لك بالدخول إلى هذه اللوحة!");
                 return;
@@ -518,8 +549,15 @@
                         const refSnap = await getDoc(refRef);
                         if (refSnap.exists()) {
                             const refBonus = amount * 0.10;
-                            const refCurrentBal = refSnap.data().balance || 0;
-                            await updateDoc(refRef, { balance: refCurrentBal + refBonus });
+                            const refData = refSnap.data();
+                            const refCurrentBal = refData.balance || 0;
+                            const currentRefEarnings = refData.refEarnings || 0;
+                            
+                            // تحديث رصيد المحيل وأرباح الإحالات الخاصة به
+                            await updateDoc(refRef, { 
+                                balance: refCurrentBal + refBonus,
+                                refEarnings: currentRefEarnings + refBonus
+                            });
                         }
                     }
                 }
