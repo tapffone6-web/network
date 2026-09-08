@@ -54,18 +54,27 @@
             <div class="balance" id="balance">0.001</div>
         </div>
 
-        <!-- زر الإعلان -->
         <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
           🎬 مشاهدة إعلان للحصول على مكافأة
         </button>
     </div>
 
-    <!-- 2. صفحة الاستثمار (Invest) -->
+    <!-- 2. صفحة الاستثمار (Invest) - تحتوي على خططتين -->
     <div id="sec-invest" class="page-section">
         <div class="section-title">قسم الاستثمار</div>
+        
+        <!-- الخططة الأولى -->
         <div class="card">
-            <p class="section-desc">استثمر عملاتك الرقمية واحصل على عوائد أسبوعية ويومية مضمونة.</p>
-            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer;">بدء خطة الاستثمار</button>
+            <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة البرونزية (أرباح يومية)</div>
+            <p class="section-desc">استثمر ابدأ بـ 1 USDT واحصل على عائد 5% يومياً.</p>
+            <button style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="alert('تم تفعيل الخطة البرونزية بنجاح!')">استثمار الآن</button>
+        </div>
+
+        <!-- الخطة الثانية -->
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; color: #38bdf8; margin-bottom: 5px;">الخطة الذهبية (أرباح مضاعفة)</div>
+            <p class="section-desc">استثمر 10 USDT واحصل على عائد 15% بعد 3 أيام.</p>
+            <button style="width: 100%; padding: 12px; background-color: #f59e0b; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="alert('تم تفعيل الخطة الذهبية بنجاح!')">استثمار الآن</button>
         </div>
     </div>
 
@@ -76,7 +85,7 @@
             <p class="section-desc">أكمل المهام أدناه لزيادة رصيدك من الـ USDT فوراً.</p>
             <div style="background: #080b11; padding: 15px; border-radius: 12px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 14px;">انضم لقناة التليجرام (+0.005)</span>
-                <button style="background: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; color: #080b11; cursor: pointer;">تنفيذ</button>
+                <button style="background: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; color: #080b11; cursor: pointer;" onclick="alert('تم تنفيذ المهمة بنجاح!')">تنفيذ</button>
             </div>
         </div>
     </div>
@@ -109,23 +118,18 @@
     <script>
         let userBalance = 0.001;
 
-        // دالة التبديل بين الصفحات المعزولة
         function showPage(pageName, btnElement) {
-            // إخفاء كل الأقسام
             document.querySelectorAll('.page-section').forEach(sec => {
                 sec.classList.remove('active');
             });
-            // إزالة الأيقونة النشطة من الأزرار
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('active');
             });
 
-            // إظهار القسم المطلوب وتنشيط الزر
             document.getElementById('sec-' + pageName).classList.add('active');
             btnElement.classList.add('active');
         }
 
-        // إعلانات Adsgram
         const AdController = window.Adsgram.init({ blockId: "46739" });
         const adButton = document.getElementById('watchAdBtn');
 
