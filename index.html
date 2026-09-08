@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONEY VAULT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- سكريبت منصة الإعلانات GigaPub المخصص لتطبيقك -->
+    <script src="https://ad.gigapub.tech/script?id=5898"></script>
+    
     <style>
         body {
             background-color: #131B2E;
@@ -337,13 +341,27 @@
             }
         }
 
+        // دالة تشغيل إعلانات GigaPub الحقيقية عند النقر على الزر
         function watchAd() {
-            window.open('https://www.example.com', '_blank');
-            setTimeout(() => {
-                adWatchedCount++;
-                document.getElementById('adCount').innerText = adWatchedCount;
-                alert('شكراً لك! تم احتساب مشاهدة الإعلان بنجاح. الإجمالي: ' + adWatchedCount);
-            }, 3000);
+            if (typeof window.showGiga === 'function') {
+                window.showGiga().then(() => {
+                    // عندما يشاهد المستخدم الإعلان بالكامل بنجاح
+                    adWatchedCount++;
+                    document.getElementById('adCount').innerText = adWatchedCount;
+                    
+                    // يمكنك هنا إضافة مكافأة رصيد للمستخدم مقابل مشاهدة الإعلان إذا أردت
+                    userBalance += 0.005; 
+                    updateBalanceDisplay();
+                    
+                    alert('شكراً لك! تم إكمال مشاهدة الإعلان بنجاح وإضافة المكافأة لرصيدك.');
+                }).catch(e => {
+                    // في حال حدث خطأ أو أغلق المستخدم الإعلان قبل اكتماله
+                    console.error(e);
+                    alert('لم يتم إكمال مشاهدة الإعلان أو حدث خطأ.');
+                });
+            } else {
+                alert('جاري تحميل نظام الإعلانات، يرجى الانتظار ثوانٍ معدودة والمحاولة مجدداً.');
+            }
         }
 
         function joinTelegramChannel(channelUrl) {
@@ -357,7 +375,7 @@
 
         function investPackage(requiredAmount, packageName) {
             if (userBalance < requiredAmount) {
-                alert('عذراً، رصيد غير كافٍ. رصيدك الحالي هو ' + userBalance.toFixed(3) + ' USDT، بينما تتطلب ' + packageName + ' مبلغ ' + requiredAmount + ' USDT. يرجى إيداع رصيد أولاً.');
+                alert('عذراً، رصيد غير كافٍ. رصيدك الحالي هو ' + userBalance.toFixed(3) + ' USDT، بينما تتطلب ' + packageName + ' مبلغ ' + requiredAmount + ' USDT.');
                 return;
             }
 
