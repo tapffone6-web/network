@@ -202,16 +202,25 @@
         </div>
     </div>
 
-    <!-- 3. صفحة المهام (Tasks) - تم ربطها بقناتك -->
+    <!-- 3. صفحة المهام (Tasks) - تحتوي على القناتين -->
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام اليومية</div>
         
+        <!-- القناة الأولى -->
         <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة التليجرام الرسمية</div>
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة MONEY VAULT</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
             <button class="action-btn" onclick="joinTelegramChannel('https://t.me/MoneyVault10')">تنفيذ المهمة</button>
         </div>
 
+        <!-- القناة الثانية -->
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الانضمام لقناة AksbCash</div>
+            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
+            <button class="action-btn" onclick="joinTelegramChannel('https://t.me/AksbCash')">تنفيذ المهمة</button>
+        </div>
+
+        <!-- مهمة إكس -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">متابعة حسابنا على منصة إكس</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
@@ -330,7 +339,6 @@
             }, 3000);
         }
 
-        // دالة خاصة لفتح قناتك في التليجرام وإضافة المكافأة
         function joinTelegramChannel(channelUrl) {
             window.open(channelUrl, '_blank');
             setTimeout(() => {
