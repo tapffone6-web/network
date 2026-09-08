@@ -53,12 +53,53 @@
                 </button>
             </div>
 
-            <!-- Promo Code Box -->
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow">
-                <h3 class="font-bold text-base mb-2">رمز ترويجي (Promo Code)</h3>
-                <div class="flex gap-2">
-                    <input type="text" id="promo-input" placeholder="أدخل الرمز هنا..." class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-amber-500">
-                    <button onclick="applyPromoCode()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition">تفعيل</button>
+            <!-- Investment Plans Section -->
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow space-y-3">
+                <h3 class="font-bold text-lg mb-3 text-amber-400 text-center"><i class="fa-solid fa-chart-line ml-1"></i> خطط الاستثمار</h3>
+                
+                <!-- Plan 1 -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-sm text-amber-300">الخطة الأولى</h4>
+                        <p class="text-xs text-slate-400">إيداع: 5$ | الربح: 0.5$ يومياً</p>
+                    </div>
+                    <button onclick="investPlan(5, 0.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                </div>
+
+                <!-- Plan 2 -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-sm text-amber-300">الخطة الثانية</h4>
+                        <p class="text-xs text-slate-400">إيداع: 10$ | الربح: 1$ يومياً</p>
+                    </div>
+                    <button onclick="investPlan(10, 1)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                </div>
+
+                <!-- Plan 3 -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-sm text-amber-300">الخطة الثالثة</h4>
+                        <p class="text-xs text-slate-400">إيداع: 20$ | الربح: 2$ يومياً</p>
+                    </div>
+                    <button onclick="investPlan(20, 2)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                </div>
+
+                <!-- Plan 4 -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-sm text-amber-300">الخطة الرابعة</h4>
+                        <p class="text-xs text-slate-400">إيداع: 50$ | الربح: 3.5$ يومياً</p>
+                    </div>
+                    <button onclick="investPlan(50, 3.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
+                </div>
+
+                <!-- Plan 5 -->
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-sm text-amber-300">الخطة الخامسة</h4>
+                        <p class="text-xs text-slate-400">إيداع: 100$ | الربح: 7.5$ يومياً</p>
+                    </div>
+                    <button onclick="investPlan(100, 7.5)" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition">استثمار</button>
                 </div>
             </div>
         </section>
@@ -126,7 +167,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (Without Tasks) -->
+    <!-- Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-40">
         <button onclick="switchTab('home')" id="btn-home" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i>الرئيسية</button>
         <button onclick="switchTab('deposit')" id="btn-deposit" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i>إيداع</button>
@@ -346,17 +387,23 @@
             alert("تم إضافة مكافأة الإعلان بنجاح!");
         };
 
-        window.applyPromoCode = function() {
-            const code = document.getElementById("promo-input").value.trim();
-            if(code === "MONEY2026") {
-                userBalance += 0.05;
-                updateUIBalance();
-                setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
-                alert("تم تفعيل الرمز بنجاح +0.05 USDT!");
-                document.getElementById("promo-input").value = "";
-            } else {
-                alert("الرمز غير صحيح أو منتهي الصلاحية.");
+        window.investPlan = async function(cost, dailyProfit) {
+            if(userBalance < cost) {
+                alert("رصيدك غير كافي للاشتراك في هذه الخطة!");
+                return;
             }
+            userBalance -= cost;
+            updateUIBalance();
+            await setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
+            
+            await addDoc(collection(db, "investments"), {
+                userId: userId,
+                cost: cost,
+                dailyProfit: dailyProfit,
+                timestamp: new Date()
+            });
+
+            alert(`تم الاشتراك في الخطة بنجاح! تم خصم ${cost} USDT.`);
         };
 
         loadUserData();
