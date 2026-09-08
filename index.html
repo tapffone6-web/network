@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moon Network - Money Vault</title>
+    <!-- تضمين مكتبة تليجرام WebApp الرسمية -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- سكربت إعلانات Giga Pub -->
@@ -139,8 +141,8 @@
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
                 <h3 class="font-bold text-lg mb-2 text-amber-400">نظام الإحالة</h3>
                 <p class="text-xs text-slate-400 mb-4">شارك رابطك وادع أصدقاءك للاستفادة</p>
-                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-amber-300 select-all mb-3">
-                    https://t.me/MoonNetworkBot?start=ref_12345
+                <div id="ref-link-box" class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs text-amber-300 select-all mb-3">
+                    جاري تحميل الرابط...
                 </div>
             </div>
         </section>
@@ -195,17 +197,26 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const userId = "user_12345";
+        // جلب معرف المستخدم الحقيقي من تليجرام أو استخدام معرف افتراضي مؤقت للتجربة بالمتصفح
+        let userId = "user_12345";
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            userId = "user_" + window.Telegram.WebApp.initDataUnsafe.user.id;
+        }
+
         let userBalance = 0;
 
-        // استخدام الاستماع الحي (onSnapshot) لضمان تحديث الرصيد ومزامنته دائماً من القاعدة دون تصفير
+        // تهيئة رابط الإحالة الخاص بالمستخدم
+        document.getElementById("ref-link-box").innerText = `https://t.me/MoonNetworkBot?start=ref_${userId.replace('user_', '')}`;
+
+        // دالة مراقبة ومزامنة الرصيد الحية من قاعدة البيانات
         function initUserData() {
             const userRef = doc(db, "users", userId);
             onSnapshot(userRef, async (docSnap) => {
                 if (docSnap.exists()) {
                     userBalance = docSnap.data().balance || 0;
                 } else {
-                    await setDoc(userRef, { balance: 0 });
+                    // إذا كان مستخدماً جديداً، أنشئ له مستنداً برصيد 0
+                    await setDoc(userRef, { balance: 0, createdAt: new Date() });
                     userBalance = 0;
                 }
                 updateUIBalance();
@@ -289,6 +300,7 @@
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
                             <div>
                                 <p class="text-amber-400 font-bold">${data.amount} USDT</p>
+                                <p class="text-slate-400">مستخدم: ${data.userId}</p>
                                 <p class="text-slate-400">TxID: ${data.txid}</p>
                             </div>
                             <div class="flex gap-1">
@@ -382,14 +394,14 @@
             openAdminPanel();
         };
 
-        // دالة مشاهدة الإعلان وتحديث الرصيد فوراً وحفظه في القاعدة
+        // دالة مشاهدة الإعلان وتحديث الرصيد وحفظه فوراً في فايربيس
         window.watchAd = function() {
             if (typeof window.showGiga === "function") {
                 window.showGiga()
                     .then(async () => {
                         userBalance += 0.003;
                         updateUIBalance();
-                        // حفظ التحديث مباشرة في فايربيس
+                        // حفظ التحديث في قاعدة البيانات مباشرة
                         await setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
                         alert("تم إضافة مكافأة الإعلان بنجاح!");
                     })
@@ -421,7 +433,7 @@
             alert(`تم الاشتراك في الخطة بنجاح! تم خصم ${cost} USDT.`);
         };
 
-        // بدء تشغيل نظام مراقبة الرصيد
+        // تشغيل نظام المراقبة لجلب بيانات المستخدم الحالي
         initUserData();
 
         window.switchTab = function(tabId) {
