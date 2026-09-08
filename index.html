@@ -22,6 +22,14 @@
         }
         .balance-title { color: #94a3b8; font-size: 14px; }
         .balance { font-size: 34px; font-weight: bold; margin: 5px 0; color: #38bdf8; }
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: #0f172a; display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid #1e293b; z-index: 100;
+        }
+        .nav-item { text-align: center; color: #94a3b8; font-size: 12px; text-decoration: none; }
+        .nav-item i { display: block; font-size: 18px; margin-bottom: 4px; }
+        .nav-item.active { color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -36,14 +44,21 @@
     </div>
 
     <!-- زر الإعلان الفعّال -->
-    <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 25px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
+    <button id="watchAdBtn" style="width: 100%; padding: 16px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; box-shadow: 0 4px 12px rgba(0,136,204,0.3);">
       🎬 مشاهدة إعلان للحصول على مكافأة
     </button>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="nav-bar">
+        <a href="#" class="nav-item"><i class="fa-solid fa-users"></i>Referrals</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i>Invest</a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i>Home</a>
+    </div>
 
     <script>
         let userBalance = 0.001;
 
-        // تهيئة إعلانات Adsgram بالمعرف الصحيح
         const AdController = window.Adsgram.init({ 
             blockId: "46739" 
         });
@@ -52,12 +67,10 @@
 
         adButton.addEventListener('click', () => {
             AdController.show().then((result) => {
-                // عند مشاهدة الإعلان بنجاح
                 userBalance += 0.001; 
                 document.getElementById('balance').innerText = userBalance.toFixed(3);
                 alert("تهانينا! تمت إضافة +0.001 USDT لربحك.");
             }).catch((result) => {
-                // عند إلغاء أو عدم اكتمال الإعلان
                 alert("لم يتم اكتمال مشاهدة الإعلان.");
             });
         });
