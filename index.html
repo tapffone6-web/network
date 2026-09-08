@@ -202,7 +202,7 @@
         </div>
     </div>
 
-    <!-- 3. صفحة المهام (Tasks) - تحتوي على القنوات واليوتيوب -->
+    <!-- 3. صفحة المهام (Tasks) -->
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام اليومية</div>
         
@@ -227,18 +227,11 @@
             <button class="action-btn" onclick="joinTelegramChannel('https://t.me/TONVAULT_LordTon1')">تنفيذ المهمة</button>
         </div>
 
-        <!-- قناة اليوتيوب الجديدة -->
+        <!-- قناة اليوتيوب -->
         <div class="card">
             <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الاشتراك في قناة اليوتيوب</div>
             <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
             <button class="action-btn" onclick="joinTelegramChannel('https://youtube.com/@money32m?si=l0ss3UH9-bWNAIVZ')">اشتراك الآن</button>
-        </div>
-
-        <!-- مهمة إكس -->
-        <div class="card">
-            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">متابعة حسابنا على منصة إكس</div>
-            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">المكافأة: 0.003 USDT</div>
-            <button class="action-btn" onclick="completeTask()">تنفيذ المهمة</button>
         </div>
     </div>
 
@@ -360,12 +353,6 @@
                 updateBalanceDisplay();
                 alert('تم التحقق بنجاح وتم إضافة 0.003 USDT إلى رصيدك!');
             }, 2000);
-        }
-
-        function completeTask() {
-            userBalance += 0.003;
-            updateBalanceDisplay();
-            alert('تم تنفيذ المهمة بنجاح وتم إضافة 0.003 USDT إلى رصيدك!');
         }
 
         function investPackage(requiredAmount, packageName) {
