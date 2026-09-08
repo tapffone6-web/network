@@ -115,46 +115,22 @@
         </div>
     </div>
 
-    <!-- 3. صفحة السحب (Withdraw) -->
-    <div id="sec-withdraw" class="page-section" style="display:none;">
-        <div class="section-title">سحب الأرباح</div>
-        <div class="card">
-            <div style="font-weight: bold; margin-bottom: 8px;">سحب رصيد USDT</div>
-            <p class="section-desc">أدخل تفاصيل محفظتك للسحب</p>
-            
-            <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">المبلغ:</label>
-                <input type="number" id="withdrawAmount" placeholder="0.00" class="input-field">
-            </div>
-
-            <div style="margin-top: 15px;">
-                <label style="font-size: 13px; display: block; margin-bottom: 5px;">عنوان محفظة TRC20:</label>
-                <input type="text" id="withdrawAddress" placeholder="T..." class="input-field">
-            </div>
-
-            <button class="action-btn" onclick="alert('تم إرسال طلب السحب بنجاح')">تأكيد السحب</button>
-        </div>
-    </div>
-
-    <!-- 4. صفحة المهام والإعلانات والهدية والبرومو كود (Tasks) -->
+    <!-- 3. صفحة المهام والأرباح (Tasks) -->
     <div id="sec-tasks" class="page-section" style="display:none;">
         <div class="section-title">المهام والأرباح</div>
         
-        <!-- مشاهدة الإعلانات -->
         <div class="card">
             <div style="font-weight: bold; margin-bottom: 5px;">مشاهدة الإعلانات</div>
             <p class="section-desc">شاهِد الإعلانات واكسب المكافآت اليومية.</p>
             <button class="action-btn" onclick="alert('جاري مشاهدة الإعلان...')">شاهد الإعلان</button>
         </div>
 
-        <!-- الهدية اليومية -->
         <div class="card">
             <div style="font-weight: bold; margin-bottom: 5px;">الهدية اليومية</div>
             <p class="section-desc">احصل على هديتك المجانية كل يوم.</p>
             <button class="action-btn" style="background: #10b981;" onclick="alert('تم استلام الهدية بنجاح!')">استلام الهدية</button>
         </div>
 
-        <!-- البرومو كود -->
         <div class="card">
             <div style="font-weight: bold; margin-bottom: 5px;">رمز الاسترداد (Promo Code)</div>
             <p class="section-desc">أدخل الكود للحصول على رصيد إضافي.</p>
@@ -163,7 +139,7 @@
         </div>
     </div>
 
-    <!-- 5. صفحة الإحالات (Referrals) -->
+    <!-- 4. صفحة الإحالات (Referrals) -->
     <div id="sec-referrals" class="page-section" style="display:none;">
         <div class="section-title">برنامج الإحالات</div>
         <div class="card">
@@ -172,7 +148,7 @@
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي (Navigation Bar) -->
+    <!-- شريط التنقل السفلي الأصلي -->
     <div class="nav-bar">
         <button class="nav-btn active" onclick="showPage('home', this)">
             <i class="fas fa-house"></i>
@@ -189,10 +165,6 @@
         <button class="nav-btn" onclick="showPage('referrals', this)">
             <i class="fas fa-users"></i>
             <span>Referrals</span>
-        </button>
-        <button class="nav-btn" onclick="showPage('withdraw', this)">
-            <i class="fas fa-wallet"></i>
-            <span>سحب</span>
         </button>
     </div>
 
