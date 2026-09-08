@@ -1,301 +1,67 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moon Network</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      background-color: #080b11; color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0; padding: 15px 15px 80px 15px;
-    }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    
-    /* بطاقة الرصيد */
-    .card {
-      background: linear-gradient(145deg, #131b2e, #0d121d);
-      border-radius: 20px; padding: 20px;
-      border: 1px solid #1e293b; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    }
-    .balance-title { color: #94a3b8; font-size: 14px; margin: 0; }
-    .balance { font-size: 34px; font-weight: bold; margin: 10px 0; color: #fff; }
-    .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-    .btn-action {
-      flex: 1; padding: 12px; border-radius: 12px; border: none;
-      font-weight: bold; cursor: pointer; transition: 0.2s;
-    }
-    .btn-withdraw { background: linear-gradient(90deg, #6366f1, #8b5cf6); color: white; }
-    .btn-history { background: #1e293b; color: #94a3b8; }
-    
-    /* بطاقات الإعلانات */
-    .ad-card {
-      background: linear-gradient(135deg, #2e1065, #1e1b4b);
-      border: 1px solid #8b5cf6; border-radius: 20px;
-      padding: 20px; margin-top: 15px; text-align: center;
-      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.25);
-    }
-    .ad-icon { font-size: 36px; color: #a855f7; margin-bottom: 10px; }
-    .btn-watch {
-      background: linear-gradient(90deg, #a855f7, #ec4899);
-      color: white; border: none; padding: 12px 24px;
-      border-radius: 12px; font-weight: bold; font-size: 15px;
-      cursor: pointer; width: 100%; margin-top: 12px;
-      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-    }
-    .btn-watch:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    /* حزم الاستثمار */
-    .invest-card {
-      background: #111827; border: 1px solid #1f2937;
-      border-radius: 16px; padding: 18px; margin-bottom: 15px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .invest-info h4 { margin: 0 0 5px 0; font-size: 16px; color: #f3f4f6; }
-    .invest-info p { margin: 0; font-size: 12px; color: #9ca3af; }
-    .invest-badge {
-      background: rgba(16, 185, 129, 0.1); color: #10b981;
-      padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;
-    }
-    .btn-invest {
-      background: linear-gradient(90deg, #10b981, #059669);
-      color: white; border: none; padding: 10px 16px;
-      border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px;
-    }
-
-    /* التنقل والمهام */
-    .section-title { font-size: 18px; font-weight: bold; margin: 25px 0 15px 0; }
-    .task-item {
-      background: #111827; border: 1px solid #1f2937; border-radius: 14px;
-      padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .task-info { display: flex; align-items: center; gap: 12px; }
-    .task-icon {
-      width: 40px; height: 40px; border-radius: 10px; background: #1e293b;
-      display: flex; align-items: center; justify-content: center; color: #6366f1; font-size: 18px;
-    }
-    .task-title { font-size: 14px; font-weight: 600; margin: 0; }
-    .task-reward { font-size: 12px; color: #10b981; margin-top: 3px; }
-    .btn-task {
-      background: #1e293b; color: #fff; border: 1px solid #374151;
-      padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;
-    }
-    .ref-input {
-      background: #080b11; border: 1px solid #374151; color: #fff;
-      padding: 10px; border-radius: 8px; width: 100%; font-size: 12px; margin-top: 10px;
-    }
-
-    /* شريط التنقل السفلي */
-    .nav-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #0d1117; border-top: 1px solid #1f2937;
-      display: flex; justify-content: space-around; padding: 12px 0;
-    }
-    .nav-item {
-      color: #6b7280; text-align: center; font-size: 11px; text-decoration: none; cursor: pointer;
-    }
-    .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
-    .nav-item.active { color: #6366f1; }
-    
-    .page { display: none; }
-    .page.active { display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Network</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #080b11; color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 15px 15px 80px 15px;
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .card {
+            background: linear-gradient(145deg, #131b2e, #0f172a);
+            border-radius: 20px; padding: 20px; margin-top: 15px;
+            border: 1px solid #1e293b; box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .balance-title { color: #94a3b8; font-size: 14px; }
+        .balance { font-size: 34px; font-weight: bold; margin: 5px 0; color: #38bdf8; }
+    </style>
 </head>
 <body>
 
-  <!-- Home Page -->
-  <div id="page-home" class="page active">
     <div class="header">
-      <h3 style="margin:0;">🌙 Moon Network</h3>
+        <h2>Moon Network</h2>
     </div>
-    
-    <!-- الرصيد -->
+
     <div class="card">
-      <p class="balance-title">Total Balance</p>
-      <div class="balance"><span id="balance">0.000</span> USDT</div>
-      <div class="btn-group">
-        <button class="btn-action btn-withdraw" onclick="alert('حد السحب الأدنى هو 10 USDT')">Withdraw ↑</button>
-        <button class="btn-action btn-history">History ⏱</button>
-      </div>
+        <div class="balance-title">رصيدك الحالي</div>
+        <div class="balance" id="balance">0.000</div>
     </div>
 
-    <!-- الإعلان الأول -->
-    <div class="ad-card">
-      <div class="ad-icon"><i class="fas fa-play-circle"></i></div>
-      <h3 style="margin:0; font-size: 18px;">مشاهدة إعلان سريع 1</h3>
-      <p style="color: #c084fc; font-size: 13px; margin: 5px 0 0 0;">شاهد الإعلان وربح +0.001 USDT فوراً</p>
-      <button class="btn-watch" onclick="watchMainAd(this, 0.001)">مشاهدة الإعلان 🎬</button>
-    </div>
+    <!-- زر مشاهدة الإعلان -->
+    <button id="watchAdBtn" style="width: 100%; padding: 14px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px;">
+      🎬 مشاهدة إعلان للحصول على مكافأة
+    </button>
 
-    <!-- الإعلان الثاني -->
-    <div class="ad-card" style="background: linear-gradient(135deg, #1e1b4b, #31104b); border-color: #a855f7;">
-      <div class="ad-icon" style="color: #ec4899;"><i class="fas fa-film"></i></div>
-      <h3 style="margin:0; font-size: 18px;">مشاهدة إعلان مميز 2</h3>
-      <p style="color: #f472b6; font-size: 13px; margin: 5px 0 0 0;">شاهد الإعلان وربح +0.001 USDT فوراً</p>
-      <button class="btn-watch" style="background: linear-gradient(90deg, #ec4899, #8b5cf6);" onclick="watchMainAd(this, 0.001)">مشاهدة الإعلان 🎬</button>
-    </div>
-  </div>
+    <script>
+        let userBalance = 0.000;
 
-  <!-- Invest Page -->
-  <div id="page-invest" class="page">
-    <div class="section-title">Invest & Earn Daily 📈</div>
-    
-    <!-- الخانة الأولى -->
-    <div class="invest-card">
-      <div class="invest-info">
-        <h4>حزمة الفضة 🥈</h4>
-        <p>استثمار: <strong>10.00 USDT</strong></p>
-        <div style="margin-top: 5px;"><span class="invest-badge">+0.60 USDT / يومياً</span></div>
-      </div>
-      <button class="btn-invest" onclick="startInvest(10, 0.60)">استثمر الان</button>
-    </div>
+        // تهيئة إعلانات Adsgram بالمعرف الخاص بك
+        const AdController = window.Adsgram.init({ 
+            blockId: "46739" 
+        });
 
-    <!-- الخانة الثانية -->
-    <div class="invest-card">
-      <div class="invest-info">
-        <h4>حزمة الذهبية 🥇</h4>
-        <p>استثمار: <strong>20.00 USDT</strong></p>
-        <div style="margin-top: 5px;"><span class="invest-badge">+1.40 USDT / يومياً</span></div>
-      </div>
-      <button class="btn-invest" onclick="startInvest(20, 1.40)">استثمر الان</button>
-    </div>
-  </div>
+        const adButton = document.getElementById('watchAdBtn');
 
-  <!-- Tasks Page -->
-  <div id="page-tasks" class="page">
-    <div class="section-title">Explore & Earn</div>
-    <div class="task-item">
-      <div class="task-info">
-        <div class="task-icon"><i class="fab fa-telegram"></i></div>
-        <div>
-          <p class="task-title">الانضمام لقناة التيليجرام</p>
-          <div class="task-reward">+0.003 USDT</div>
-        </div>
-      </div>
-      <button class="btn-task" onclick="doTask(this, 0.003)">إنجاز</button>
-    </div>
-  </div>
-
-  <!-- Referrals Page -->
-  <div id="page-referrals" class="page">
-    <div class="section-title">Invite Friends</div>
-    <div class="card" style="text-align: center;">
-      <i class="fas fa-users" style="font-size: 40px; color: #6366f1; margin-bottom: 10px;"></i>
-      <h4>دعوة الأصدقاء للحصول على المكافآت</h4>
-      <p style="color: #94a3b8; font-size: 13px;">احصل على +0.01 USDT لكل صديق يقوم بالتسجيل</p>
-      <input type="text" id="refLink" class="ref-input" readonly value="https://t.me/YourBotName?start=123456">
-      <button class="btn-action btn-withdraw" style="margin-top: 10px;" onclick="copyRef()">نسخ الرابط 📋</button>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation Bar -->
-  <div class="nav-bar">
-    <div class="nav-item active" onclick="switchTab('home', this)">
-      <i class="fas fa-home"></i> Home
-    </div>
-    <div class="nav-item" onclick="switchTab('invest', this)">
-      <i class="fas fa-chart-line"></i> Invest
-    </div>
-    <div class="nav-item" onclick="switchTab('tasks', this)">
-      <i class="fas fa-tasks"></i> Tasks
-    </div>
-    <div class="nav-item" onclick="switchTab('referrals', this)">
-      <i class="fas fa-users"></i> Referrals
-    </div>
-  </div>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    let userBalance = 0.000;
-
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      const user = tg.initDataUnsafe.user;
-      document.getElementById('refLink').value = `https://t.me/${tg.initDataUnsafe.bot_username || 'Bot'}?start=${user.id}`;
-    }
-
-    function switchTab(tabName, element) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      
-      document.getElementById('page-' + tabName).classList.add('active');
-      element.classList.add('active');
-    }
-
-    function watchMainAd(button, reward) {
-      button.disabled = true;
-      let timeLeft = 10;
-      alert("جاري تشغيل الإعلان... يرجى الانتظار 10 ثوانٍ!");
-
-      const timer = setInterval(() => {
-        button.innerText = `انتظر (${timeLeft} ثواني)`;
-        timeLeft--;
-
-        if (timeLeft < 0) {
-          clearInterval(timer);
-          userBalance += reward;
-          document.getElementById('balance').innerText = userBalance.toFixed(3);
-          button.innerText = "تمت المشاهدة ✓";
-          button.style.background = "#065f46";
-          button.disabled = false;
-          alert(`تهانينا! تمت إضافة +${reward} USDT لربحك.`);
-        }
-      }, 1000);
-    }
-
-    function startInvest(cost, dailyReturn) {
-      if (userBalance < cost) {
-        alert(`رصيدك غير كافٍ! تحتاج إلى ${cost} USDT للاستثمار في هذه الحزمة.`);
-      } else {
-        userBalance -= cost;
-        document.getElementById('balance').innerText = userBalance.toFixed(3);
-        alert(`تم الاستثمار بنجاح! ستحصل على +${dailyReturn} USDT يومياً.`);
-      }
-    }
-
-    function doTask(button, reward) {
-      if (button.classList.contains('completed')) return;
-      userBalance += reward;
-      document.getElementById('balance').innerText = userBalance.toFixed(3);
-      button.innerText = "تم ✓";
-      button.style.background = "#065f46";
-      button.style.color = "#34d399";
-      button.classList.add('completed');
-    }
-
-    function copyRef() {
-      const copyText = document.getElementById("refLink");
-      copyText.select();
-      document.execCommand("copy");
-      alert("تم نسخ رابط الإحالة بنجاح!");
-    }
-  </script>
-  <!-- زر الإعلان مع كود التشغيل -->
-<button id="watchAdBtn" style="width: 100%; padding: 14px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px;">
-  🎬 مشاهدة إعلان للحصول على مكافأة
-</button>
-
-<script>
-  const AdController = window.Adsgram.init({ 
-    blockId: "46739" 
-  });
-
-  const adButton = document.getElementById('watchAdBtn');
-
-  adButton.addEventListener('click', () => {
-    AdController.show().then((result) => {
-      alert("تهانينا! لقد شاهدت الإعلان بنجاح وحصلت على المكافأة.");
-    }).catch((result) => {
-      alert("لم يتم اكتمال الإعلان أو لا يوجد إعلان متوفر حالياً.");
-    });
-  });
-</script>
-
+        adButton.addEventListener('click', () => {
+            // استدعاء عرض الإعلان الحقيقي
+            AdController.show().then((result) => {
+                // إذا أكمل المستخدم مشاهدة الإعلان بنجاح
+                userBalance += 0.001; 
+                document.getElementById('balance').innerText = userBalance.toFixed(3);
+                alert("تهانينا! تمت إضافة +0.001 USDT لربحك.");
+            }).catch((result) => {
+                // إذا قام المستخدم بإغلاق الإعلان قبل نهايته
+                alert("لم يتم اكتمال مشاهدة الإعلان.");
+            });
+        });
+    </script>
 </body>
 </html>
