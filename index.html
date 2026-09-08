@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Moon Network</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; }
@@ -274,5 +276,26 @@
       alert("تم نسخ رابط الإحالة بنجاح!");
     }
   </script>
+  <!-- زر الإعلان مع كود التشغيل -->
+<button id="watchAdBtn" style="width: 100%; padding: 14px; background-color: #0088cc; color: #ffffff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px;">
+  🎬 مشاهدة إعلان للحصول على مكافأة
+</button>
+
+<script>
+  const AdController = window.Adsgram.init({ 
+    blockId: "46739" 
+  });
+
+  const adButton = document.getElementById('watchAdBtn');
+
+  adButton.addEventListener('click', () => {
+    AdController.show().then((result) => {
+      alert("تهانينا! لقد شاهدت الإعلان بنجاح وحصلت على المكافأة.");
+    }).catch((result) => {
+      alert("لم يتم اكتمال الإعلان أو لا يوجد إعلان متوفر حالياً.");
+    });
+  });
+</script>
+
 </body>
 </html>
