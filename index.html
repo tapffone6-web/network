@@ -91,23 +91,7 @@
             </div>
         </section>
 
-        <!-- 4. Tasks Section -->
-        <section id="section-tasks" class="hidden-section space-y-4">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl">
-                <h3 class="font-bold text-lg mb-3 text-amber-400">المهام اليومية</h3>
-                <div class="space-y-3">
-                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold text-sm">اشتراك قناة اليوتيوب</h4>
-                            <p class="text-xs text-slate-400">+0.010 USDT</p>
-                        </div>
-                        <button onclick="completeTask(0.01)" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-1.5 rounded-lg text-xs font-bold text-white transition">إنجاز</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. Referrals Section -->
+        <!-- 4. Referrals Section -->
         <section id="section-referrals" class="hidden-section space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl text-center">
                 <h3 class="font-bold text-lg mb-2 text-amber-400">نظام الإحالة</h3>
@@ -142,12 +126,11 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (Fixed Order) -->
+    <!-- Bottom Navigation Bar (Without Tasks) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-40">
         <button onclick="switchTab('home')" id="btn-home" class="nav-btn text-amber-400 flex flex-col items-center text-xs"><i class="fa-solid fa-house text-lg mb-1"></i>الرئيسية</button>
         <button onclick="switchTab('deposit')" id="btn-deposit" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-wallet text-lg mb-1"></i>إيداع</button>
         <button onclick="switchTab('withdraw')" id="btn-withdraw" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-money-bill-transfer text-lg mb-1"></i>سحب</button>
-        <button onclick="switchTab('tasks')" id="btn-tasks" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-list-check text-lg mb-1"></i>المهام</button>
         <button onclick="switchTab('referrals')" id="btn-referrals" class="nav-btn text-slate-400 flex flex-col items-center text-xs"><i class="fa-solid fa-users text-lg mb-1"></i>الإحالات</button>
     </nav>
 
@@ -374,13 +357,6 @@
             } else {
                 alert("الرمز غير صحيح أو منتهي الصلاحية.");
             }
-        };
-
-        window.completeTask = function(reward) {
-            userBalance += reward;
-            updateUIBalance();
-            setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
-            alert("تم إنجاز المهمة وإضافة المكافأة!");
         };
 
         loadUserData();
