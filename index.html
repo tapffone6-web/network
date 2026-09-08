@@ -180,7 +180,7 @@
     <!-- Script Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAjexk-ZbXNNo0oLz29HFLBgdBxeXquiDQ",
@@ -198,16 +198,18 @@
         const userId = "user_12345";
         let userBalance = 0;
 
-        async function loadUserData() {
+        // استخدام الاستماع الحي (onSnapshot) لضمان تحديث الرصيد ومزامنته دائماً من القاعدة دون تصفير
+        function initUserData() {
             const userRef = doc(db, "users", userId);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-                userBalance = userSnap.data().balance || 0;
-            } else {
-                await setDoc(userRef, { balance: 0 });
-                userBalance = 0;
-            }
-            updateUIBalance();
+            onSnapshot(userRef, async (docSnap) => {
+                if (docSnap.exists()) {
+                    userBalance = docSnap.data().balance || 0;
+                } else {
+                    await setDoc(userRef, { balance: 0 });
+                    userBalance = 0;
+                }
+                updateUIBalance();
+            });
         }
 
         function updateUIBalance() {
@@ -341,7 +343,6 @@
                 await updateDoc(userRef, { balance: currentBal + amount });
 
                 alert("تم قبول الإيداع وشحن الرصيد بنجاح!");
-                loadUserData();
                 openAdminPanel();
             } catch(e) {
                 alert("حدث خطأ.");
@@ -369,7 +370,6 @@
                 await updateDoc(doc(db, "withdraws", docId), { status: "approved" });
 
                 alert("تمت الموافقة على السحب وخصم الرصيد!");
-                loadUserData();
                 openAdminPanel();
             } catch(e) {
                 alert("حدث خطأ.");
@@ -382,13 +382,14 @@
             openAdminPanel();
         };
 
-        // دالة عرض إعلان Giga Pub الحقيقي
+        // دالة مشاهدة الإعلان وتحديث الرصيد فوراً وحفظه في القاعدة
         window.watchAd = function() {
             if (typeof window.showGiga === "function") {
                 window.showGiga()
                     .then(async () => {
                         userBalance += 0.003;
                         updateUIBalance();
+                        // حفظ التحديث مباشرة في فايربيس
                         await setDoc(doc(db, "users", userId), { balance: userBalance }, { merge: true });
                         alert("تم إضافة مكافأة الإعلان بنجاح!");
                     })
@@ -420,7 +421,8 @@
             alert(`تم الاشتراك في الخطة بنجاح! تم خصم ${cost} USDT.`);
         };
 
-        loadUserData();
+        // بدء تشغيل نظام مراقبة الرصيد
+        initUserData();
 
         window.switchTab = function(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden-section'));
