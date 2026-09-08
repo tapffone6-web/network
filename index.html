@@ -150,13 +150,24 @@
         </div>
     </div>
 
-    <!-- 2. صفحة الاستثمار (Invest) -->
+    <!-- 2. صفحة الاستثمار (Invest) - الباقتان -->
     <div id="sec-invest" class="page-section" style="display:none;">
         <div class="section-title">قسم الاستثمار</div>
+        
+        <!-- الباقة الأولى -->
         <div class="card">
-            <div style="font-weight: bold;">الباقة الأولى</div>
-            <p class="section-desc">ربح يومي 0.6 USDT</p>
-            <button class="action-btn" onclick="alert('تم تفعيل الباقة بنجاح')">استثمار الآن</button>
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الباقة الأولى</div>
+            <div class="section-desc" style="margin-bottom: 3px;">قيمة الإيداع: 10 USDT</div>
+            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">ربح يومي: 0.6 USDT</div>
+            <button class="action-btn" onclick="alert('تم تفعيل الباقة الأولى بنجاح')">استثمار الآن</button>
+        </div>
+
+        <!-- الباقة الثانية -->
+        <div class="card">
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">الباقة الثانية</div>
+            <div class="section-desc" style="margin-bottom: 3px;">قيمة الإيداع: 15 USDT</div>
+            <div class="section-desc" style="margin-bottom: 10px; color: #38bdf8;">ربح يومي: 1 USDT</div>
+            <button class="action-btn" onclick="alert('تم تفعيل الباقة الثانية بنجاح')">استثمار الآن</button>
         </div>
     </div>
 
@@ -179,7 +190,7 @@
         </div>
     </div>
 
-    <!-- 5. صفحة السحب (Withdraw) - مجهزة ومخفية بعناية لكي نضيفها لاحقاً بلا مشاكل -->
+    <!-- 5. صفحة السحب (Withdraw) -->
     <div id="sec-withdraw" class="page-section" style="display:none;">
         <div class="section-title">سحب الأرباح</div>
         <div class="card">
@@ -197,7 +208,7 @@
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي (بالترتيب الصحيح مع زر السحب في أقصى اليسار) -->
+    <!-- شريط التنقل السفلي -->
     <div class="nav-bar">
         <button class="nav-btn" onclick="showPage('withdraw', this)">
             <i class="fas fa-wallet"></i>
@@ -242,7 +253,6 @@
 
         function watchAd() {
             alert('جاري تحميل الإعلان...');
-            // يمكنك إضافة زيادة عداد الإعلانات هنا لاحقاً
         }
 
         function openDeposit() {
