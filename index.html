@@ -8,8 +8,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- سكربت إعلانات Giga Pub -->
-    <script src="https://ad.gigapub.tech/script?id=5898"></script>
+    <!-- سكربت إعلانات Giga Partner الجديد -->
+    <script src="https://ad.gigapub.tech/script?id=8126"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
@@ -225,7 +225,7 @@
     <!-- Script Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc, onSnapshot, query, where, deleteDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc, onSnapshot, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAjexk-ZbXNNo0oLz29HFLBgdBxeXquiDQ",
@@ -495,6 +495,15 @@
             }
         }
 
+        // دعم إضافي لقراءة الإحالة من الرابط مباشرة
+        if (!referrerId) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('startapp') || urlParams.get('start');
+            if (refParam && refParam.startsWith("ref_")) {
+                referrerId = "user_" + refParam.replace("ref_", "");
+            }
+        }
+
         if (rawTelegramId === ADMIN_TELEGRAM_ID) {
             document.getElementById("admin-btn").classList.remove("hidden");
         }
@@ -525,10 +534,15 @@
                 const docSnap = await getDoc(userRef);
                 if (docSnap.exists()) {
                     userBalance = docSnap.data().balance || 0;
+                    
+                    // تحديث الإحالة إذا لم تكن مسجلة للمستخدم من قبل
+                    if (!docSnap.data().referrer && referrerId && referrerId !== userId) {
+                        await updateDoc(userRef, { referrer: referrerId });
+                    }
                 } else {
                     const newUserData = { 
                         balance: 0, 
-                        referrer: referrerId && referrerId !== userId ? referrerId : null, 
+                        referrer: (referrerId && referrerId !== userId) ? referrerId : null, 
                         createdAt: new Date() 
                     };
                     await setDoc(userRef, newUserData);
@@ -710,12 +724,12 @@
             if (rawTelegramId !== ADMIN_TELEGRAM_ID) return;
             document.getElementById("admin-modal").classList.remove("hidden");
             
-            // جلب وعرض إجمالي عدد المستخدمين
+            // جلب وعرض إجمالي عدد المستخدمين بطريقة آمنة
             try {
-                const usersSnap = await getCountFromServer(collection(db, "users"));
-                document.getElementById("total-users-count").innerText = usersSnap.data().count;
+                const usersSnap = await getDocs(collection(db, "users"));
+                document.getElementById("total-users-count").innerText = usersSnap.size;
             } catch (e) {
-                document.getElementById("total-users-count").innerText = "خطأ";
+                document.getElementById("total-users-count").innerText = "0";
             }
 
             const depositsContainer = document.getElementById("admin-deposits-list");
@@ -822,7 +836,7 @@
             if (typeof window.showGiga === "function") {
                 window.showGiga().then(async () => {
                     userBalance += 0.001;
-                    updateUIBody();
+                    updateUIBalance();
                     localStorage.setItem("local_balance_" + userId, userBalance);
                     try {
                         await updateDoc(doc(db, "users", userId), { balance: userBalance });
@@ -848,6 +862,7 @@
                 await updateDoc(doc(db, "users", userId), { balance: userBalance });
             } catch(e) {}
             
+            @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
             await addDoc(collection(db, "investments"), {
                 userId: userId,
                 planName: planName,
