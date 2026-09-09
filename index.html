@@ -194,6 +194,12 @@
             </div>
             
             <div class="space-y-4">
+                <!-- إحصائية إجمالي المستخدمين -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <span class="text-sm text-slate-300"><i class="fa-solid fa-users ml-2 text-amber-400"></i> إجمالي المستخدمين في البوت:</span>
+                    <span id="total-users-count" class="text-lg font-bold text-amber-400">0</span>
+                </div>
+
                 <h4 class="font-bold text-sm text-slate-300" data-i18n="pending_deposits">طلبات الإيداع المعلقة:</h4>
                 <div id="admin-deposits-list" class="space-y-2">
                     <p class="text-xs text-slate-500 text-center py-4" data-i18n="loading_requests">جاري تحميل الطلبات...</p>
@@ -219,7 +225,7 @@
     <!-- Script Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc, onSnapshot, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, getDoc, setDoc, onSnapshot, query, where, deleteDoc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyAjexk-ZbXNNo0oLz29HFLBgdBxeXquiDQ",
@@ -447,7 +453,6 @@
             currentLang = lang;
             localStorage.setItem("app_lang", lang);
             
-            // ضبط اتجاه الصفحة حسب اللغة
             if (lang === 'ar') {
                 document.documentElement.setAttribute('dir', 'rtl');
                 document.documentElement.setAttribute('lang', 'ar');
@@ -456,7 +461,6 @@
                 document.documentElement.setAttribute('lang', lang);
             }
 
-            // تحديث النصوص العادية
             document.querySelectorAll("[data-i18n]").forEach(el => {
                 const key = el.getAttribute("data-i18n");
                 if (translations[lang][key]) {
@@ -464,7 +468,6 @@
                 }
             });
 
-            // تحديث النصوص الوهمية (Placeholders)
             document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
                 const key = el.getAttribute("data-i18n-placeholder");
                 if (translations[lang][key]) {
@@ -473,7 +476,6 @@
             });
         }
 
-        // تطبيق اللغة المحفوظة عند التشغيل
         changeLanguage(currentLang);
 
         let userId = "user_12345";
@@ -580,7 +582,6 @@
                     const durationDays = data.durationDays || 15;
                     const expiryTime = new Date(startTime.getTime() + durationDays * 24 * 60 * 60 * 1000);
 
-                    // حذف الاستثمار تلقائياً إذا انتهت مدته الكلية
                     if (now >= expiryTime) {
                         await deleteDoc(doc(db, "investments", docSnap.id));
                         continue;
@@ -709,6 +710,14 @@
             if (rawTelegramId !== ADMIN_TELEGRAM_ID) return;
             document.getElementById("admin-modal").classList.remove("hidden");
             
+            // جلب وعرض إجمالي عدد المستخدمين
+            try {
+                const usersSnap = await getCountFromServer(collection(db, "users"));
+                document.getElementById("total-users-count").innerText = usersSnap.data().count;
+            } catch (e) {
+                document.getElementById("total-users-count").innerText = "خطأ";
+            }
+
             const depositsContainer = document.getElementById("admin-deposits-list");
             const querySnapshot = await getDocs(collection(db, "deposits"));
             depositsContainer.innerHTML = "";
@@ -744,7 +753,7 @@
                                 <p class="text-slate-400 truncate w-32">إلى: ${data.address}</p>
                             </div>
                             <div class="flex gap-1">
-                                <button onclick="approveWithdraw('${docSnap.id}', '${data.userId}', ${data.amount})" class="bg-emerald-600 text-white px-3 py-1 rounded font-bold">قبول</button>
+                                <button onclick="approveWithdraw('${docSnap.id}', '${data.userId}', ${data.amount})" class="bg-emerald-650 text-white px-3 py-1 rounded font-bold">قبول</button>
                                 <button onclick="rejectWithdraw('${docSnap.id}')" class="bg-rose-600 text-white px-3 py-1 rounded font-bold">رفض</button>
                             </div>
                         </div>
@@ -813,7 +822,7 @@
             if (typeof window.showGiga === "function") {
                 window.showGiga().then(async () => {
                     userBalance += 0.001;
-                    updateUIBalance();
+                    updateUIBody();
                     localStorage.setItem("local_balance_" + userId, userBalance);
                     try {
                         await updateDoc(doc(db, "users", userId), { balance: userBalance });
