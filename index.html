@@ -131,6 +131,8 @@
             text-align: right;
         }
     </style>
+    <!-- مكتبة تيليجرام ويب أب الرسمية -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
@@ -139,7 +141,8 @@
         <div>👑 Level 1</div>
         <div style="display: flex; gap: 10px; align-items: center;">
             <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.728</span></div>
-            <button onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer;">الأدمن</button>
+            <!-- زر الأدمن العلوي سيظهر لك وحدك -->
+            <button id="top-admin-btn" onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer; display:none;">الأدمن</button>
         </div>
     </div>
 
@@ -176,9 +179,7 @@
     <div id="page-earn" class="page">
         <div class="card" style="text-align: right;">
             <h3>مهام الربح</h3>
-            <div id="tasks-container">
-                <!-- المهام ستظهر هنا تلقائياً -->
-            </div>
+            <div id="tasks-container"></div>
         </div>
     </div>
 
@@ -211,12 +212,11 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الأدمن الشاملة -->
+    <!-- لوحة تحكم الأدمن الخاصة -->
     <div id="page-admin" class="page">
         <div class="card" style="text-align: right;">
-            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الدائمة</h3>
+            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الخاصة</h3>
             
-            <!-- إدارة الأرصدة والسحب والحظر -->
             <div class="section-title">👤 إدارة المستخدمين</div>
             <label style="font-size: 11px; color: #8b91a0;">معرف المستخدم (User ID):</label>
             <input type="text" id="adminUserId" class="admin-input" placeholder="أدخل ID المستخدم">
@@ -229,7 +229,6 @@
             <button class="btn-mine" style="background:#ffc107; margin-top:5px; padding:10px;" onclick="adminAction('withdraw')">✅ قبول طلب السحب</button>
             <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px; padding:10px;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
 
-            <!-- التحكم في أرباح التعدين -->
             <div class="section-title">⚡ التحكم في أرباح التعدين</div>
             <label style="font-size: 11px; color: #8b91a0;">الربح بالساعة (Hourly):</label>
             <input type="number" id="setHourly" class="admin-input" placeholder="0.713">
@@ -239,7 +238,6 @@
 
             <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px;" onclick="updateMiningRates()">💾 حفظ وتثبيت أرباح التعدين</button>
 
-            <!-- إضافة المهام -->
             <div class="section-title">📝 إضافة مهمة جديدة للعبة</div>
             <label style="font-size: 11px; color: #8b91a0;">عنوان المهمة (مثال: انضم للقناة):</label>
             <input type="text" id="taskTitleInput" class="admin-input" placeholder="اكتب اسم المهمة...">
@@ -258,12 +256,23 @@
     <div class="nav-item" onclick="switchPage('earn', this)">🪙 المهام</div>
     <div class="nav-item" onclick="switchPage('friends', this)">👥 الأصدقاء</div>
     <div class="nav-item" onclick="switchPage('wallet', this)">💼 المحفظة</div>
-    <div class="nav-item" id="nav-admin" onclick="switchPage('admin', this)" style="display:block;">🛠️ الأدمن</div>
+    <!-- أيقونة الأدمن ستظهر لك وحدك في القائمة -->
+    <div class="nav-item" id="nav-admin" onclick="switchPage('admin', this)" style="display:none;">🛠️ الأدمن</div>
 </div>
 
 <script>
-    // تحميل البيانات المحفوظة فور فتح التطبيق
+    // الـ ID الخاص بك في تيليجرام
+    const ADMIN_ID = "1985474484"; 
+
     window.onload = function() {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+            if (tgUser && String(tgUser.id) === ADMIN_ID) {
+                document.getElementById('top-admin-btn').style.display = 'block';
+                document.getElementById('nav-admin').style.display = 'block';
+            }
+        }
+
         if(localStorage.getItem('savedHourly')) {
             let h = localStorage.getItem('savedHourly');
             let d = localStorage.getItem('savedDaily');
@@ -321,7 +330,6 @@
             alert("الرجاء إدخال قيمة الربح بالساعة واليومي!");
             return;
         }
-        // حفظ القيم في ذاكرة المتصفح الدائمة
         localStorage.setItem('savedHourly', h);
         localStorage.setItem('savedDaily', d);
 
