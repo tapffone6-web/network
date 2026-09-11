@@ -224,15 +224,15 @@
             
             <div class="mining-counter-box" id="live-mining-counter">+0.0000</div>
             
-            <!-- أرباح الساعة واليوم -->
+            <!-- أرباح الساعة واليوم بالنقاط الصفراء -->
             <div class="mining-rates-container">
                 <div class="rate-box">
                     <span>أرباح كل ساعة (Hourly)</span>
-                    <strong id="hourly-rate">0.00 TON</strong>
+                    <strong id="hourly-rate">0 🪙</strong>
                 </div>
                 <div class="rate-box">
                     <span>الأرباح اليومية (Daily)</span>
-                    <strong id="daily-rate">0.00 TON</strong>
+                    <strong id="daily-rate">0 🪙</strong>
                 </div>
             </div>
 
@@ -311,17 +311,16 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الأدمن المحدثة للتحكم الكامل بالتعدين -->
+    <!-- لوحة تحكم الأدمن للتحكم بأرباح النقاط بالساعة -->
     <div id="page-admin" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الخاصة</h3>
             
-            <!-- قسم التحكم بأرباح التعدين (الساعة واليوم) -->
-            <div class="section-title">⚡ التحكم في سرعة وأرباح التعدين</div>
-            <label style="font-size: 11px; color: #8b91a0;">الربح في الساعة الواحدة:</label>
-            <input type="number" step="any" id="adminHourlyInput" class="admin-input" placeholder="مثال: 9.0">
+            <div class="section-title">⚡ التحكم في أرباح التعديل (بالنقاط الصفراء)</div>
+            <label style="font-size: 11px; color: #8b91a0;">الربح في الساعة الواحدة (نقاط):</label>
+            <input type="number" step="any" id="adminHourlyInput" class="admin-input" placeholder="مثال: 1">
 
-            <button class="btn-mine" style="background:#f3ba2f; color:#000; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; font-weight:bold; cursor:pointer;" onclick="saveMiningSpeed()">💾 حفظ وتحديث سرعة التعدين</button>
+            <button class="btn-mine" style="background:#f3ba2f; color:#000; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; font-weight:bold; cursor:pointer;" onclick="saveMiningSpeed()">💾 حفظ وتحديث أرباح التعدين</button>
 
             <div class="section-title">👤 إدارة المستخدمين</div>
             <label style="font-size: 11px; color: #8b91a0;">معرف المستخدم (User ID):</label>
@@ -366,10 +365,10 @@
     const MAX_ADS = 150;
     const MIN_WITHDRAW = 0.15; 
 
-    let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 124.5000;
+    let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 0.0000;
     
-    // جلب أرباح الساعة المحفوظة أو تعيين القيمة الافتراضية (مثلاً 9 لكل ساعة)
-    let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 9.0;
+    // القيمة الافتراضية لأرباح الساعة بالنقاط (يمكن تعديلها من لوحة الأدمن)
+    let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1;
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -408,7 +407,6 @@
         startLiveMiningCounter();
     };
 
-    // حفظ سرعة التعدين الجديدة من لوحة الأدمن
     function saveMiningSpeed() {
         let val = parseFloat(document.getElementById('adminHourlyInput').value);
         if (isNaN(val) || val < 0) {
@@ -418,19 +416,17 @@
         hourlyMiningRate = val;
         localStorage.setItem('hourlyMiningRate', hourlyMiningRate);
         updateMiningRatesDisplay();
-        alert("✅ تمت تحديث وضبط سرعة وأرباح التعدين بنجاح!");
+        alert("✅ تم تحديث أرباح التعدين بنجاح!");
     }
 
-    // حساب وعرض معدل التعدين لكل ساعة ويومياً بناءً على قيمة الأدمن
     function updateMiningRatesDisplay() {
         let hourly = hourlyMiningRate;
         let daily = hourly * 24;
 
-        document.getElementById('hourly-rate').innerText = hourly.toFixed(2) + " TON";
-        document.getElementById('daily-rate').innerText = daily.toFixed(2) + " TON";
+        document.getElementById('hourly-rate').innerText = hourly.toFixed(2) + " 🪙";
+        document.getElementById('daily-rate').innerText = daily.toFixed(2) + " 🪙";
     }
 
-    // تشغيل العداد التصاعدي التلقائي حسب سرعة الثانية المحسوبة من الساعة
     function startLiveMiningCounter() {
         setInterval(() => {
             let perSecond = hourlyMiningRate / 3600;
@@ -449,13 +445,20 @@
     }
 
     function claimMiningRewards() {
-        let claimedAmount = Math.round(currentMinedPool);
-        userPoints += claimedAmount;
-        currentMinedPool = 0.0000;
-        localStorage.setItem('currentMinedPool', currentMinedPool);
+        let claimedAmount = Math.floor(currentMinedPool);
+        if (claimedAmount < 1 && currentMinedPool > 0) {
+            claimedAmount = 1; // ضمان جمع النقطة حتى لو كانت كسراً بسيطاً إذا ضغط المستخدم
+        }
         
-        updateGoldDisplay();
-        alert(`🎉 تهانينا! تم جمع أرباح التعدين بقيمة ${claimedAmount} نقطة وأضيفت إلى رصيدك.`);
+        if (claimedAmount > 0) {
+            userPoints += claimedAmount;
+            currentMinedPool = 0.0000;
+            localStorage.setItem('currentMinedPool', currentMinedPool);
+            updateGoldDisplay();
+            alert(`🎉 تهانينا! تم جمع أرباح التعدين بقيمة ${claimedAmount} نقطة وأضيفت إلى رصيدك.`);
+        } else {
+            alert("لا توجد أرباح كافية للجمع حالياً.");
+        }
     }
 
     function copyRefLink() {
