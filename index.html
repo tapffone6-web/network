@@ -319,7 +319,7 @@
     const POINT_VALUE = 0.0001; 
     const MAX_ADS = 150;
     const MINING_DURATION = 12 * 60 * 60 * 1000; 
-    const MIN_WITHDRAW = 0.15; // الحد الأدنى للسحب
+    const MIN_WITHDRAW = 0.15; 
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -519,7 +519,6 @@
             return;
         }
 
-        // التحقق من الحد الأدنى للسحب
         if (amount < MIN_WITHDRAW) {
             alert(`عذراً، الحد الأدنى للسحب هو ${MIN_WITHDRAW}! رصيدك المراد سحبه أقل من الحد المسموح.`);
             return;
@@ -593,19 +592,34 @@
 
     function loadTasks() {
         let container = document.getElementById('tasks-container');
-        container.innerHTML = `
-            <div class="task-item">
-                <span>انضم لقناة اليوتيوب (+10 نقاط)</span>
-                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('https://youtube.com', 10)">إنجاز</button>
-            </div>
-        `;
+        container.innerHTML = ''; // تم تفريغ القائمة من المهام الافتراضية الثابتة
+        
         let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
-        tasks.forEach(t => {
+        if (tasks.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: #8b91a0; font-size: 13px; padding: 20px;">لا توجد مهام متاحة حالياً.</div>`;
+            return;
+        }
+
+        tasks.forEach((t, index) => {
             let newTask = document.createElement('div');
             newTask.className = 'task-item';
-            newTask.innerHTML = `<span>${t.title} (+${t.reward} نقاط)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('${t.link}', ${t.reward})">إنجاز</button>`;
+            newTask.innerHTML = `
+                <span>${t.title} (+${t.reward} نقاط)</span>
+                <div style="display: flex; gap: 5px;">
+                    <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('${t.link}', ${t.reward})">إنجاز</button>
+                    <button style="background:#dc3545; color:#fff; border:none; padding:5px 8px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="deleteTask(${index})">حذف</button>
+                </div>
+            `;
             container.appendChild(newTask);
         });
+    }
+
+    function deleteTask(index) {
+        let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
+        tasks.splice(index, 1);
+        localStorage.setItem('savedTasks', JSON.stringify(tasks));
+        loadTasks();
+        alert("تم حذف المهمة بنجاح!");
     }
 
     function startTask(url, rewardPoints) {
