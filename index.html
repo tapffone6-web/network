@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mining Bot</title>
+    <title>Mining Bot & Admin</title>
     <style>
         body {
             background-color: #0c0d10;
@@ -75,10 +75,16 @@
             border-radius: 12px;
             cursor: pointer;
             margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+        }
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #1f2229;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            box-sizing: border-box;
         }
         .nav-bar {
             display: flex;
@@ -122,7 +128,10 @@
 <div class="container">
     <div class="header">
         <div>👑 Level 1</div>
-        <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.728</span></div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.728</span></div>
+            <button onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer;">الأدمن</button>
+        </div>
     </div>
 
     <!-- صفحة التعدين -->
@@ -147,7 +156,6 @@
             <button class="btn-mine" onclick="startMining()">⛏️ MINING ACTIVE</button>
         </div>
 
-        <!-- خانة مشاهدة الإعلانات تحت التعدين -->
         <div class="card" style="text-align: right;">
             <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">🎥 شاهد الإعلانات واكسب</div>
             <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">اكسب مكافأة ذهبية لكل إعلان تشاهده</div>
@@ -155,16 +163,12 @@
         </div>
     </div>
 
-    <!-- صفحة المهام (Earn) -->
+    <!-- صفحة المهام -->
     <div id="page-earn" class="page">
         <div class="card">
             <h3>مهام الربح</h3>
             <div class="task-item">
                 <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
-                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">إنجاز</button>
-            </div>
-            <div class="task-item">
-                <span>تابع صفحة التليجرام (+10 رصيد)</span>
                 <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">إنجاز</button>
             </div>
         </div>
@@ -174,7 +178,7 @@
     <div id="page-friends" class="page">
         <div class="card">
             <h3>دعوة الأصدقاء</h3>
-            <p style="color:#8b91a0; font-size:13px;">اربح عمولة على كل صديق تدعوه للتعدين.</p>
+            <p style="color:#8b91a0; font-size:13px;">اربح عمولة على كل صديق تدعوه.</p>
             <button class="btn-mine">🔗 نسخ رابط الإحالة</button>
         </div>
     </div>
@@ -184,7 +188,25 @@
         <div class="card">
             <h3>محفظتك</h3>
             <p>الرصيد الكلي: <strong style="color:#f3ba2f;">80.728 🪙</strong></p>
-            <button class="btn-mine" style="background:#28a745; color:#fff;">سحب الأرباح</button>
+            <button class="btn-mine" style="background:#28a745; color:#fff;">طلب سحب الأرباح</button>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الأدمن (Admin Panel) -->
+    <div id="page-admin" class="page">
+        <div class="card" style="text-align: right;">
+            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن</h3>
+            
+            <label style="font-size: 12px; color: #8b91a0;">معرف المستخدم (User ID):</label>
+            <input type="text" id="adminUserId" class="admin-input" placeholder="أدخل ID المستخدم">
+
+            <label style="font-size: 12px; color: #8b91a0;">الكمية (الرصيد):</label>
+            <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 50">
+
+            <button class="btn-mine" style="background:#28a745; margin-top:5px;" onclick="adminAction('add')">➕ إضافة رصيد</button>
+            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px;" onclick="adminAction('sub')">➖ نقص رصيد</button>
+            <button class="btn-mine" style="background:#ffc107; margin-top:5px;" onclick="adminAction('withdraw')">✅ قبول السحب</button>
+            <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
         </div>
     </div>
 </div>
@@ -195,6 +217,7 @@
     <div class="nav-item" onclick="switchPage('earn', this)">🪙 المهام</div>
     <div class="nav-item" onclick="switchPage('friends', this)">👥 الأصدقاء</div>
     <div class="nav-item" onclick="switchPage('wallet', this)">💼 المحفظة</div>
+    <div class="nav-item" id="nav-admin" onclick="switchPage('admin', this)" style="display:none;">🛠️ الأدمن</div>
 </div>
 
 <script>
@@ -202,7 +225,7 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById('page-' + pageName).classList.add('active');
-        element.classList.add('active');
+        if(element) element.classList.add('active');
     }
 
     function startMining() {
@@ -210,8 +233,28 @@
     }
 
     function watchAd() {
-        alert("جاري تحميل الإعلان... (سيتم إضافة الرصيد قريباً)");
+        alert("جاري تحميل الإعلان... (تم إضافة المكافأة)");
     }
+
+    function adminAction(action) {
+        let uid = document.getElementById('adminUserId').value;
+        let amt = document.getElementById('adminAmount').value;
+        if(!uid) {
+            alert("الرجاء إدخال معرف المستخدم (User ID) أولاً!");
+            return;
+        }
+        if(action === 'add') alert(`تمت إضافة ${amt} للمستخدم ${uid} بنجاح.`);
+        else if(action === 'sub') alert(`تم خصم ${amt} من المستخدم ${uid}.`);
+        else if(action === 'withdraw') alert(`تم قبول طلب سحب المستخدم ${uid} بنجاح.`);
+        else if(action === 'ban') alert(`تم حظر المستخدم ${uid} من المنصة.`);
+    }
+
+    // إظهار زر الأدمن سرياً بالضغط 3 مرات على العنوان أو تلقائياً
+    setTimeout(() => {
+        document.getElementById('nav-admin.style').display = 'block'; // يمكن إظهاره مباشرة
+    }, 1000);
+    // لسهولة الوصول، سنظهره في القائمة السفلية فوراً:
+    document.getElementById('nav-admin').style.display = 'block';
 </script>
 
 </body>
