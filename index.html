@@ -64,6 +64,22 @@
             cursor: pointer;
             margin-top: 10px;
         }
+        .btn-ad {
+            background: #1f2229;
+            color: #ffffff;
+            border: 1px solid #f3ba2f;
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
         .nav-bar {
             display: flex;
             justify-content: space-around;
@@ -112,7 +128,7 @@
     <!-- صفحة التعدين -->
     <div id="page-mining" class="page active">
         <div class="card">
-            <h3>PIRATE LV. 1</h3>
+            <h3>FAST LV. 1</h3>
             <div class="stats">
                 <div class="stat-box">
                     <span>HOURLY</span>
@@ -129,6 +145,13 @@
             </div>
             <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="timer" style="color:#fff;">11:59:56</span></div>
             <button class="btn-mine" onclick="startMining()">⛏️ MINING ACTIVE</button>
+        </div>
+
+        <!-- خانة مشاهدة الإعلانات تحت التعدين -->
+        <div class="card" style="text-align: right;">
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">🎥 شاهد الإعلانات واكسب</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">اكسب مكافأة ذهبية لكل إعلان تشاهده</div>
+            <button class="btn-ad" onclick="watchAd()">▶️ مشاهدة إعلان</button>
         </div>
     </div>
 
@@ -176,18 +199,18 @@
 
 <script>
     function switchPage(pageName, element) {
-        // إخفاء كل الصفحات
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        // إزالة التحديد من الأزرار
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        
-        // إظهار الصفحة المطلوبة وتحديد الزر
         document.getElementById('page-' + pageName).classList.add('active');
         element.classList.add('active');
     }
 
     function startMining() {
         alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
+    }
+
+    function watchAd() {
+        alert("جاري تحميل الإعلان... (سيتم إضافة الرصيد قريباً)");
     }
 </script>
 
