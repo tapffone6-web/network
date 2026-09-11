@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mining Bot & Admin Panel v5</title>
+    <title>Mining Bot & Admin Panel v6</title>
     <!-- مكتبة إعلانات GigaPub الرسمية -->
     <script src="https://ad.gigapub.tech/script?id=8146"></script>
     <style>
@@ -208,7 +208,7 @@
 
 <div class="container">
     <div class="header">
-        <div>👑 Level 1 (v5)</div>
+        <div>👑 Level 1 (v6)</div>
         <div style="display: flex; gap: 10px; align-items: center;">
             <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">22.00</span> <span style="font-size: 11px; color: #8b91a0;" id="gold-usd">($0.0022)</span></div>
             <button id="top-admin-btn" onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer; display:none;">الأدمن</button>
@@ -369,49 +369,78 @@
     const ADMIN_ID = "1985474484"; 
     let currentUserId = "1985474484";
     let userPoints = 22.00; 
-    let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool_v5')) || 0.0000;
+    let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool_v6')) || 0.0000;
     
-    let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate_v5')) || 1.0;
+    let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate_v6')) || 1.0;
     
     let coolDownTimers = { 1: null, 2: null };
     let coolDownEnds = { 
-        1: parseInt(localStorage.getItem('coolDownEnds_1_v5')) || 0, 
-        2: parseInt(localStorage.getItem('coolDownEnds_2_v5')) || 0 
+        1: parseInt(localStorage.getItem('coolDownEnds_1_v6')) || 0, 
+        2: parseInt(localStorage.getItem('coolDownEnds_2_v6')) || 0 
     };
 
     window.onload = function() {
-        // تم تحديث معرف البوت ليكون MiningXoybot حصرياً
         let botUsername = "MiningXoybot"; 
 
         if (window.Telegram && window.Telegram.WebApp) {
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-            if (tgUser) {
+            if (tgUser && tgUser.id) {
                 currentUserId = String(tgUser.id);
-                if (currentUserId === ADMIN_ID) {
-                    document.getElementById('top-admin-btn').style.display = 'block';
-                    document.getElementById('nav-admin').style.display = 'block';
+            }
+        }
+
+        if (currentUserId === ADMIN_ID) {
+            document.getElementById('top-admin-btn').style.display = 'block';
+            document.getElementById('nav-admin').style.display = 'block';
+        }
+
+        // معالجة المستخدمين الجدد وربط الإحالات عبر تليجرام WebApp startParam
+        let registeredUsers = JSON.parse(localStorage.getItem('allAppUsers_v6')) || [];
+        if (!registeredUsers.includes(currentUserId)) {
+            registeredUsers.push(currentUserId);
+            localStorage.setItem('allAppUsers_v6', JSON.stringify(registeredUsers));
+
+            // التحقق من وجود إحالة (إذا فتح شخص الرابط وعنده start_param)
+            let startParam = null;
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+                startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+            }
+
+            if (startParam && startParam !== currentUserId) {
+                let refListKey = 'userRefs_' + startParam;
+                let userRefs = JSON.parse(localStorage.getItem(refListKey)) || [];
+                if (!userRefs.includes(currentUserId)) {
+                    userRefs.push(currentUserId);
+                    localStorage.setItem(refListKey, JSON.stringify(userRefs));
+
+                    // إضافة مكافأة إحالة لمن دعا صديقه (مثلاً 10 نقاط هدية)
+                    let inviterPointsKey = 'savedUserPoints_' + startParam + '_v6';
+                    let inviterPoints = parseFloat(localStorage.getItem(inviterPointsKey)) || 22.00;
+                    inviterPoints += 10;
+                    localStorage.setItem(inviterPointsKey, inviterPoints);
+
+                    // تسجيل أرباح الإحالة
+                    let inviterEarningsKey = 'refEarnings_' + startParam;
+                    let currentEarnings = parseFloat(localStorage.getItem(inviterEarningsKey)) || 0;
+                    localStorage.setItem(inviterEarningsKey, (currentEarnings + 10).toFixed(2));
                 }
             }
         }
 
-        let registeredUsers = JSON.parse(localStorage.getItem('allAppUsers_v5')) || [];
-        if (!registeredUsers.includes(currentUserId)) {
-            registeredUsers.push(currentUserId);
-            localStorage.setItem('allAppUsers_v5', JSON.stringify(registeredUsers));
-        }
         document.getElementById('total-users-count').innerText = registeredUsers.length;
-
         document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${currentUserId}`;
         document.getElementById('adminHourlyInput').value = hourlyMiningRate;
 
-        let refCount = localStorage.getItem('refCount_' + currentUserId) || 0;
+        // جلب عدد الأصدقاء المدعوون لهذا المستخدم بالتحديد
+        let myRefs = JSON.parse(localStorage.getItem('userRefs_' + currentUserId)) || [];
+        let refCount = myRefs.length;
         let refEarnings = localStorage.getItem('refEarnings_' + currentUserId) || "0.00";
 
         document.getElementById('ref-count').innerText = refCount;
         document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
 
-        if(localStorage.getItem('savedUserPoints_' + currentUserId + '_v5')) {
-            userPoints = parseFloat(localStorage.getItem('savedUserPoints_' + currentUserId + '_v5'));
+        if(localStorage.getItem('savedUserPoints_' + currentUserId + '_v6')) {
+            userPoints = parseFloat(localStorage.getItem('savedUserPoints_' + currentUserId + '_v6'));
         } else {
             userPoints = 22.00; 
         }
@@ -432,7 +461,7 @@
             return;
         }
         hourlyMiningRate = val;
-        localStorage.setItem('hourlyMiningRate_v5', hourlyMiningRate);
+        localStorage.setItem('hourlyMiningRate_v6', hourlyMiningRate);
         updateMiningRatesDisplay();
         alert("✅ تم تحديث أرباح التعدين بنجاح!");
     }
@@ -450,7 +479,7 @@
             let perSecond = hourlyMiningRate / 3600;
             currentMinedPool += perSecond; 
             document.getElementById('live-mining-counter').innerText = "+" + currentMinedPool.toFixed(4);
-            localStorage.setItem('currentMinedPool_v5', currentMinedPool);
+            localStorage.setItem('currentMinedPool_v6', currentMinedPool);
         }, 1000);
     }
 
@@ -465,7 +494,7 @@
         
         document.getElementById('total-assets-val').innerHTML = `${userPoints.toFixed(2)} 🪙 <span style="font-size: 14px; color: #8b91a0;">($${usdValue})</span>`;
         
-        localStorage.setItem('savedUserPoints_' + currentUserId + '_v5', userPoints);
+        localStorage.setItem('savedUserPoints_' + currentUserId + '_v6', userPoints);
     }
 
     function claimMiningRewards() {
@@ -475,10 +504,9 @@
         }
         
         let claimedAmount = currentMinedPool;
-        
         userPoints += claimedAmount;
         currentMinedPool = 0.0000;
-        localStorage.setItem('currentMinedPool_v5', currentMinedPool);
+        localStorage.setItem('currentMinedPool_v6', currentMinedPool);
         updateGoldDisplay();
         alert(`🎉 تهانينا! تم جمع أرباح التعدين بقيمة ${claimedAmount.toFixed(4)} نقطة وأضيفت إلى رصيدك.`);
     }
@@ -507,14 +535,14 @@
 
     function initAdsData() {
         let today = getTodayDateString();
-        let lastDate = localStorage.getItem('adsDate_v5');
+        let lastDate = localStorage.getItem('adsDate_v6');
 
         if (lastDate !== today) {
-            localStorage.setItem('adsDate_v5', today);
-            localStorage.setItem('adsWatched_1_v5', '0');
-            localStorage.setItem('adsWatched_2_v5', '0');
-            localStorage.setItem('coolDownEnds_1_v5', '0');
-            localStorage.setItem('coolDownEnds_2_v5', '0');
+            localStorage.setItem('adsDate_v6', today);
+            localStorage.setItem('adsWatched_1_v6', '0');
+            localStorage.setItem('adsWatched_2_v6', '0');
+            localStorage.setItem('coolDownEnds_1_v6', '0');
+            localStorage.setItem('coolDownEnds_2_v6', '0');
             coolDownEnds[1] = 0;
             coolDownEnds[2] = 0;
         }
@@ -523,8 +551,8 @@
     }
 
     function updateAdsUI() {
-        let watched1 = parseInt(localStorage.getItem('adsWatched_1_v5')) || 0;
-        let watched2 = parseInt(localStorage.getItem('adsWatched_2_v5')) || 0;
+        let watched1 = parseInt(localStorage.getItem('adsWatched_1_v6')) || 0;
+        let watched2 = parseInt(localStorage.getItem('adsWatched_2_v6')) || 0;
 
         let left1 = 150 - watched1;
         let left2 = 150 - watched2;
@@ -557,7 +585,7 @@
 
     function startCoolDownTimer(index, seconds) {
         let btn = document.getElementById('ad-btn-' + index);
-        let watched = parseInt(localStorage.getItem('adsWatched_' + index + '_v5')) || 0;
+        let watched = parseInt(localStorage.getItem('adsWatched_' + index + '_v6')) || 0;
         
         if (watched >= 150) return;
 
@@ -573,20 +601,20 @@
                 btn.disabled = false;
                 btn.innerText = "مشاهدة إعلان 🟠";
                 coolDownEnds[index] = 0;
-                localStorage.setItem('coolDownEnds_' + index + '_v5', '0');
+                localStorage.setItem('coolDownEnds_' + index + '_v6', '0');
             }
         }, 1000);
     }
 
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
-        if (localStorage.getItem('adsDate_v5') !== today) {
-            localStorage.setItem('adsDate_v5', today);
-            localStorage.setItem('adsWatched_1_v5', '0');
-            localStorage.setItem('adsWatched_2_v5', '0');
+        if (localStorage.getItem('adsDate_v6') !== today) {
+            localStorage.setItem('adsDate_v6', today);
+            localStorage.setItem('adsWatched_1_v6', '0');
+            localStorage.setItem('adsWatched_2_v6', '0');
         }
 
-        let watched = parseInt(localStorage.getItem('adsWatched_' + adBoxIndex + '_v5')) || 0;
+        let watched = parseInt(localStorage.getItem('adsWatched_' + adBoxIndex + '_v6')) || 0;
         if (watched >= 150) {
             alert("لقد وصلت إلى الحد الأقصى لمشاهدة الإعلانات لهذه الخانة اليوم (150 إعلاناً).");
             updateAdsUI();
@@ -606,17 +634,16 @@
 
         window.showGiga().then(() => {
             watched += 1;
-            localStorage.setItem('adsWatched_' + adBoxIndex + '_v5', watched);
+            localStorage.setItem('adsWatched_' + adBoxIndex + '_v6', watched);
 
             userPoints += 1; 
-
             updateGoldDisplay();
             updateAdsUI();
 
             let coolTime = 50;
             let endsAt = Date.now() + (coolTime * 1000);
             coolDownEnds[adBoxIndex] = endsAt;
-            localStorage.setItem('coolDownEnds_' + adBoxIndex + '_v5', endsAt);
+            localStorage.setItem('coolDownEnds_' + adBoxIndex + '_v6', endsAt);
             startCoolDownTimer(adBoxIndex, coolTime);
 
             alert("🎉 أحسنت! تمت إضافة نقطة واحدة إلى رصيدك بنجاح.");
@@ -649,7 +676,7 @@
         userPoints -= amount;
         updateGoldDisplay();
 
-        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests_v5')) || [];
+        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests_v6')) || [];
         withdrawals.push({
             id: Date.now(),
             userId: currentUserId,
@@ -657,7 +684,7 @@
             amount: amount,
             date: new Date().toLocaleString()
         });
-        localStorage.setItem('allWithdrawRequests_v5', JSON.stringify(withdrawals));
+        localStorage.setItem('allWithdrawRequests_v6', JSON.stringify(withdrawals));
 
         alert(`تم إرسال طلب سحب ${amount} نقطة بنجاح إلى الأدمن للمراجعة.`);
         document.getElementById('walletAddress').value = '';
@@ -669,7 +696,7 @@
         if (!container) return;
         container.innerHTML = '';
 
-        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests_v5')) || [];
+        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests_v6')) || [];
         if (withdrawals.length === 0) {
             container.innerHTML = `<div style="text-align: center; color: #8b91a0; font-size: 12px; padding: 10px; background:#1f2229; border-radius:8px;">لا توجد طلبات سحب معلقة حالياً.</div>`;
             return;
@@ -699,11 +726,11 @@
     }
 
     function resolveWithdraw(index, action) {
-        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests_v5')) || [];
+        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests_v6')) || [];
         let req = withdrawals[index];
 
         if (action === 'reject') {
-            let targetKey = 'savedUserPoints_' + req.userId + '_v5';
+            let targetKey = 'savedUserPoints_' + req.userId + '_v6';
             let targetPoints = parseFloat(localStorage.getItem(targetKey)) || 0;
             targetPoints += req.amount;
             localStorage.setItem(targetKey, targetPoints);
@@ -713,7 +740,7 @@
         }
 
         withdrawals.splice(index, 1);
-        localStorage.setItem('allWithdrawRequests_v5', JSON.stringify(withdrawals));
+        localStorage.setItem('allWithdrawRequests_v6', JSON.stringify(withdrawals));
         loadAdminWithdrawals();
     }
 
@@ -724,7 +751,7 @@
             alert("الرجاء إدخال معرف المستخدم وعدد النقاط بشكل صحيح!");
             return;
         }
-        let targetKey = 'savedUserPoints_' + uid + '_v5';
+        let targetKey = 'savedUserPoints_' + uid + '_v6';
         let targetPoints = parseFloat(localStorage.getItem(targetKey)) || 0;
 
         if(action === 'add') {
@@ -753,9 +780,9 @@
             return;
         }
 
-        let tasks = JSON.parse(localStorage.getItem('savedTasks_v5')) || [];
+        let tasks = JSON.parse(localStorage.getItem('savedTasks_v6')) || [];
         tasks.push({ title: title, link: link, reward: reward });
-        localStorage.setItem('savedTasks_v5', JSON.stringify(tasks));
+        localStorage.setItem('savedTasks_v6', JSON.stringify(tasks));
 
         loadTasks();
         alert("تمت إضافة المهمة وحفظها بنجاح!");
@@ -768,7 +795,7 @@
         let container = document.getElementById('tasks-container');
         container.innerHTML = ''; 
         
-        let tasks = JSON.parse(localStorage.getItem('savedTasks_v5')) || [];
+        let tasks = JSON.parse(localStorage.getItem('savedTasks_v6')) || [];
         if (tasks.length === 0) {
             container.innerHTML = `<div style="text-align: center; color: #8b91a0; font-size: 13px; padding: 20px;">لا توجد مهام متاحة حالياً.</div>`;
             return;
@@ -801,7 +828,7 @@
     }
 
     function verifyTaskCompletion(index, rewardPoints) {
-        let completedTasks = JSON.parse(localStorage.getItem('completedTasks_' + currentUserId + '_v5')) || [];
+        let completedTasks = JSON.parse(localStorage.getItem('completedTasks_' + currentUserId + '_v6')) || [];
         if (completedTasks.includes(index)) {
             alert("لقد قمت بإنجاز هذه المهمة مسبقاً ولا يمكنك الحصول على مكافأتها مرتين!");
             return;
@@ -810,7 +837,7 @@
         let userSure = confirm("⚠️ للتحقق من اشتراكك:\nهل قمت بالانضمام الفعلي للقناة بالفعل؟\n(اضغط موافق لتأكيد اشتراكك واستلام المكافأة)");
         if (userSure) {
             completedTasks.push(index);
-            localStorage.setItem('completedTasks_' + currentUserId + '_v5', JSON.stringify(completedTasks));
+            localStorage.setItem('completedTasks_' + currentUserId + '_v6', JSON.stringify(completedTasks));
 
             userPoints += rewardPoints;
             updateGoldDisplay();
@@ -822,9 +849,9 @@
     }
 
     function deleteTask(index) {
-        let tasks = JSON.parse(localStorage.getItem('savedTasks_v5')) || [];
+        let tasks = JSON.parse(localStorage.getItem('savedTasks_v6')) || [];
         tasks.splice(index, 1);
-        localStorage.setItem('savedTasks_v5', JSON.stringify(tasks));
+        localStorage.setItem('savedTasks_v6', JSON.stringify(tasks));
         loadTasks();
         alert("تم حذف المهمة بنجاح!");
     }
