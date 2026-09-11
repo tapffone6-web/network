@@ -211,7 +211,7 @@
     <div class="header">
         <div>👑 Level 1</div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.00</span></div>
+            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">22.00</span> <span style="font-size: 11px; color: #8b91a0;" id="gold-usd">($0.0022)</span></div>
             <button id="top-admin-btn" onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer; display:none;">الأدمن</button>
         </div>
     </div>
@@ -220,7 +220,7 @@
     <div id="page-mining" class="page active">
         <div class="card">
             <div class="mining-assets-title">ASSETS</div>
-            <div class="mining-total-assets" id="total-assets-val">80.00 🪙</div>
+            <div class="mining-total-assets" id="total-assets-val">22.00 🪙 <span style="font-size: 14px; color: #8b91a0;" id="assets-usd">($0.0022)</span></div>
             
             <div class="mining-counter-box" id="live-mining-counter">+0.0000</div>
             
@@ -294,8 +294,8 @@
     <div id="page-wallet" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="text-align: center;">محفظتك</h3>
-            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">80.00</strong> 🪙</p>
-            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 300 نقطة</p>
+            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">22.00</strong> <span id="wallet-gold-usd" style="color:#8b91a0; font-size:12px;">($0.0022)</span> 🪙</p>
+            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 1000 نقطة</p>
             
             <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
             
@@ -327,7 +327,7 @@
             <input type="text" id="adminUserId" class="admin-input" placeholder="أدخل ID المستخدم">
 
             <label style="font-size: 11px; color: #8b91a0;">عدد النقاط المراد تعديلها:</label>
-            <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 80">
+            <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 22">
 
             <button class="btn-mine" style="background:#28a745; color:#fff; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('add')">➕ إضافة نقاط للمستخدم</button>
             <button class="btn-mine" style="background:#dc3545; color:#fff; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('sub')">➖ خصم نقاط من المستخدم</button>
@@ -360,7 +360,7 @@
 
 <script>
     const ADMIN_ID = "1985474484"; 
-    let userPoints = 80; 
+    let userPoints = 22.00; 
     let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 0.0000;
     
     let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1.0;
@@ -392,7 +392,7 @@
         if(localStorage.getItem('savedUserPoints')) {
             userPoints = parseFloat(localStorage.getItem('savedUserPoints'));
         } else {
-            userPoints = 80; 
+            userPoints = 22.00; 
         }
         updateGoldDisplay();
         updateMiningRatesDisplay();
@@ -432,9 +432,16 @@
     }
 
     function updateGoldDisplay() {
+        let usdValue = (userPoints * 0.0001).toFixed(4);
+        
         document.getElementById('gold').innerText = userPoints.toFixed(2);
+        document.getElementById('gold-usd').innerText = `($${usdValue})`;
+        
         document.getElementById('wallet-gold').innerText = userPoints.toFixed(2);
-        document.getElementById('total-assets-val').innerText = userPoints.toFixed(2) + " 🪙";
+        document.getElementById('wallet-gold-usd').innerText = `($${usdValue})`;
+        
+        document.getElementById('total-assets-val').innerHTML = `${userPoints.toFixed(2)} 🪙 <span style="font-size: 14px; color: #8b91a0;">($${usdValue})</span>`;
+        
         localStorage.setItem('savedUserPoints', userPoints);
     }
 
