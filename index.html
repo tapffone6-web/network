@@ -11,14 +11,12 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 15px;
-            display: flex;
-            flex-direction: et;
-            align-items: center;
-            justify-content: center;
+            padding-bottom: 70px;
         }
         .container {
             width: 100%;
             max-width: 400px;
+            margin: 0 auto;
         }
         .header {
             display: flex;
@@ -44,9 +42,6 @@
             padding: 10px;
             border-radius: 10px;
             margin: 15px 0;
-        }
-        .stat-box {
-            text-align: center;
         }
         .stat-box span {
             display: block;
@@ -84,9 +79,25 @@
             text-align: center;
             color: #8b91a0;
             font-size: 12px;
+            cursor: pointer;
         }
         .nav-item.active {
             color: #f3ba2f;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .task-item {
+            background: #1f2229;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
@@ -98,37 +109,85 @@
         <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.728</span></div>
     </div>
 
-    <div class="card">
-        <h3>PIRATE LV. 1</h3>
-        <div class="stats">
-            <div class="stat-box">
-                <span>HOURLY</span>
-                <strong>0.713</strong>
+    <!-- صفحة التعدين -->
+    <div id="page-mining" class="page active">
+        <div class="card">
+            <h3>PIRATE LV. 1</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <span>HOURLY</span>
+                    <strong>0.713</strong>
+                </div>
+                <div class="stat-box">
+                    <span>DAILY</span>
+                    <strong>17.115</strong>
+                </div>
+                <div class="stat-box">
+                    <span>MONTHLY</span>
+                    <strong>513.450</strong>
+                </div>
             </div>
-            <div class="stat-box">
-                <span>DAILY</span>
-                <strong>17.115</strong>
+            <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="timer" style="color:#fff;">11:59:56</span></div>
+            <button class="btn-mine" onclick="startMining()">⛏️ MINING ACTIVE</button>
+        </div>
+    </div>
+
+    <!-- صفحة المهام (Earn) -->
+    <div id="page-earn" class="page">
+        <div class="card">
+            <h3>مهام الربح</h3>
+            <div class="task-item">
+                <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
+                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">إنجاز</button>
             </div>
-            <div class="stat-box">
-                <span>MONTHLY</span>
-                <strong>513.450</strong>
+            <div class="task-item">
+                <span>تابع صفحة التليجرام (+10 رصيد)</span>
+                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">إنجاز</button>
             </div>
         </div>
-        <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="timer" style="color:#fff;">11:59:56</span></div>
-        <button class="btn-mine" onclick="startMining()">⛏️ MINING ACTIVE</button>
+    </div>
+
+    <!-- صفحة الأصدقاء -->
+    <div id="page-friends" class="page">
+        <div class="card">
+            <h3>دعوة الأصدقاء</h3>
+            <p style="color:#8b91a0; font-size:13px;">اربح عمولة على كل صديق تدعوه للتعدين.</p>
+            <button class="btn-mine">🔗 نسخ رابط الإحالة</button>
+        </div>
+    </div>
+
+    <!-- صفحة المحفظة -->
+    <div id="page-wallet" class="page">
+        <div class="card">
+            <h3>محفظتك</h3>
+            <p>الرصيد الكلي: <strong style="color:#f3ba2f;">80.728 🪙</strong></p>
+            <button class="btn-mine" style="background:#28a745; color:#fff;">سحب الأرباح</button>
+        </div>
     </div>
 </div>
 
+<!-- القائمة السفلية -->
 <div class="nav-bar">
-    <div class="nav-item active">⚓ التعدين</div>
-    <div class="nav-item">🪙 المهام</div>
-    <div class="nav-item">👥 الأصدقاء</div>
-    <div class="nav-item">💼 المحفظة</div>
+    <div class="nav-item active" onclick="switchPage('mining', this)">⚓ التعدين</div>
+    <div class="nav-item" onclick="switchPage('earn', this)">🪙 المهام</div>
+    <div class="nav-item" onclick="switchPage('friends', this)">👥 الأصدقاء</div>
+    <div class="nav-item" onclick="switchPage('wallet', this)">💼 المحفظة</div>
 </div>
 
 <script>
+    function switchPage(pageName, element) {
+        // إخفاء كل الصفحات
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // إزالة التحديد من الأزرار
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        
+        // إظهار الصفحة المطلوبة وتحديد الزر
+        document.getElementById('page-' + pageName).classList.add('active');
+        element.classList.add('active');
+    }
+
     function startMining() {
-        alert("تم تفعيل التعدين بنجاح! ستبدأ الأرباح بالتزايد.");
+        alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
     }
 </script>
 
