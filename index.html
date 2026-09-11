@@ -247,6 +247,7 @@
         <div class="card" style="text-align: right;">
             <h3 style="text-align: center;">محفظتك</h3>
             <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">0.0080</strong> 🪙</p>
+            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 0.15</p>
             
             <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
             
@@ -255,7 +256,7 @@
             <label style="font-size: 12px; color: #8b91a0;">عنوان محفظة TON (Wallet Address):</label>
             <input type="text" id="walletAddress" class="withdraw-input" placeholder="UQ... أو أدخل عنوان محفظة TON">
 
-            <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها:</label>
+            <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها (الحد الأدنى 0.15):</label>
             <input type="number" id="withdrawAmount" class="withdraw-input" placeholder="أدخل المبلغ...">
 
             <button class="btn-mine" style="background:#28a745; color:#fff; margin-top:10px; cursor:pointer;" onclick="submitWithdraw()">تأكيد طلب السحب</button>
@@ -318,6 +319,7 @@
     const POINT_VALUE = 0.0001; 
     const MAX_ADS = 150;
     const MINING_DURATION = 12 * 60 * 60 * 1000; 
+    const MIN_WITHDRAW = 0.15; // الحد الأدنى للسحب
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -510,11 +512,19 @@
 
     function submitWithdraw() {
         let address = document.getElementById('walletAddress').value;
-        let amount = document.getElementById('withdrawAmount').value;
-        if(!address || !amount) {
-            alert("الرجاء إدخال عنوان محفظة TON والمبلغ المراد سحبه!");
+        let amount = parseFloat(document.getElementById('withdrawAmount').value);
+        
+        if(!address || isNaN(amount)) {
+            alert("الرجاء إدخال عنوان محفظة TON والمبلغ المراد سحبه بشكل صحيح!");
             return;
         }
+
+        // التحقق من الحد الأدنى للسحب
+        if (amount < MIN_WITHDRAW) {
+            alert(`عذراً، الحد الأدنى للسحب هو ${MIN_WITHDRAW}! رصيدك المراد سحبه أقل من الحد المسموح.`);
+            return;
+        }
+
         alert(`تم إرسال طلب سحب ${amount} بنجاح إلى محفظة TON:\n${address}\nفي انتظار مراجعة الأدمن.`);
         document.getElementById('walletAddress').value = '';
         document.getElementById('withdrawAmount').value = '';
@@ -583,7 +593,6 @@
 
     function loadTasks() {
         let container = document.getElementById('tasks-container');
-        // المهمة الافتتاحية الأولى مع رابط افتتاحي
         container.innerHTML = `
             <div class="task-item">
                 <span>انضم لقناة اليوتيوب (+10 نقاط)</span>
@@ -599,16 +608,13 @@
         });
     }
 
-    // دالة تجبر المستخدم على فتح الرابط والانتظار قليلاً قبل الحصول على المكافأة
     function startTask(url, rewardPoints) {
-        // فتح رابط المهمة في صفحة جديدة
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
             window.Telegram.WebApp.openLink(url);
         } else {
             window.open(url, '_blank');
         }
 
-        // تنبيه المستخدم بالذهاب للمهمة ثم العودة لاستلام الجائزة
         setTimeout(() => {
             let userCompleted = confirm(`هل أكملت المهمة وعُدت؟\nاضغط "موافق" للحصول على مكافأة بقيمة ${rewardPoints} نقطة.`);
             if (userCompleted) {
