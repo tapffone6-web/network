@@ -12,18 +12,17 @@ dp = Dispatcher(bot)
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     markup = InlineKeyboardMarkup()
-    # رابط ويب مباشر ومضمون للمعاينة
-    game_url = "https://info.cern.ch/"
+    game_url = "https://tapffone6-web.github.io/network/"
     
     markup.add(
         InlineKeyboardButton(
-            text="🚀 افتح التطبيق", 
+            text="⛏️ افتح لعبة التعدين", 
             web_app=WebAppInfo(url=game_url)
         )
     )
     
     await message.reply(
-        "مرحبا عزيز المستخدم في بوت التعدين الخاص بك! ⛏️\nاضغط على الزر أسفله للتجربة:", 
+        "مرحباً بك في بوت التعدين الخاص بك! 🚀\nاضغط على الزر أسفله لفتح المنصة:", 
         reply_markup=markup
     )
 
