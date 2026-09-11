@@ -140,7 +140,7 @@
     <div class="header">
         <div>👑 Level 1</div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.728</span></div>
+            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">0.0080</span></div>
             <button id="top-admin-btn" onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer; display:none;">الأدمن</button>
         </div>
     </div>
@@ -167,14 +167,14 @@
             <button class="btn-mine" onclick="startMining()">MINING ACTIVE ⛏️</button>
         </div>
 
-        <!-- خانة الإعلان الأولى (بدون ذكر السعر في العنوان) -->
+        <!-- خانة الإعلان الأولى -->
         <div class="card" style="text-align: right;">
             <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً لرصيدك</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً واحداً واربح نقاطاً تضاف مباشرة إلى رصيدك</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً واحداً واربح نقطة تضاف مباشرة لقيمته</div>
             <button class="btn-ad" onclick="watchAdForPoint()">▶️ مشاهدة إعلان</button>
         </div>
 
-        <!-- خانة الإعلان الثانية: زيادة سرعة التعدين + ربح نقاط (مرة كل 24 ساعة) -->
+        <!-- خانة الإعلان الثانية: زيادة سرعة التعدين + ربح نقاط -->
         <div class="card" style="text-align: right;">
             <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⚡ زيادة السرعة + ربح نقاط (مرة كل 24 ساعة)</div>
             <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً لزيادة السرعة وكسب نقاط إضافية (متاحة مرة كل 24 ساعة)</div>
@@ -206,7 +206,7 @@
                 </div>
                 <div class="stat-box">
                     <span>أرباح الإحالات</span>
-                    <strong id="ref-earnings">0.000 🪙</strong>
+                    <strong id="ref-earnings">0.0000 🪙</strong>
                 </div>
             </div>
             
@@ -220,7 +220,7 @@
     <div id="page-wallet" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="text-align: center;">محفظتك</h3>
-            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">80.728</strong> 🪙</p>
+            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">0.0080</strong> 🪙</p>
             
             <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
             
@@ -245,11 +245,11 @@
             <label style="font-size: 11px; color: #8b91a0;">معرف المستخدم (User ID):</label>
             <input type="text" id="adminUserId" class="admin-input" placeholder="أدخل ID المستخدم">
 
-            <label style="font-size: 11px; color: #8b91a0;">الكمية (الرصيد):</label>
-            <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 50">
+            <label style="font-size: 11px; color: #8b91a0;">عدد النقاط المراد تعديلها:</label>
+            <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 80">
 
-            <button class="btn-mine" style="background:#28a745; margin-top:5px; padding:10px;" onclick="adminAction('add')">➕ إضافة رصيد للمستخدم</button>
-            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px; padding:10px;" onclick="adminAction('sub')">➖ خصم رصيد من المستخدم</button>
+            <button class="btn-mine" style="background:#28a745; margin-top:5px; padding:10px;" onclick="adminAction('add')">➕ إضافة نقاط للمستخدم</button>
+            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px; padding:10px;" onclick="adminAction('sub')">➖ خصم نقاط من المستخدم</button>
             <button class="btn-mine" style="background:#ffc107; margin-top:5px; padding:10px;" onclick="adminAction('withdraw')">✅ قبول طلب السحب</button>
             <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px; padding:10px;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
 
@@ -266,7 +266,7 @@
             <label style="font-size: 11px; color: #8b91a0;">عنوان المهمة (مثال: انضم للقناة):</label>
             <input type="text" id="taskTitleInput" class="admin-input" placeholder="اكتب اسم المهمة...">
 
-            <label style="font-size: 11px; color: #8b91a0;">مكافأة المهمة (الرصيد):</label>
+            <label style="font-size: 11px; color: #8b91a0;">مكافأة المهمة (بالنقاط):</label>
             <input type="number" id="taskRewardInput" class="admin-input" placeholder="مثال: 10">
 
             <button class="btn-mine" style="background:#f3ba2f; margin-top:5px; padding:10px;" onclick="addNewTask()">➕ نشر المهمة وتثبيتها</button>
@@ -285,8 +285,8 @@
 
 <script>
     const ADMIN_ID = "1985474484"; 
-    let currentGold = 80.728;
-    const POINT_VALUE = 0.0001; // كل 1 نقطة تساوي 0.0001 وتتضاعف تلقائياً بلا توقف
+    let userPoints = 80; // نبدأ بـ 80 نقطة افتراضياً بناءً على طلبك
+    const POINT_VALUE = 0.0001; // كل 1 نقطة تساوي 0.0001
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -307,15 +307,18 @@
         document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${userId}`;
 
         let refCount = localStorage.getItem('refCount_' + userId) || 0;
-        let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.000";
+        let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.0000";
 
         document.getElementById('ref-count').innerText = refCount;
         document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
 
-        if(localStorage.getItem('savedGold')) {
-            currentGold = parseFloat(localStorage.getItem('savedGold'));
-            updateGoldDisplay();
+        // استرجاع عدد النقاط المخزن أو البدء بـ 80
+        if(localStorage.getItem('savedUserPoints')) {
+            userPoints = parseFloat(localStorage.getItem('savedUserPoints'));
+        } else {
+            userPoints = 80; // القيمة الافتراضية 80 نقطة لتساوي 0.0080
         }
+        updateGoldDisplay();
 
         if(localStorage.getItem('savedHourly')) {
             let h = localStorage.getItem('savedHourly');
@@ -330,9 +333,10 @@
     };
 
     function updateGoldDisplay() {
-        document.getElementById('gold').innerText = currentGold.toFixed(4);
-        document.getElementById('wallet-gold').innerText = currentGold.toFixed(4);
-        localStorage.setItem('savedGold', currentGold);
+        let calculatedValue = userPoints * POINT_VALUE;
+        document.getElementById('gold').innerText = calculatedValue.toFixed(4);
+        document.getElementById('wallet-gold').innerText = calculatedValue.toFixed(4);
+        localStorage.setItem('savedUserPoints', userPoints);
     }
 
     function copyRefLink() {
@@ -354,30 +358,28 @@
         alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
     }
 
-    // دالة ربح نقطة واحدة عبر الإعلان الأول (تضيف 1 نقطة متضربة مع القيمة تلقائياً)
+    // دالة ربح نقطة واحدة عبر الإعلان الأول (تزيد نقطة واحدة ليصبح المجموع 81 وهكذا)
     function watchAdForPoint() {
         alert("جاري تحميل الإعلان... (يرجى الانتظار)");
         setTimeout(() => {
-            let earnedPoints = 1; 
-            currentGold += earnedPoints * POINT_VALUE;
+            userPoints += 1; // زيادة نقطة واحدة
             updateGoldDisplay();
-            alert(`🎉 تهانينا! تمت إضافة (1 نقطة) لرصيدك بنجاح.`);
+            alert(`🎉 تهانينا! تمت إضافة نقطة واحدة لرصيدك.`);
         }, 1000);
     }
 
     // دالة زيادة سرعة التعدين + ربح نقطة (مرة كل 24 ساعة)
     function watchAdForDailyBoost() {
-        alert("جاري تشغيل الإعلان لزيادة سرعة التعدين وكسب النقطة...");
+        alert("جاري تشغيل الإعلان لزيادة سرعة التعدين وكسب النقاط...");
         setTimeout(() => {
             let nextBoostTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ساعة قادمة
             localStorage.setItem('nextBoostTime', nextBoostTime);
             
-            let earnedPoints = 1; 
-            currentGold += earnedPoints * POINT_VALUE; 
+            userPoints += 1; // إضافة نقطة مع السرعة
             updateGoldDisplay();
 
             checkDailyBoostTimer();
-            alert(`🚀 ممتاز! تم تطبيق زيادة السرعة وإضافة (1 نقطة) لرصيدك بنجاح.`);
+            alert(`🚀 ممتاز! تم تطبيق زيادة السرعة وإضافة نقطة واحدة لرصيدك بنجاح.`);
         }, 1000);
     }
 
@@ -428,13 +430,23 @@
         let uid = document.getElementById('adminUserId').value;
         let amt = parseFloat(document.getElementById('adminAmount').value);
         if(!uid || isNaN(amt)) {
-            alert("الرجاء إدخال معرف المستخدم والمبلغ بشكل صحيح!");
+            alert("الرجاء إدخال معرف المستخدم وعدد النقاط بشكل صحيح!");
             return;
         }
-        if(action === 'add') alert(`تمت إضافة ${amt} للمستخدم ${uid} بنجاح.`);
-        else if(action === 'sub') alert(`تم خصم ${amt} من المستخدم ${uid}.`);
-        else if(action === 'withdraw') alert(`تم قبول طلب سحب المستخدم ${uid} بنجاح.`);
-        else if(action === 'ban') alert(`تم حظر المستخدم ${uid} من المنصة.`);
+        if(action === 'add') {
+            userPoints += amt;
+            updateGoldDisplay();
+            alert(`تمت إضافة ${amt} نقطة للمستخدم ${uid} بنجاح.`);
+        } else if(action === 'sub') {
+            userPoints -= amt;
+            if(userPoints < 0) userPoints = 0;
+            updateGoldDisplay();
+            alert(`تم خصم ${amt} نقطة من المستخدم ${uid}.`);
+        } else if(action === 'withdraw') {
+            alert(`تم قبول طلب سحب المستخدم ${uid} بنجاح.`);
+        } else if(action === 'ban') {
+            alert(`تم حظر المستخدم ${uid} من المنصة.`);
+        }
     }
 
     function updateMiningRates() {
@@ -456,15 +468,15 @@
 
     function addNewTask() {
         let title = document.getElementById('taskTitleInput').value;
-        let reward = document.getElementById('taskRewardInput').value;
-        if(!title || !reward) {
-            alert("الرجاء إدخال عنوان المهمة والمكافأة!");
+        let reward = parseFloat(document.getElementById('taskRewardInput').value);
+        if(!title || isNaN(reward)) {
+            alert("الرجاء إدخال عنوان المهمة والمكافأة بالنقاط بشكل صحيح!");
             return;
         }
 
         let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
         tasks.push({ title: title, reward: reward });
-        localStorage.setItem('savedSavedTasks', JSON.stringify(tasks));
+        localStorage.setItem('savedTasks', JSON.stringify(tasks));
 
         loadTasks();
         alert("تمت إضافة المهمة وحفظها بنجاح!");
@@ -476,17 +488,23 @@
         let container = document.getElementById('tasks-container');
         container.innerHTML = `
             <div class="task-item">
-                <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
-                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنجاز المهمة بنجاح!')">إنجاز</button>
+                <span>انضم لقناة اليوتيوب (+10 نقاط)</span>
+                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="completeTask(10)">إنجاز</button>
             </div>
         `;
         let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
         tasks.forEach(t => {
             let newTask = document.createElement('div');
             newTask.className = 'task-item';
-            newTask.innerHTML = `<span>${t.title} (+${t.reward} رصيد)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنجاز المهمة بنجاح!')">إنجاز</button>`;
+            newTask.innerHTML = `<span>${t.title} (+${t.reward} نقاط)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="completeTask(${t.reward})">إنجاز</button>`;
             container.appendChild(newTask);
         });
+    }
+
+    function completeTask(rewardPoints) {
+        userPoints += rewardPoints;
+        updateGoldDisplay();
+        alert(`🎉 تهانينا! تمت إضافة ${rewardPoints} نقطة إلى رصيدك بنجاح.`);
     }
 </script>
 
