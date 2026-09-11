@@ -69,18 +69,13 @@
             color: #fff;
             border: none;
             width: 100%;
-            padding: 12px;
-            font-size: 15px;
+            padding: 14px;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
             margin-top: 10px;
             display: none;
-        }
-        .btn-claim:disabled {
-            background: #333;
-            color: #777;
-            cursor: not-allowed;
         }
         .btn-ad-style {
             background: linear-gradient(135deg, #f3ba2f, #e89e00);
@@ -186,10 +181,14 @@
                     <strong id="display-hourly">1</strong>
                 </div>
             </div>
-            <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="mining-timer" style="color:#fff; font-weight:bold;">12:00:00</span></div>
             
-            <button class="btn-mine" id="mining-status-btn" disabled>MINING ACTIVE ⛏️</button>
-            <button class="btn-claim" id="claim-btn" onclick="claimMiningRewards()">جمع الأرباح 🪙</button>
+            <!-- عداد التعدين وزر الجمع -->
+            <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">
+                الوقت الباقي للتعدين: <span id="mining-timer" style="color:#fff; font-weight:bold;">12:00:00</span>
+            </div>
+            
+            <button class="btn-mine" id="mining-status-btn" disabled style="background: #23262f; color: #8b91a0; cursor: not-allowed;">MINING ACTIVE ⛏️</button>
+            <button class="btn-claim" id="claim-btn" onclick="claimMiningRewards()">جمع 🪙</button>
         </div>
 
         <!-- خانة الإعلان الأولى -->
@@ -314,7 +313,7 @@
     let userPoints = 80; 
     const POINT_VALUE = 0.0001; 
     const MAX_ADS = 150;
-    const MINING_DURATION = 12 * 60 * 60 * 1000; // 12 ساعة بالمللي ثانية
+    const MINING_DURATION = 12 * 60 * 60 * 1000; // 12 ساعة
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -366,7 +365,7 @@
         localStorage.setItem('savedUserPoints', userPoints);
     }
 
-    // إدارة عداد التعدين وعملية الجمع
+    // تشغيل العداد التنازلي للتعدين
     function initMiningTimer() {
         let miningEndTime = localStorage.getItem('miningEndTime');
         if (!miningEndTime) {
@@ -398,21 +397,20 @@
         } else {
             timerElem.innerText = "00:00:00 (انتهى الوقت)";
             statusBtn.style.display = 'none';
-            claimBtn.style.display = 'block';
+            claimBtn.style.display = 'block'; // ظهور زر الجمع عند الانتهاء
         }
     }
 
     function claimMiningRewards() {
-        // حساب المكافأة بناء على الربح اليومي (مثال: ربح 12 ساعة = نصف الربح اليومي أو حسب الساعات)
         let dailyRate = parseFloat(document.getElementById('display-daily').innerText) || 24;
-        let earnedPoints = Math.round(dailyRate / 2); // مكافأة 12 ساعة مثلاً
+        let earnedPoints = Math.round(dailyRate / 2); // مكافأة الـ 12 ساعة
         
         userPoints += earnedPoints;
         updateGoldDisplay();
 
         alert(`🎉 تهانينا! تم جمع أرباح التعدين بنجاح وتمت إضافة ${earnedPoints} نقطة إلى رصيدك.`);
 
-        // إعادة تشغيل العداد لمدة 12 ساعة جديدة
+        // إعادة ضبط العداد لـ 12 ساعة جديدة
         let newEndTime = new Date().getTime() + MINING_DURATION;
         localStorage.setItem('miningEndTime', newEndTime);
         updateMiningCountdown();
