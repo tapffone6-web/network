@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mining Bot & Admin Panel</title>
-    <!-- مكتبة إعلانات Adsgram الرسمية -->
-    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
+    <!-- مكتبة إعلانات GigaPub الرسمية -->
+    <script src="https://ad.gigapub.tech/script?id=8146"></script>
     <style>
         body {
             background-color: #0c0d10;
@@ -316,10 +316,6 @@
     const MAX_ADS = 150;
     const MINING_DURATION = 12 * 60 * 60 * 1000; 
 
-    // تم ربط الكود بالـ Block ID الخاص بك (47285) في الإعلان الأول
-    const adController1 = window.Adsgram ? window.Adsgram.init({ blockId: "47285" }) : null;
-    const adController2 = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_AD_BLOCK_ID_2" }) : null;
-
     window.onload = function() {
         let userId = "1985474484"; 
         let botUsername = "Miningbot"; 
@@ -474,7 +470,7 @@
         }
     }
 
-    // دالة عرض إعلان Adsgram الحقيقي
+    // دالة عرض إعلان GigaPub الحقيقي
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
         if (localStorage.getItem('adsDate') !== today) {
@@ -490,15 +486,13 @@
             return;
         }
 
-        let controller = (adBoxIndex === 1) ? adController1 : adController2;
-
-        if (!controller) {
-            alert("عذراً، مكتبة الإعلانات غير متصلة أو لم يتم ضبط الـ Block ID بشكل صحيح.");
+        if (typeof window.showGiga !== 'function') {
+            alert("عذراً، مكتبة إعلانات GigaPub لم يتم تحميلها بشكل صحيح.");
             return;
         }
 
-        // إظهار الإعلان الفعلي عبر Adsgram SDK
-        controller.show().then((result) => {
+        // استدعاء إعلان GigaPub
+        window.showGiga().then(() => {
             watched += 1;
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
 
@@ -507,8 +501,8 @@
             updateAdsUI();
 
             alert(`🎉 تهانينا! تمت إضافة نقطة واحدة لرصيدك (المشاهدات المتبقية: ${MAX_ADS - watched}).`);
-        }).catch((result) => {
-            console.log("Ad skipped or failed", result);
+        }).catch(e => {
+            console.log("Ad skipped or failed", e);
             alert("لم تكمل مشاهدة الإعلان، لذلك لم يتم احتساب المكافأة.");
         });
     }
