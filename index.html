@@ -54,7 +54,7 @@
             font-size: 14px;
             color: #f3ba2f;
         }
-        /* تصميم واجهة التعدين الجديدة مطابقة للصورة */
+        /* تصميم واجهة التعدين مع الأرباح اليومية والساعة */
         .mining-assets-title {
             font-size: 11px;
             letter-spacing: 1px;
@@ -72,22 +72,47 @@
             font-weight: bold;
             color: #28a745;
             text-shadow: 0 0 10px rgba(40, 167, 69, 0.4);
-            margin: 20px 0;
+            margin: 15px 0;
             background: #1f2229;
             padding: 15px;
             border-radius: 12px;
             border: 1px solid #23262f;
         }
+        /* إحصائيات التعدين لكل ساعة ويومياً */
+        .mining-rates-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .rate-box {
+            flex: 1;
+            background: #1f2229;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #23262f;
+            text-align: center;
+        }
+        .rate-box span {
+            display: block;
+            font-size: 11px;
+            color: #8b91a0;
+            margin-bottom: 4px;
+        }
+        .rate-box strong {
+            font-size: 13px;
+            color: #f3ba2f;
+        }
         .mining-coin-circle {
-            width: 130px;
-            height: 130px;
-            margin: 15px auto;
+            width: 110px;
+            height: 110px;
+            margin: 10px auto;
             background: radial-gradient(circle, #f3ba2f 0%, #b8860b 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             color: #1a1a1a;
             box-shadow: 0 0 20px rgba(243, 186, 47, 0.5);
@@ -98,12 +123,12 @@
             color: #000;
             border: none;
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             font-size: 18px;
             font-weight: bold;
             border-radius: 14px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 10px;
             box-shadow: 0 4px 15px rgba(243, 186, 47, 0.3);
         }
         .btn-ad-style {
@@ -193,7 +218,7 @@
         </div>
     </div>
 
-    <!-- صفحة التعدين بالشكل الجديد المطابق للصورة -->
+    <!-- صفحة التعدين مع الأرباح اليومية وكل ساعة -->
     <div id="page-mining" class="page active">
         <div class="card">
             <div class="mining-assets-title">ASSETS</div>
@@ -201,6 +226,18 @@
             
             <div class="mining-counter-box" id="live-mining-counter">+0.0000</div>
             
+            <!-- خانات الأرباح لكل ساعة ويومياً -->
+            <div class="mining-rates-container">
+                <div class="rate-box">
+                    <span>أرباح كل ساعة (Hourly)</span>
+                    <strong id="hourly-rate">9.00 TON</strong>
+                </div>
+                <div class="rate-box">
+                    <span>الأرباح اليومية (Daily)</span>
+                    <strong id="daily-rate">216.00 TON</strong>
+                </div>
+            </div>
+
             <div class="mining-coin-circle">
                 TON
             </div>
@@ -254,7 +291,7 @@
             
             <input type="text" id="refLink" class="ref-input" readonly value="">
             
-            <button class="btn-mine" style="cursor:pointer; background: linear-gradient(135deg, #f3ba2f, #e89e00); border:none; padding:14px; border-radius:12px; font-weight:bold;" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
+            <button class="btn-mine" style="cursor:pointer; background: linear-gradient(135deg, #f3ba2f, #e89e00); border:none; padding:14px; border-radius:12px; font-weight:bold; width:100%;" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
         </div>
     </div>
 
@@ -327,7 +364,7 @@
     const MAX_ADS = 150;
     const MIN_WITHDRAW = 0.15; 
 
-    // متغيرات العداد التصاعدي للتعدين
+    // متغيرات العداد التصاعدي والتعدين
     let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 124.5000;
 
     window.onload = function() {
@@ -359,16 +396,27 @@
             userPoints = 80; 
         }
         updateGoldDisplay();
+        updateMiningRates();
 
         initAdsData();
         loadTasks();
         startLiveMiningCounter();
     };
 
+    // حساب وعرض معدل التعدين لكل ساعة ويومياً
+    function updateMiningRates() {
+        // معدل الزيادة في الثانية الواحدة (0.0025) ضرب 3600 ثانية يعطي معدل الساعة
+        let perSecond = 0.0025;
+        let hourly = perSecond * 3600; 
+        let daily = hourly * 24;
+
+        document.getElementById('hourly-rate').innerText = hourly.toFixed(2) + " TON";
+        document.getElementById('daily-rate').innerText = daily.toFixed(2) + " TON";
+    }
+
     // تشغيل العداد التصاعدي التلقائي
     function startLiveMiningCounter() {
         setInterval(() => {
-            // زيادة قيمة التعدين تدريجياً كل ثانية
             currentMinedPool += 0.0025; 
             document.getElementById('live-mining-counter').innerText = "+" + currentMinedPool.toFixed(4);
             localStorage.setItem('currentMinedPool', currentMinedPool);
