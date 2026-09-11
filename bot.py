@@ -2,7 +2,8 @@ import logging
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
-API_TOKEN = "8779410844:AAGpvCRBUjlNtaVawiCCauxHkWYL6R9yeJw"
+# التوكن الجديد الصحيح
+API_TOKEN = "8779410844:AAHiGxuDjJ_tLjdGHTQDKpuLFaj842w041Q"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,7 +23,7 @@ async def send_welcome(message: types.Message):
     )
     
     await message.reply(
-        "مرحباً بك في بوت التعدين الخاص بك! 🚀\nاضغط على الزر أسفله لفتح المنصة:", 
+        "مرحباً بك في بوت التعدين الخاص بك! 🚀\nاضغط على الزر أسفله لفتح منصة التعدين:", 
         reply_markup=markup
     )
 
