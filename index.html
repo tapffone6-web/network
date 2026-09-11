@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mining Bot & Admin Panel</title>
+    <!-- مكتبة إعلانات Adsgram الرسمية -->
+    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
         body {
             background-color: #0c0d10;
@@ -182,7 +184,6 @@
                 </div>
             </div>
             
-            <!-- عداد التعدين وزر الجمع -->
             <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">
                 الوقت الباقي للتعدين: <span id="mining-timer" style="color:#fff; font-weight:bold;">12:00:00</span>
             </div>
@@ -313,7 +314,11 @@
     let userPoints = 80; 
     const POINT_VALUE = 0.0001; 
     const MAX_ADS = 150;
-    const MINING_DURATION = 12 * 60 * 60 * 1000; // 12 ساعة
+    const MINING_DURATION = 12 * 60 * 60 * 1000; 
+
+    // تم ربط الكود بالـ Block ID الخاص بك (47285) في الإعلان الأول
+    const adController1 = window.Adsgram ? window.Adsgram.init({ blockId: "47285" }) : null;
+    const adController2 = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_AD_BLOCK_ID_2" }) : null;
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -365,7 +370,6 @@
         localStorage.setItem('savedUserPoints', userPoints);
     }
 
-    // تشغيل العداد التنازلي للتعدين
     function initMiningTimer() {
         let miningEndTime = localStorage.getItem('miningEndTime');
         if (!miningEndTime) {
@@ -397,20 +401,19 @@
         } else {
             timerElem.innerText = "00:00:00 (انتهى الوقت)";
             statusBtn.style.display = 'none';
-            claimBtn.style.display = 'block'; // ظهور زر الجمع عند الانتهاء
+            claimBtn.style.display = 'block'; 
         }
     }
 
     function claimMiningRewards() {
         let dailyRate = parseFloat(document.getElementById('display-daily').innerText) || 24;
-        let earnedPoints = Math.round(dailyRate / 2); // مكافأة الـ 12 ساعة
+        let earnedPoints = Math.round(dailyRate / 2); 
         
         userPoints += earnedPoints;
         updateGoldDisplay();
 
         alert(`🎉 تهانينا! تم جمع أرباح التعدين بنجاح وتمت إضافة ${earnedPoints} نقطة إلى رصيدك.`);
 
-        // إعادة ضبط العداد لـ 12 ساعة جديدة
         let newEndTime = new Date().getTime() + MINING_DURATION;
         localStorage.setItem('miningEndTime', newEndTime);
         updateMiningCountdown();
@@ -471,6 +474,7 @@
         }
     }
 
+    // دالة عرض إعلان Adsgram الحقيقي
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
         if (localStorage.getItem('adsDate') !== today) {
@@ -486,8 +490,15 @@
             return;
         }
 
-        alert("جاري تحميل الإعلان... (يرجى الانتظار)");
-        setTimeout(() => {
+        let controller = (adBoxIndex === 1) ? adController1 : adController2;
+
+        if (!controller) {
+            alert("عذراً، مكتبة الإعلانات غير متصلة أو لم يتم ضبط الـ Block ID بشكل صحيح.");
+            return;
+        }
+
+        // إظهار الإعلان الفعلي عبر Adsgram SDK
+        controller.show().then((result) => {
             watched += 1;
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
 
@@ -496,7 +507,10 @@
             updateAdsUI();
 
             alert(`🎉 تهانينا! تمت إضافة نقطة واحدة لرصيدك (المشاهدات المتبقية: ${MAX_ADS - watched}).`);
-        }, 1000);
+        }).catch((result) => {
+            console.log("Ad skipped or failed", result);
+            alert("لم تكمل مشاهدة الإعلان، لذلك لم يتم احتساب المكافأة.");
+        });
     }
 
     function submitWithdraw() {
