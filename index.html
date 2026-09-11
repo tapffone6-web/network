@@ -64,6 +64,24 @@
             cursor: pointer;
             margin-top: 10px;
         }
+        .btn-claim {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+        }
+        .btn-claim:disabled {
+            background: #333;
+            color: #777;
+            cursor: not-allowed;
+        }
         .btn-ad-style {
             background: linear-gradient(135deg, #f3ba2f, #e89e00);
             color: #000;
@@ -168,8 +186,10 @@
                     <strong id="display-hourly">1</strong>
                 </div>
             </div>
-            <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="timer" style="color:#fff;">11:59:56</span></div>
-            <button class="btn-mine" onclick="startMining()">MINING ACTIVE ⛏️</button>
+            <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="mining-timer" style="color:#fff; font-weight:bold;">12:00:00</span></div>
+            
+            <button class="btn-mine" id="mining-status-btn" disabled>MINING ACTIVE ⛏️</button>
+            <button class="btn-claim" id="claim-btn" onclick="claimMiningRewards()">جمع الأرباح 🪙</button>
         </div>
 
         <!-- خانة الإعلان الأولى -->
@@ -218,7 +238,7 @@
             
             <input type="text" id="refLink" class="ref-input" readonly value="">
             
-            <button class="btn-mine" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
+            <button class="btn-mine" style="cursor:pointer;" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
         </div>
     </div>
 
@@ -238,7 +258,7 @@
             <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها:</label>
             <input type="number" id="withdrawAmount" class="withdraw-input" placeholder="أدخل المبلغ...">
 
-            <button class="btn-mine" style="background:#28a745; color:#fff; margin-top:10px;" onclick="submitWithdraw()">تأكيد طلب السحب</button>
+            <button class="btn-mine" style="background:#28a745; color:#fff; margin-top:10px; cursor:pointer;" onclick="submitWithdraw()">تأكيد طلب السحب</button>
         </div>
     </div>
 
@@ -254,10 +274,10 @@
             <label style="font-size: 11px; color: #8b91a0;">عدد النقاط المراد تعديلها:</label>
             <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 80">
 
-            <button class="btn-mine" style="background:#28a745; margin-top:5px; padding:10px;" onclick="adminAction('add')">➕ إضافة نقاط للمستخدم</button>
-            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px; padding:10px;" onclick="adminAction('sub')">➖ خصم نقاط من المستخدم</button>
-            <button class="btn-mine" style="background:#ffc107; margin-top:5px; padding:10px;" onclick="adminAction('withdraw')">✅ قبول طلب السحب</button>
-            <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px; padding:10px;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
+            <button class="btn-mine" style="background:#28a745; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('add')">➕ إضافة نقاط للمستخدم</button>
+            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('sub')">➖ خصم نقاط من المستخدم</button>
+            <button class="btn-mine" style="background:#ffc107; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('withdraw')">✅ قبول طلب السحب</button>
+            <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
 
             <div class="section-title">⚡ التحكم في أرباح التعدين</div>
             <label style="font-size: 11px; color: #8b91a0;">الربح بالساعة (Hourly):</label>
@@ -266,7 +286,7 @@
             <label style="font-size: 11px; color: #8b91a0;">الربح اليومي (Daily):</label>
             <input type="number" id="setDaily" class="admin-input" placeholder="24">
 
-            <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px;" onclick="updateMiningRates()">💾 حفظ وتثبيت أرباح التعدين</button>
+            <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px; cursor:pointer;" onclick="updateMiningRates()">💾 حفظ وتثبيت أرباح التعدين</button>
 
             <div class="section-title">📝 إضافة مهمة جديدة للعبة</div>
             <label style="font-size: 11px; color: #8b91a0;">عنوان المهمة (مثال: انضم للقناة):</label>
@@ -275,7 +295,7 @@
             <label style="font-size: 11px; color: #8b91a0;">مكافأة المهمة (بالنقاط):</label>
             <input type="number" id="taskRewardInput" class="admin-input" placeholder="مثال: 10">
 
-            <button class="btn-mine" style="background:#f3ba2f; margin-top:5px; padding:10px;" onclick="addNewTask()">➕ نشر المهمة وتثبيتها</button>
+            <button class="btn-mine" style="background:#f3ba2f; margin-top:5px; padding:10px; cursor:pointer;" onclick="addNewTask()">➕ نشر المهمة وتثبيتها</button>
         </div>
     </div>
 </div>
@@ -294,6 +314,7 @@
     let userPoints = 80; 
     const POINT_VALUE = 0.0001; 
     const MAX_ADS = 150;
+    const MINING_DURATION = 12 * 60 * 60 * 1000; // 12 ساعة بالمللي ثانية
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -333,6 +354,7 @@
             document.getElementById('display-monthly').innerText = (h * 720).toFixed(4);
         }
 
+        initMiningTimer();
         initAdsData();
         loadTasks();
     };
@@ -342,6 +364,58 @@
         document.getElementById('gold').innerText = calculatedValue.toFixed(4);
         document.getElementById('wallet-gold').innerText = calculatedValue.toFixed(4);
         localStorage.setItem('savedUserPoints', userPoints);
+    }
+
+    // إدارة عداد التعدين وعملية الجمع
+    function initMiningTimer() {
+        let miningEndTime = localStorage.getItem('miningEndTime');
+        if (!miningEndTime) {
+            miningEndTime = new Date().getTime() + MINING_DURATION;
+            localStorage.setItem('miningEndTime', miningEndTime);
+        }
+        updateMiningCountdown();
+    }
+
+    function updateMiningCountdown() {
+        let now = new Date().getTime();
+        let miningEndTime = parseInt(localStorage.getItem('miningEndTime')) || now;
+        let distance = miningEndTime - now;
+
+        let timerElem = document.getElementById('mining-timer');
+        let statusBtn = document.getElementById('mining-status-btn');
+        let claimBtn = document.getElementById('claim-btn');
+
+        if (distance > 0) {
+            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            timerElem.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            statusBtn.style.display = 'block';
+            claimBtn.style.display = 'none';
+
+            setTimeout(updateMiningCountdown, 1000);
+        } else {
+            timerElem.innerText = "00:00:00 (انتهى الوقت)";
+            statusBtn.style.display = 'none';
+            claimBtn.style.display = 'block';
+        }
+    }
+
+    function claimMiningRewards() {
+        // حساب المكافأة بناء على الربح اليومي (مثال: ربح 12 ساعة = نصف الربح اليومي أو حسب الساعات)
+        let dailyRate = parseFloat(document.getElementById('display-daily').innerText) || 24;
+        let earnedPoints = Math.round(dailyRate / 2); // مكافأة 12 ساعة مثلاً
+        
+        userPoints += earnedPoints;
+        updateGoldDisplay();
+
+        alert(`🎉 تهانينا! تم جمع أرباح التعدين بنجاح وتمت إضافة ${earnedPoints} نقطة إلى رصيدك.`);
+
+        // إعادة تشغيل العداد لمدة 12 ساعة جديدة
+        let newEndTime = new Date().getTime() + MINING_DURATION;
+        localStorage.setItem('miningEndTime', newEndTime);
+        updateMiningCountdown();
     }
 
     function copyRefLink() {
@@ -359,11 +433,6 @@
         if(element) element.classList.add('active');
     }
 
-    function startMining() {
-        alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
-    }
-
-    // إدارة عدادات الإعلانات اليومية لكل خانة
     function getTodayDateString() {
         return new Date().toISOString().slice(0, 10);
     }
