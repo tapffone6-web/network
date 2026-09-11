@@ -211,7 +211,7 @@
     <div class="header">
         <div>👑 Level 1</div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">0.0080</span></div>
+            <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.00</span></div>
             <button id="top-admin-btn" onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer; display:none;">الأدمن</button>
         </div>
     </div>
@@ -220,7 +220,7 @@
     <div id="page-mining" class="page active">
         <div class="card">
             <div class="mining-assets-title">ASSETS</div>
-            <div class="mining-total-assets" id="total-assets-val">72,758.6164 TON</div>
+            <div class="mining-total-assets" id="total-assets-val">80.00 🪙</div>
             
             <div class="mining-counter-box" id="live-mining-counter">+0.0000</div>
             
@@ -228,11 +228,11 @@
             <div class="mining-rates-container">
                 <div class="rate-box">
                     <span>أرباح كل ساعة (Hourly)</span>
-                    <strong id="hourly-rate">0 🪙</strong>
+                    <strong id="hourly-rate">1.00 🪙</strong>
                 </div>
                 <div class="rate-box">
                     <span>الأرباح اليومية (Daily)</span>
-                    <strong id="daily-rate">0 🪙</strong>
+                    <strong id="daily-rate">24.00 🪙</strong>
                 </div>
             </div>
 
@@ -244,15 +244,15 @@
         </div>
 
         <div class="card" style="text-align: right;">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً لرصيدك (1)</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">شاهد إعلاناً واحداً واربح نقطة تضاف مباشرة لقيمته</div>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً وزد سرعة التعدين (1)</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">كل إعلان يشاهده المستخدم يرفع أرباح الساعة بقيمة +0.5 نقطة</div>
             <div style="font-size: 11px; color: #f3ba2f; margin-bottom: 10px;">المتبقي اليوم: <span id="ads-count-1">150</span> / 150</div>
             <button class="btn-ad-style" id="ad-btn-1" onclick="watchAd(1)">مشاهدة إعلان 🟠</button>
         </div>
 
         <div class="card" style="text-align: right;">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً لرصيدك (2)</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">شاهد إعلاناً واحداً واربح نقطة تضاف مباشرة لقيمته</div>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً وزد سرعة التعدين (2)</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">كل إعلان يشاهده المستخدم يرفع أرباح الساعة بقيمة +0.5 نقطة</div>
             <div style="font-size: 11px; color: #f3ba2f; margin-bottom: 10px;">المتبقي اليوم: <span id="ads-count-2">150</span> / 150</div>
             <button class="btn-ad-style" id="ad-btn-2" onclick="watchAd(2)">مشاهدة إعلان 🟠</button>
         </div>
@@ -281,7 +281,7 @@
                 </div>
                 <div class="stat-box">
                     <span>أرباح الإحالات</span>
-                    <strong id="ref-earnings">0.0000 🪙</strong>
+                    <strong id="ref-earnings">0.00 🪙</strong>
                 </div>
             </div>
             
@@ -294,33 +294,33 @@
     <div id="page-wallet" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="text-align: center;">محفظتك</h3>
-            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">0.0080</strong> 🪙</p>
-            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 0.15</p>
+            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">80.00</strong> 🪙</p>
+            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 100 نقطة</p>
             
             <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
             
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #f3ba2f;">💳 سحب أرباح TON</div>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #f3ba2f;">💳 طلب سحب النقاط</div>
             
-            <label style="font-size: 12px; color: #8b91a0;">عنوان محفظة TON (Wallet Address):</label>
-            <input type="text" id="walletAddress" class="withdraw-input" placeholder="UQ... أو أدخل عنوان محفظة TON">
+            <label style="font-size: 12px; color: #8b91a0;">معرف أو عنوان محفظتك:</label>
+            <input type="text" id="walletAddress" class="withdraw-input" placeholder="أدخل العنوان أو الحساب...">
 
-            <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها (الحد الأدنى 0.15):</label>
-            <input type="number" id="withdrawAmount" class="withdraw-input" placeholder="أدخل المبلغ...">
+            <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها:</label>
+            <input type="number" id="withdrawAmount" class="withdraw-input" placeholder="أدخل عدد النقاط...">
 
             <button class="btn-mine" style="background:#28a745; color:#fff; margin-top:10px; cursor:pointer; border:none; padding:14px; border-radius:12px; font-weight:bold; width:100%;" onclick="submitWithdraw()">تأكيد طلب السحب</button>
         </div>
     </div>
 
-    <!-- لوحة تحكم الأدمن للتحكم بأرباح النقاط بالساعة -->
+    <!-- لوحة تحكم الأدمن -->
     <div id="page-admin" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الخاصة</h3>
             
-            <div class="section-title">⚡ التحكم في أرباح التعديل (بالنقاط الصفراء)</div>
-            <label style="font-size: 11px; color: #8b91a0;">الربح في الساعة الواحدة (نقاط):</label>
+            <div class="section-title">⚡ التحكم في أرباح التعدين بالساعة</div>
+            <label style="font-size: 11px; color: #8b91a0;">الربح الأساسي في الساعة الواحدة (نقاط):</label>
             <input type="number" step="any" id="adminHourlyInput" class="admin-input" placeholder="مثال: 1">
 
-            <button class="btn-mine" style="background:#f3ba2f; color:#000; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; font-weight:bold; cursor:pointer;" onclick="saveMiningSpeed()">💾 حفظ وتحديث أرباح التعدين</button>
+            <button class="btn-mine" style="background:#f3ba2f; color:#000; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; font-weight:bold; cursor:pointer;" onclick="saveMiningSpeed()">💾 حفظ وتحديث سرعة التعدين</button>
 
             <div class="section-title">👤 إدارة المستخدمين</div>
             <label style="font-size: 11px; color: #8b91a0;">معرف المستخدم (User ID):</label>
@@ -361,14 +361,10 @@
 <script>
     const ADMIN_ID = "1985474484"; 
     let userPoints = 80; 
-    const POINT_VALUE = 0.0001; 
-    const MAX_ADS = 150;
-    const MIN_WITHDRAW = 0.15; 
-
     let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 0.0000;
     
-    // القيمة الافتراضية لأرباح الساعة بالنقاط (يمكن تعديلها من لوحة الأدمن)
-    let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1;
+    // أرباح الساعة الأساسية (تتحدث وتزيد تلقائياً مع تفاعل المستخدم)
+    let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1.0;
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -389,7 +385,7 @@
         document.getElementById('adminHourlyInput').value = hourlyMiningRate;
 
         let refCount = localStorage.getItem('refCount_' + userId) || 0;
-        let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.0000";
+        let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.00";
 
         document.getElementById('ref-count').innerText = refCount;
         document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
@@ -437,17 +433,16 @@
     }
 
     function updateGoldDisplay() {
-        let calculatedValue = userPoints * POINT_VALUE;
-        document.getElementById('gold').innerText = calculatedValue.toFixed(4);
-        document.getElementById('wallet-gold').innerText = calculatedValue.toFixed(4);
-        document.getElementById('total-assets-val').innerText = (72758 + calculatedValue).toFixed(4) + " TON";
+        document.getElementById('gold').innerText = userPoints.toFixed(2);
+        document.getElementById('wallet-gold').innerText = userPoints.toFixed(2);
+        document.getElementById('total-assets-val').innerText = userPoints.toFixed(2) + " 🪙";
         localStorage.setItem('savedUserPoints', userPoints);
     }
 
     function claimMiningRewards() {
         let claimedAmount = Math.floor(currentMinedPool);
         if (claimedAmount < 1 && currentMinedPool > 0) {
-            claimedAmount = 1; // ضمان جمع النقطة حتى لو كانت كسراً بسيطاً إذا ضغط المستخدم
+            claimedAmount = 1; 
         }
         
         if (claimedAmount > 0) {
@@ -497,8 +492,8 @@
         let watched1 = parseInt(localStorage.getItem('adsWatched_1')) || 0;
         let watched2 = parseInt(localStorage.getItem('adsWatched_2')) || 0;
 
-        let left1 = MAX_ADS - watched1;
-        let left2 = MAX_ADS - watched2;
+        let left1 = 150 - watched1;
+        let left2 = 150 - watched2;
 
         document.getElementById('ads-count-1').innerText = left1 > 0 ? left1 : 0;
         document.getElementById('ads-count-2').innerText = left2 > 0 ? left2 : 0;
@@ -516,6 +511,7 @@
         }
     }
 
+    // هنا يتم زيادة سرعة التعدين في الساعة تلقائياً مع كل إعلان يشاهده المستخدم
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
         if (localStorage.getItem('adsDate') !== today) {
@@ -525,7 +521,7 @@
         }
 
         let watched = parseInt(localStorage.getItem('adsWatched_' + adBoxIndex)) || 0;
-        if (watched >= MAX_ADS) {
+        if (watched >= 150) {
             alert("لقد وصلت إلى الحد الأقصى لمشاهدة الإعلانات لهذه الخانة اليوم (150 إعلاناً).");
             updateAdsUI();
             return;
@@ -540,11 +536,18 @@
             watched += 1;
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
 
+            // 1. إضافة نقطة للرصيد
             userPoints += 1; 
+
+            // 2. زيادة أرباح الساعة تلقائياً بمقدار +0.5 نقطة مع كل إعلان يشاهده المستخدم
+            hourlyMiningRate += 0.5;
+            localStorage.setItem('hourlyMiningRate', hourlyMiningRate);
+
             updateGoldDisplay();
+            updateMiningRatesDisplay();
             updateAdsUI();
 
-            alert(`🎉 تهانينا! تمت إضافة نقطة واحدة لرصيدك (المشاهدات المتبقية: ${MAX_ADS - watched}).`);
+            alert(`🎉 أحسنت! تمت إضافة نقطة لرصيدك، وارتفعت سرعة أرباح التعدين بالساعة لتصبح (${hourlyMiningRate.toFixed(1)} نقطة/ساعة)!`);
         }).catch(e => {
             console.log("Ad skipped or failed", e);
             alert("لم تكمل مشاهدة الإعلان، لذلك لم يتم احتساب المكافأة.");
@@ -556,16 +559,23 @@
         let amount = parseFloat(document.getElementById('withdrawAmount').value);
         
         if(!address || isNaN(amount)) {
-            alert("الرجاء إدخال عنوان محفظة TON والمبلغ المراد سحبه بشكل صحيح!");
+            alert("الرجاء إدخال معلومات السحب بشكل صحيح!");
             return;
         }
 
-        if (amount < MIN_WITHDRAW) {
-            alert(`عذراً، الحد الأدنى للسحب هو ${MIN_WITHDRAW}! رصيدك المراد سحبه أقل من الحد المسموح.`);
+        if (amount < 100) {
+            alert("عذراً، الحد الأدنى للسحب هو 100 نقطة!");
             return;
         }
 
-        alert(`تم إرسال طلب سحب ${amount} بنجاح إلى محفظة TON:\n${address}\nفي انتظار مراجعة الأدمن.`);
+        if (amount > userPoints) {
+            alert("الرصيد غير كافٍ لإتمام عملية السحب!");
+            return;
+        }
+
+        userPoints -= amount;
+        updateGoldDisplay();
+        alert(`تم إرسال طلب سحب ${amount} نقطة بنجاح، في انتظار مراجعة الأدمن.`);
         document.getElementById('walletAddress').value = '';
         document.getElementById('withdrawAmount').value = '';
     }
