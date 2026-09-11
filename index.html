@@ -290,19 +290,19 @@
         </div>
     </div>
 
-    <!-- صفحة المحفظة -->
+    <!-- صفحة المحفظة (سحب تون) -->
     <div id="page-wallet" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="text-align: center;">محفظتك</h3>
             <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">80.00</strong> 🪙</p>
-            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 100 نقطة</p>
+            <p style="text-align: center; font-size: 11px; color: #f3ba2f; margin-top: -5px;">الحد الأدنى للسحب: 1000 نقطة</p>
             
             <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
             
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #f3ba2f;">💳 طلب سحب النقاط</div>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #f3ba2f;">💳 سحب تون</div>
             
-            <label style="font-size: 12px; color: #8b91a0;">معرف أو عنوان محفظتك:</label>
-            <input type="text" id="walletAddress" class="withdraw-input" placeholder="أدخل العنوان أو الحساب...">
+            <label style="font-size: 12px; color: #8b91a0;">عنوان محفظة تون (TON Wallet Address):</label>
+            <input type="text" id="walletAddress" class="withdraw-input" placeholder="UQ... أو أدخل عنوان محفظة تون">
 
             <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها:</label>
             <input type="number" id="withdrawAmount" class="withdraw-input" placeholder="أدخل عدد النقاط...">
@@ -363,7 +363,6 @@
     let userPoints = 80; 
     let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 0.0000;
     
-    // أرباح الساعة الأساسية (تتحدث وتزيد تلقائياً مع تفاعل المستخدم)
     let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1.0;
 
     window.onload = function() {
@@ -511,7 +510,6 @@
         }
     }
 
-    // هنا يتم زيادة سرعة التعدين في الساعة تلقائياً مع كل إعلان يشاهده المستخدم
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
         if (localStorage.getItem('adsDate') !== today) {
@@ -536,10 +534,7 @@
             watched += 1;
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
 
-            // 1. إضافة نقطة للرصيد
             userPoints += 1; 
-
-            // 2. زيادة أرباح الساعة تلقائياً بمقدار +0.5 نقطة مع كل إعلان يشاهده المستخدم
             hourlyMiningRate += 0.5;
             localStorage.setItem('hourlyMiningRate', hourlyMiningRate);
 
@@ -563,8 +558,8 @@
             return;
         }
 
-        if (amount < 100) {
-            alert("عذراً، الحد الأدنى للسحب هو 100 نقطة!");
+        if (amount < 1000) {
+            alert("عذراً، الحد الأدنى للسحب هو 1000 نقطة!");
             return;
         }
 
@@ -575,7 +570,7 @@
 
         userPoints -= amount;
         updateGoldDisplay();
-        alert(`تم إرسال طلب سحب ${amount} نقطة بنجاح، في انتظار مراجعة الأدمن.`);
+        alert(`تم إرسال طلب سحب ${amount} نقطة بنجاح إلى محفظة تون، في انتظار مراجعة الأدمن.`);
         document.getElementById('walletAddress').value = '';
         document.getElementById('withdrawAmount').value = '';
     }
