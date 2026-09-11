@@ -177,10 +177,7 @@
         <div class="card" style="text-align: right;">
             <h3>مهام الربح</h3>
             <div id="tasks-container">
-                <div class="task-item">
-                    <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
-                    <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;">إنجاز</button>
-                </div>
+                <!-- المهام ستظهر هنا تلقائياً -->
             </div>
         </div>
     </div>
@@ -217,7 +214,7 @@
     <!-- لوحة تحكم الأدمن الشاملة -->
     <div id="page-admin" class="page">
         <div class="card" style="text-align: right;">
-            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الشاملة</h3>
+            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الدائمة</h3>
             
             <!-- إدارة الأرصدة والسحب والحظر -->
             <div class="section-title">👤 إدارة المستخدمين</div>
@@ -240,7 +237,7 @@
             <label style="font-size: 11px; color: #8b91a0;">الربح اليومي (Daily):</label>
             <input type="number" id="setDaily" class="admin-input" placeholder="17.115">
 
-            <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px;" onclick="updateMiningRates()">💾 حفظ وتحديث أرباح التعدين</button>
+            <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px;" onclick="updateMiningRates()">💾 حفظ وتثبيت أرباح التعدين</button>
 
             <!-- إضافة المهام -->
             <div class="section-title">📝 إضافة مهمة جديدة للعبة</div>
@@ -250,7 +247,7 @@
             <label style="font-size: 11px; color: #8b91a0;">مكافأة المهمة (الرصيد):</label>
             <input type="number" id="taskRewardInput" class="admin-input" placeholder="مثال: 10">
 
-            <button class="btn-mine" style="background:#f3ba2f; margin-top:5px; padding:10px;" onclick="addNewTask()">➕ نشر المهمة في صفحة المهام</button>
+            <button class="btn-mine" style="background:#f3ba2f; margin-top:5px; padding:10px;" onclick="addNewTask()">➕ نشر المهمة وتثبيتها</button>
         </div>
     </div>
 </div>
@@ -265,6 +262,18 @@
 </div>
 
 <script>
+    // تحميل البيانات المحفوظة فور فتح التطبيق
+    window.onload = function() {
+        if(localStorage.getItem('savedHourly')) {
+            let h = localStorage.getItem('savedHourly');
+            let d = localStorage.getItem('savedDaily');
+            document.getElementById('display-hourly').innerText = h;
+            document.getElementById('display-daily').innerText = d;
+            document.getElementById('display-monthly').innerText = (h * 720).toFixed(3);
+        }
+        loadTasks();
+    };
+
     function switchPage(pageName, element) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -308,14 +317,19 @@
     function updateMiningRates() {
         let h = document.getElementById('setHourly').value;
         let d = document.getElementById('setDaily').value;
-        if(h) {
-            document.getElementById('display-hourly').innerText = h;
-            document.getElementById('display-monthly').innerText = (h * 720).toFixed(3);
+        if(!h || !d) {
+            alert("الرجاء إدخال قيمة الربح بالساعة واليومي!");
+            return;
         }
-        if(d) {
-            document.getElementById('display-daily').innerText = d;
-        }
-        alert("تم تحديث أرباح التعدين بنجاح في الواجهة!");
+        // حفظ القيم في ذاكرة المتصفح الدائمة
+        localStorage.setItem('savedHourly', h);
+        localStorage.setItem('savedDaily', d);
+
+        document.getElementById('display-hourly').innerText = h;
+        document.getElementById('display-daily').innerText = d;
+        document.getElementById('display-monthly').innerText = (h * 720).toFixed(3);
+        
+        alert("تم حفظ أرباح التعدين بنجاح ولن تختفي عند الخروج!");
     }
 
     function addNewTask() {
@@ -325,14 +339,32 @@
             alert("الرجاء إدخال عنوان المهمة والمكافأة!");
             return;
         }
-        let container = document.getElementById('tasks-container');
-        let newTask = document.createElement('div');
-        newTask.className = 'task-item';
-        newTask.innerHTML = `<span>${title} (+${reward} رصيد)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنجاز المهمة بنجاح!')">إنجاز</button>`;
-        container.appendChild(newTask);
-        alert("تمت إضافة المهمة بنجاح إلى صفحة المهام!");
+
+        let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
+        tasks.push({ title: title, reward: reward });
+        localStorage.setItem('savedTasks', JSON.stringify(tasks));
+
+        loadTasks();
+        alert("تمت إضافة المهمة وحفظها بنجاح!");
         document.getElementById('taskTitleInput').value = '';
         document.getElementById('taskRewardInput').value = '';
+    }
+
+    function loadTasks() {
+        let container = document.getElementById('tasks-container');
+        container.innerHTML = `
+            <div class="task-item">
+                <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
+                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنجاز المهمة بنجاح!')">إنجاز</button>
+            </div>
+        `;
+        let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
+        tasks.forEach(t => {
+            let newTask = document.createElement('div');
+            newTask.className = 'task-item';
+            newTask.innerHTML = `<span>${t.title} (+${t.reward} رصيد)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنجاز المهمة بنجاح!')">إنجاز</button>`;
+            container.appendChild(newTask);
+        });
     }
 </script>
 
