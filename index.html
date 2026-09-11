@@ -174,11 +174,11 @@
             <button class="btn-ad" onclick="watchAdForPoint()">▶️ مشاهدة إعلان (+1 نقطة)</button>
         </div>
 
-        <!-- خانة الإعلان الثانية: زيادة سرعة التعدين كل 24 ساعة -->
+        <!-- خانة الإعلان الثانية: زيادة سرعة التعدين + ربح نقطة (مرة كل 24 ساعة) -->
         <div class="card" style="text-align: right;">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⚡ زيادة سرعة التعدين (24 ساعة)</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً لتفعيل مضاعفة وسرعة التعدين لمدة 24 ساعة قادمة</div>
-            <button class="btn-ad" id="boost-btn" onclick="watchAdForBoost()">🚀 تفعيل زيادة السرعة</button>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⚡ زيادة السرعة + ربح نقطة (مرة كل 24 ساعة)</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً لزيادة السرعة وكسب (+1 نقطة) إضافية (متاحة مرة كل 24 ساعة)</div>
+            <button class="btn-ad" id="boost-btn" onclick="watchAdForDailyBoost()">🚀 زيادة السرعة وكسب نقطة</button>
             <div id="boost-timer" style="font-size: 11px; color: #f3ba2f; margin-top: 8px; text-align: center; display: none;"></div>
         </div>
     </div>
@@ -324,7 +324,7 @@
             document.getElementById('display-monthly').innerText = (h * 720).toFixed(3);
         }
 
-        checkBoostTimer();
+        checkDailyBoostTimer();
         loadTasks();
     };
 
@@ -353,7 +353,7 @@
         alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
     }
 
-    // دالة ربح نقطة واحدة عبر الإعلان
+    // دالة ربح نقطة واحدة عبر الإعلان الأول
     function watchAdForPoint() {
         alert("جاري تحميل الإعلان... (يرجى الانتظار)");
         setTimeout(() => {
@@ -363,25 +363,30 @@
         }, 1000);
     }
 
-    // دالة زيادة سرعة التعدين لمدة 24 ساعة عبر الإعلان
-    function watchAdForBoost() {
-        alert("جاري تشغيل إعلان زيادة السرعة...");
+    // دالة زيادة سرعة التعدين + ربح نقطة (مرة كل 24 ساعة)
+    function watchAdForDailyBoost() {
+        alert("جاري تشغيل الإعلان لزيادة سرعة التعدين وكسب النقطة...");
         setTimeout(() => {
-            let boostEnd = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ساعة من الآن
-            localStorage.setItem('boostEndTime', boostEnd);
-            checkBoostTimer();
-            alert("⚡ رائع! تم تفعيل زيادة سرعة التعدين بنجاح لمدة 24 ساعة قادمة.");
+            let nextBoostTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ساعة قادمة
+            localStorage.setItem('nextBoostTime', nextBoostTime);
+            
+            // إضافة نقطة واحدة (أو أكثر) كمكافأة مع زيادة السرعة
+            currentGold += 1; 
+            updateGoldDisplay();
+
+            checkDailyBoostTimer();
+            alert("🚀 ممتاز! تم تطبيق زيادة سرعة التعدين وإضافة (+1 نقطة) لرصيدك بنجاح (متاحة مرة كل 24 ساعة).");
         }, 1000);
     }
 
-    function checkBoostTimer() {
-        let boostEnd = localStorage.getItem('boostEndTime');
+    function checkDailyBoostTimer() {
+        let nextBoostTime = localStorage.getItem('nextBoostTime');
         let btn = document.getElementById('boost-btn');
         let timerDiv = document.getElementById('boost-timer');
 
-        if (boostEnd) {
+        if (nextBoostTime) {
             let now = new Date().getTime();
-            let distance = boostEnd - now;
+            let distance = nextBoostTime - now;
 
             if (distance > 0) {
                 btn.style.display = 'none';
@@ -391,11 +396,11 @@
                 let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                timerDiv.innerText = `⏳ التعدين السريع مفعل: متبقي ${hours}س ${minutes}د ${seconds}ث`;
+                timerDiv.innerText = `⏳ متبقي لتفعيل الزيادة وكسب النقطة: ${hours}س ${minutes}د ${seconds}ث`;
 
-                setTimeout(checkBoostTimer, 1000);
+                setTimeout(checkDailyBoostTimer, 1000);
             } else {
-                localStorage.removeItem('boostEndTime');
+                localStorage.removeItem('nextBoostTime');
                 btn.style.display = 'block';
                 timerDiv.style.display = 'none';
             }
