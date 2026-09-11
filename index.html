@@ -185,14 +185,13 @@
         .page.active {
             display: block;
         }
-        .task-item {
+        .task-item, .withdraw-request-item {
             background: #1f2229;
             padding: 12px;
             border-radius: 10px;
             margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: right;
+            border: 1px solid #333;
         }
         .section-title {
             font-size: 13px;
@@ -224,7 +223,6 @@
             
             <div class="mining-counter-box" id="live-mining-counter">+0.0000</div>
             
-            <!-- أرباح الساعة واليوم بالنقاط الصفراء -->
             <div class="mining-rates-container">
                 <div class="rate-box">
                     <span>أرباح كل ساعة (Hourly)</span>
@@ -316,10 +314,16 @@
         <div class="card" style="text-align: right;">
             <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الخاصة</h3>
             
-            <!-- قسم إحصائيات المستخدمين -->
+            <!-- إحصائيات المستخدمين -->
             <div style="background: #1f2229; padding: 12px; border-radius: 10px; border: 1px solid #333; margin-bottom: 15px; text-align: center;">
                 <span style="font-size: 12px; color: #8b91a0; display: block;">👥 إجمالي عدد المستخدمين في البوت</span>
                 <strong id="total-users-count" style="font-size: 20px; color: #28a745;">1</strong>
+            </div>
+
+            <!-- قسم طلبات السحب الواردة -->
+            <div class="section-title" style="color: #28a745;">📥 طلبات السحب الواردة من المستخدمين</div>
+            <div id="admin-withdrawals-container" style="margin-bottom: 15px;">
+                <!-- ستظهر هنا طلبات السحب ديناميكياً -->
             </div>
 
             <div class="section-title">⚡ التحكم في أرباح التعدين بالساعة</div>
@@ -328,7 +332,7 @@
 
             <button class="btn-mine" style="background:#f3ba2f; color:#000; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; font-weight:bold; cursor:pointer;" onclick="saveMiningSpeed()">💾 حفظ وتحديث سرعة التعدين</button>
 
-            <div class="section-title">👤 إدارة المستخدمين</div>
+            <div class="section-title">👤 إدارة المستخدمين (تعديل رصيد يدوي)</div>
             <label style="font-size: 11px; color: #8b91a0;">معرف المستخدم (User ID):</label>
             <input type="text" id="adminUserId" class="admin-input" placeholder="أدخل ID المستخدم">
 
@@ -337,7 +341,6 @@
 
             <button class="btn-mine" style="background:#28a745; color:#fff; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('add')">➕ إضافة نقاط للمستخدم</button>
             <button class="btn-mine" style="background:#dc3545; color:#fff; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('sub')">➖ خصم نقاط من المستخدم</button>
-            <button class="btn-mine" style="background:#ffc107; color:#000; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('withdraw')">✅ قبول طلب السحب</button>
             <button class="btn-mine" style="background:#343a40; color:#ff4d4d; border:none; width:100%; border-radius:8px; margin-top:5px; padding:10px; cursor:pointer;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
 
             <div class="section-title">📝 إضافة مهمة جديدة للعبة</div>
@@ -366,12 +369,12 @@
 
 <script>
     const ADMIN_ID = "1985474484"; 
+    let currentUserId = "1985474484";
     let userPoints = 22.00; 
     let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 0.0000;
     
     let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1.0;
     
-    // متغيرات العدادات الزمنية لكل إعلان (50 ثانية)
     let coolDownTimers = { 1: null, 2: null };
     let coolDownEnds = { 
         1: parseInt(localStorage.getItem('coolDownEnds_1')) || 0, 
@@ -379,39 +382,38 @@
     };
 
     window.onload = function() {
-        let userId = "1985474484"; 
         let botUsername = "Miningbot"; 
 
         if (window.Telegram && window.Telegram.WebApp) {
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
             if (tgUser) {
-                if (String(tgUser.id) === ADMIN_ID) {
+                currentUserId = String(tgUser.id);
+                if (currentUserId === ADMIN_ID) {
                     document.getElementById('top-admin-btn').style.display = 'block';
                     document.getElementById('nav-admin').style.display = 'block';
                 }
-                userId = tgUser.id;
             }
         }
 
-        // نظام تسجيل الحسابات الفريدة لعد المستخدمين
+        // تسجيل المستخدم في العداد الإجمالي
         let registeredUsers = JSON.parse(localStorage.getItem('allAppUsers')) || [];
-        if (!registeredUsers.includes(String(userId))) {
-            registeredUsers.push(String(userId));
+        if (!registeredUsers.includes(currentUserId)) {
+            registeredUsers.push(currentUserId);
             localStorage.setItem('allAppUsers', JSON.stringify(registeredUsers));
         }
         document.getElementById('total-users-count').innerText = registeredUsers.length;
 
-        document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${userId}`;
+        document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${currentUserId}`;
         document.getElementById('adminHourlyInput').value = hourlyMiningRate;
 
-        let refCount = localStorage.getItem('refCount_' + userId) || 0;
-        let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.00";
+        let refCount = localStorage.getItem('refCount_' + currentUserId) || 0;
+        let refEarnings = localStorage.getItem('refEarnings_' + currentUserId) || "0.00";
 
         document.getElementById('ref-count').innerText = refCount;
         document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
 
-        if(localStorage.getItem('savedUserPoints')) {
-            userPoints = parseFloat(localStorage.getItem('savedUserPoints'));
+        if(localStorage.getItem('savedUserPoints_' + currentUserId)) {
+            userPoints = parseFloat(localStorage.getItem('savedUserPoints_' + currentUserId));
         } else {
             userPoints = 22.00; 
         }
@@ -420,6 +422,7 @@
 
         initAdsData();
         loadTasks();
+        loadAdminWithdrawals();
         startLiveMiningCounter();
         checkAllCoolDowns();
     };
@@ -464,7 +467,7 @@
         
         document.getElementById('total-assets-val').innerHTML = `${userPoints.toFixed(2)} 🪙 <span style="font-size: 14px; color: #8b91a0;">($${usdValue})</span>`;
         
-        localStorage.setItem('savedUserPoints', userPoints);
+        localStorage.setItem('savedUserPoints_' + currentUserId, userPoints);
     }
 
     function claimMiningRewards() {
@@ -497,6 +500,9 @@
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById('page-' + pageName).classList.add('active');
         if(element) element.classList.add('active');
+        if(pageName === 'admin') {
+            loadAdminWithdrawals(); // تحديث الطلبات فور فتح لوحة الأدمن
+        }
     }
 
     function getTodayDateString() {
@@ -625,7 +631,7 @@
     }
 
     function submitWithdraw() {
-        let address = document.getElementById('walletAddress').value;
+        let address = document.getElementById('walletAddress').value.trim();
         let amount = parseFloat(document.getElementById('withdrawAmount').value);
         
         if(!address || isNaN(amount)) {
@@ -633,8 +639,9 @@
             return;
         }
 
-        if (amount < 1000) {
-            alert("عذراً، الحد الأدنى للسحب هو 1000 نقطة!");
+        let minWithdraw = 300;
+        if (amount < minWithdraw) {
+            alert(`عذراً، الحد الأدنى للسحب هو ${minWithdraw} نقطة!`);
             return;
         }
 
@@ -643,34 +650,104 @@
             return;
         }
 
+        // خصم النقاط فوراً عند الطلب لكي لا يعيد طلبها
         userPoints -= amount;
         updateGoldDisplay();
-        alert(`تم إرسال طلب سحب ${amount} نقطة بنجاح إلى محفظة تون، في انتظار مراجعة الأدمن.`);
+
+        // حفظ طلب السحب في قائمة طلبات الأدمن المشتركة
+        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
+        withdrawals.push({
+            id: Date.now(),
+            userId: currentUserId,
+            address: address,
+            amount: amount,
+            date: new Date().toLocaleString()
+        });
+        localStorage.setItem('allWithdrawRequests', JSON.stringify(withdrawals));
+
+        alert(`تم إرسال طلب سحب ${amount} نقطة بنجاح إلى الأدمن للمراجعة.`);
         document.getElementById('walletAddress').value = '';
         document.getElementById('withdrawAmount').value = '';
     }
 
+    function loadAdminWithdrawals() {
+        let container = document.getElementById('admin-withdrawals-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
+        if (withdrawals.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: #8b91a0; font-size: 12px; padding: 10px; background:#1f2229; border-radius:8px;">لا توجد طلبات سحب معلقة حالياً.</div>`;
+            return;
+        }
+
+        withdrawals.forEach((req, index) => {
+            let item = document.createElement('div');
+            item.className = 'withdraw-request-item';
+            item.innerHTML = `
+                <div style="font-size: 12px; color: #f3ba2f; font-weight: bold; margin-bottom: 4px;">👤 المستخدم ID: ${req.userId}</div>
+                <div style="font-size: 12px; color: #fff; margin-bottom: 4px;">💰 الكمية المطلوبة: <b>${req.amount} نقطة</b></div>
+                <div style="font-size: 11px; color: #8b91a0; word-break: break-all; margin-bottom: 6px;">🔗 العنوان: <span style="color:#28a745;">${req.address}</span></div>
+                <div style="font-size: 10px; color: #666; margin-bottom: 8px;">⏰ ${req.date}</div>
+                <div style="display: flex; gap: 5px;">
+                    <button style="flex:1; background:#28a745; color:#fff; border:none; padding:6px; border-radius:5px; font-weight:bold; cursor:pointer; font-size:11px;" onclick="copyAddress('${req.address}')">📋 نسخ العنوان</button>
+                    <button style="flex:1; background:#ffc107; color:#000; border:none; padding:6px; border-radius:5px; font-weight:bold; cursor:pointer; font-size:11px;" onclick="resolveWithdraw(${index}, 'accept')">✅ تم الإرسال</button>
+                    <button style="flex:1; background:#dc3545; color:#fff; border:none; padding:6px; border-radius:5px; font-weight:bold; cursor:pointer; font-size:11px;" onclick="resolveWithdraw(${index}, 'reject')">❌ رفض وإعادة</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    function copyAddress(address) {
+        navigator.clipboard.writeText(address);
+        alert("📋 تم نسخ عنوان محفظة المستخدم بنجاح! يمكنك الآن الذهاب وإرسال الأموال له.");
+    }
+
+    function resolveWithdraw(index, action) {
+        let withdrawals = JSON.parse(localStorage.getItem('allWithdrawRequests')) || [];
+        let req = withdrawals[index];
+
+        if (action === 'reject') {
+            // إذا رفض الأدمن الطلب، نعيد النقاط للمستخدم صاحب الطلب
+            let targetKey = 'savedUserPoints_' + req.userId;
+            let targetPoints = parseFloat(localStorage.getItem(targetKey)) || 0;
+            targetPoints += req.amount;
+            localStorage.setItem(targetKey, targetPoints);
+            alert(`❌ تم رفض الطلب وإعادة ${req.amount} نقطة إلى رصيد المستخدم.`);
+        } else {
+            alert(`✅ تم تأكيد معالجة وإرسال الطلب للمستخدم بنجاح.`);
+        }
+
+        withdrawals.splice(index, 1);
+        localStorage.setItem('allWithdrawRequests', JSON.stringify(withdrawals));
+        loadAdminWithdrawals();
+    }
+
     function adminAction(action) {
-        let uid = document.getElementById('adminUserId').value;
+        let uid = document.getElementById('adminUserId').value.trim();
         let amt = parseFloat(document.getElementById('adminAmount').value);
         if(!uid || isNaN(amt)) {
             alert("الرجاء إدخال معرف المستخدم وعدد النقاط بشكل صحيح!");
             return;
         }
+        let targetKey = 'savedUserPoints_' + uid;
+        let targetPoints = parseFloat(localStorage.getItem(targetKey)) || 0;
+
         if(action === 'add') {
-            userPoints += amt;
-            updateGoldDisplay();
+            targetPoints += amt;
+            localStorage.setItem(targetKey, targetPoints);
             alert(`تمت إضافة ${amt} نقطة للمستخدم ${uid} بنجاح.`);
         } else if(action === 'sub') {
-            userPoints -= amt;
-            if(userPoints < 0) userPoints = 0;
-            updateGoldDisplay();
+            targetPoints -= amt;
+            if(targetPoints < 0) targetPoints = 0;
+            localStorage.setItem(targetKey, targetPoints);
             alert(`تم خصم ${amt} نقطة من المستخدم ${uid}.`);
-        } else if(action === 'withdraw') {
-            alert(`تم قبول طلب سحب المستخدم ${uid} بنجاح.`);
         } else if(action === 'ban') {
             alert(`تم حظر المستخدم ${uid} من المنصة.`);
         }
+        document.getElementById('adminUserId').value = '';
+        document.getElementById('adminAmount').value = '';
     }
 
     function addNewTask() {
@@ -708,10 +785,12 @@
             let newTask = document.createElement('div');
             newTask.className = 'task-item';
             newTask.innerHTML = `
-                <span>${t.title} (+${t.reward} نقاط)</span>
-                <div style="display: flex; gap: 5px;">
-                    <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('${t.link}', ${t.reward})">إنجاز</button>
-                    <button style="background:#dc3545; color:#fff; border:none; padding:5px 8px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="deleteTask(${index})">حذف</button>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>${t.title} (+${t.reward} نقاط)</span>
+                    <div style="display: flex; gap: 5px;">
+                        <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('${t.link}', ${t.reward})">إنجاز</button>
+                        <button style="background:#dc3545; color:#fff; border:none; padding:5px 8px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="deleteTask(${index})">حذف</button>
+                    </div>
                 </div>
             `;
             container.appendChild(newTask);
