@@ -364,6 +364,13 @@
     let currentMinedPool = parseFloat(localStorage.getItem('currentMinedPool')) || 0.0000;
     
     let hourlyMiningRate = parseFloat(localStorage.getItem('hourlyMiningRate')) || 1.0;
+    
+    // متغيرات العدادات الزمنية لكل إعلان (50 ثانية)
+    let coolDownTimers = { 1: null, 2: null };
+    let coolDownEnds = { 
+        1: parseInt(localStorage.getItem('coolDownEnds_1')) || 0, 
+        2: parseInt(localStorage.getItem('coolDownEnds_2')) || 0 
+    };
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -400,6 +407,7 @@
         initAdsData();
         loadTasks();
         startLiveMiningCounter();
+        checkAllCoolDowns();
     };
 
     function saveMiningSpeed() {
@@ -489,6 +497,10 @@
             localStorage.setItem('adsDate', today);
             localStorage.setItem('adsWatched_1', '0');
             localStorage.setItem('adsWatched_2', '0');
+            localStorage.setItem('coolDownEnds_1', '0');
+            localStorage.setItem('coolDownEnds_2', '0');
+            coolDownEnds[1] = 0;
+            coolDownEnds[2] = 0;
         }
 
         updateAdsUI();
@@ -517,6 +529,39 @@
         }
     }
 
+    function checkAllCoolDowns() {
+        [1, 2].forEach(index => {
+            let now = Date.now();
+            let ends = coolDownEnds[index];
+            if (ends && ends > now) {
+                startCoolDownTimer(index, Math.ceil((ends - now) / 1000));
+            }
+        });
+    }
+
+    function startCoolDownTimer(index, seconds) {
+        let btn = document.getElementById('ad-btn-' + index);
+        let watched = parseInt(localStorage.getItem('adsWatched_' + index)) || 0;
+        
+        if (watched >= 150) return;
+
+        btn.disabled = true;
+        if (coolDownTimers[index]) clearInterval(coolDownTimers[index]);
+
+        coolDownTimers[index] = setInterval(() => {
+            seconds--;
+            if (seconds > 0) {
+                btn.innerText = `انتظر (${seconds} ثانية) ⏳`;
+            } else {
+                clearInterval(coolDownTimers[index]);
+                btn.disabled = false;
+                btn.innerText = "مشاهدة إعلان 🟠";
+                coolDownEnds[index] = 0;
+                localStorage.setItem('coolDownEnds_' + index, '0');
+            }
+        }, 1000);
+    }
+
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
         if (localStorage.getItem('adsDate') !== today) {
@@ -532,6 +577,12 @@
             return;
         }
 
+        let now = Date.now();
+        if (coolDownEnds[adBoxIndex] && coolDownEnds[adBoxIndex] > now) {
+            alert("الرجاء الانتظار حتى ينتهي الوقت المحدد قبل مشاهدة إعلان آخر في هذه الخانة!");
+            return;
+        }
+
         if (typeof window.showGiga !== 'function') {
             alert("عذراً، مكتبة إعلانات GigaPub لم يتم تحميلها بشكل صحيح.");
             return;
@@ -542,12 +593,19 @@
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
 
             userPoints += 1; 
-            hourlyMiningRate += 0.05; // تم التعديل لتصبح الزيادة 0.05
+            hourlyMiningRate += 0.05; 
             localStorage.setItem('hourlyMiningRate', hourlyMiningRate);
 
             updateGoldDisplay();
             updateMiningRatesDisplay();
             updateAdsUI();
+
+            // ضبط وقت الانتظار 50 ثانية
+            let coolTime = 50;
+            let endsAt = Date.now() + (coolTime * 1000);
+            coolDownEnds[adBoxIndex] = endsAt;
+            localStorage.setItem('coolDownEnds_' + adBoxIndex, endsAt);
+            startCoolDownTimer(adBoxIndex, coolTime);
 
             alert(`🎉 أحسنت! تمت إضافة نقطة لرصيدك، وارتفعت سرعة أرباح التعدين بالساعة لتصبح (${hourlyMiningRate.toFixed(2)} نقطة/ساعة)!`);
         }).catch(e => {
