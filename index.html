@@ -76,7 +76,7 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .admin-input {
+        .admin-input, .withdraw-input {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
@@ -185,14 +185,25 @@
 
     <!-- صفحة المحفظة -->
     <div id="page-wallet" class="page">
-        <div class="card">
-            <h3>محفظتك</h3>
-            <p>الرصيد الكلي: <strong style="color:#f3ba2f;">80.728 🪙</strong></p>
-            <button class="btn-mine" style="background:#28a745; color:#fff;">طلب سحب الأرباح</button>
+        <div class="card" style="text-align: right;">
+            <h3 style="text-align: center;">محفظتك</h3>
+            <p style="text-align: center;">الرصيد الكلي: <strong style="color:#f3ba2f;">80.728 🪙</strong></p>
+            
+            <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
+            
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #f3ba2f;">💳 سحب الأرباح</div>
+            
+            <label style="font-size: 12px; color: #8b91a0;">عنوان المحفظة (USDT / TRC20 أو Payeer):</label>
+            <input type="text" id="walletAddress" class="withdraw-input" placeholder="أدخل عنوان محفظتك هنا...">
+
+            <label style="font-size: 12px; color: #8b91a0;">الكمية المراد سحبها:</label>
+            <input type="number" id="withdrawAmount" class="withdraw-input" placeholder="أدخل المبلغ...">
+
+            <button class="btn-mine" style="background:#28a745; color:#fff; margin-top:10px;" onclick="submitWithdraw()">تأكيد طلب السحب</button>
         </div>
     </div>
 
-    <!-- لوحة تحكم الأدمن (Admin Panel) -->
+    <!-- لوحة تحكم الأدمن -->
     <div id="page-admin" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن</h3>
@@ -217,7 +228,7 @@
     <div class="nav-item" onclick="switchPage('earn', this)">🪙 المهام</div>
     <div class="nav-item" onclick="switchPage('friends', this)">👥 الأصدقاء</div>
     <div class="nav-item" onclick="switchPage('wallet', this)">💼 المحفظة</div>
-    <div class="nav-item" id="nav-admin" onclick="switchPage('admin', this)" style="display:none;">🛠️ الأدمن</div>
+    <div class="nav-item" id="nav-admin" onclick="switchPage('admin', this)" style="display:block;">🛠️ الأدمن</div>
 </div>
 
 <script>
@@ -236,6 +247,18 @@
         alert("جاري تحميل الإعلان... (تم إضافة المكافأة)");
     }
 
+    function submitWithdraw() {
+        let address = document.getElementById('walletAddress').value;
+        let amount = document.getElementById('withdrawAmount').value;
+        if(!address || !amount) {
+            alert("الرجاء إدخال عنوان المحفظة والمبلغ المراد سحبه!");
+            return;
+        }
+        alert(`تم إرسال طلب سحب ${amount} بنجاح إلى العنوان:\n${address}\nفي انتظار مراجعة الأدمن.`);
+        document.getElementById('walletAddress').value = '';
+        document.getElementById('withdrawAmount').value = '';
+    }
+
     function adminAction(action) {
         let uid = document.getElementById('adminUserId').value;
         let amt = document.getElementById('adminAmount').value;
@@ -248,13 +271,6 @@
         else if(action === 'withdraw') alert(`تم قبول طلب سحب المستخدم ${uid} بنجاح.`);
         else if(action === 'ban') alert(`تم حظر المستخدم ${uid} من المنصة.`);
     }
-
-    // إظهار زر الأدمن سرياً بالضغط 3 مرات على العنوان أو تلقائياً
-    setTimeout(() => {
-        document.getElementById('nav-admin.style').display = 'block'; // يمكن إظهاره مباشرة
-    }, 1000);
-    // لسهولة الوصول، سنظهره في القائمة السفلية فوراً:
-    document.getElementById('nav-admin').style.display = 'block';
 </script>
 
 </body>
