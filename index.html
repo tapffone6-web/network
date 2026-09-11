@@ -76,7 +76,7 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .admin-input, .withdraw-input {
+        .admin-input, .withdraw-input, .ref-input {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
@@ -85,7 +85,8 @@
             color: #fff;
             border-radius: 8px;
             box-sizing: border-box;
-            font-size: 13px;
+            font-size: 12px;
+            text-align: center;
         }
         .nav-bar {
             display: flex;
@@ -131,7 +132,6 @@
             text-align: right;
         }
     </style>
-    <!-- مكتبة تيليجرام ويب أب الرسمية -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
@@ -141,7 +141,6 @@
         <div>👑 Level 1</div>
         <div style="display: flex; gap: 10px; align-items: center;">
             <div style="color: #f3ba2f; font-weight: bold;">🪙 <span id="gold">80.728</span></div>
-            <!-- زر الأدمن العلوي سيظهر لك وحدك -->
             <button id="top-admin-btn" onclick="switchPage('admin', document.getElementById('nav-admin'))" style="background:#e89e00; border:none; padding:4px 8px; border-radius:5px; font-size:10px; font-weight:bold; cursor:pointer; display:none;">الأدمن</button>
         </div>
     </div>
@@ -186,9 +185,14 @@
     <!-- صفحة الأصدقاء -->
     <div id="page-friends" class="page">
         <div class="card">
-            <h3>دعوة الأصدقاء</h3>
-            <p style="color:#8b91a0; font-size:13px;">اربح عمولة على كل صديق تدعوه.</p>
-            <button class="btn-mine">🔗 نسخ رابط الإحالة</button>
+            <h3>دعوة الأصدقاء 👥</h3>
+            <p style="color:#8b91a0; font-size:12px; margin-bottom:10px;">
+                اربح <strong style="color:#f3ba2f;">10%</strong> من أرباح التعدين لأصدقائك، و <strong style="color:#f3ba2f;">15%</strong> من أرباح إنجازهم للمهام!
+            </p>
+            
+            <input type="text" id="refLink" class="ref-input" readonly value="https://t.me/your_bot?start=1985474484">
+            
+            <button class="btn-mine" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
         </div>
     </div>
 
@@ -256,22 +260,29 @@
     <div class="nav-item" onclick="switchPage('earn', this)">🪙 المهام</div>
     <div class="nav-item" onclick="switchPage('friends', this)">👥 الأصدقاء</div>
     <div class="nav-item" onclick="switchPage('wallet', this)">💼 المحفظة</div>
-    <!-- أيقونة الأدمن ستظهر لك وحدك في القائمة -->
     <div class="nav-item" id="nav-admin" onclick="switchPage('admin', this)" style="display:none;">🛠️ الأدمن</div>
 </div>
 
 <script>
-    // الـ ID الخاص بك في تيليجرام
     const ADMIN_ID = "1985474484"; 
 
     window.onload = function() {
+        let userId = "1985474484"; // افتراضي
+        let botUsername = "Miningbot"; // يوزرنيم البوت الافتراضي
+
         if (window.Telegram && window.Telegram.WebApp) {
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-            if (tgUser && String(tgUser.id) === ADMIN_ID) {
-                document.getElementById('top-admin-btn').style.display = 'block';
-                document.getElementById('nav-admin').style.display = 'block';
+            if (tgUser) {
+                if (String(tgUser.id) === ADMIN_ID) {
+                    document.getElementById('top-admin-btn').style.display = 'block';
+                    document.getElementById('nav-admin').style.display = 'block';
+                }
+                userId = tgUser.id;
             }
         }
+
+        // توليد رابط الإحالة الحقيقي للمستخدم
+        document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${userId}`;
 
         if(localStorage.getItem('savedHourly')) {
             let h = localStorage.getItem('savedHourly');
@@ -282,6 +293,14 @@
         }
         loadTasks();
     };
+
+    function copyRefLink() {
+        let refInput = document.getElementById('refLink');
+        refInput.select();
+        refInput.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(refInput.value);
+        alert("تم نسخ رابط الإحالة بنجاح!");
+    }
 
     function switchPage(pageName, element) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
