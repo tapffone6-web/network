@@ -70,7 +70,7 @@
             border: 1px solid #f3ba2f;
             width: 100%;
             padding: 12px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
@@ -151,26 +151,35 @@
             <h3>FAST LV. 1</h3>
             <div class="stats">
                 <div class="stat-box">
-                    <span>HOURLY</span>
-                    <strong id="display-hourly">0.713</strong>
+                    <span>MONTHLY</span>
+                    <strong id="display-monthly">720.000</strong>
                 </div>
                 <div class="stat-box">
                     <span>DAILY</span>
-                    <strong id="display-daily">17.115</strong>
+                    <strong id="display-daily">24</strong>
                 </div>
                 <div class="stat-box">
-                    <span>MONTHLY</span>
-                    <strong id="display-monthly">513.450</strong>
+                    <span>HOURLY</span>
+                    <strong id="display-hourly">1</strong>
                 </div>
             </div>
             <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="timer" style="color:#fff;">11:59:56</span></div>
-            <button class="btn-mine" onclick="startMining()">⛏️ MINING ACTIVE</button>
+            <button class="btn-mine" onclick="startMining()">MINING ACTIVE ⛏️</button>
         </div>
 
+        <!-- خانة الإعلان الأولى: ربح نقطة واحدة -->
         <div class="card" style="text-align: right;">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">🎥 شاهد الإعلانات واكسب</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">اكسب مكافأة ذهبية لكل إعلان تشاهده</div>
-            <button class="btn-ad" onclick="watchAd()">▶️ مشاهدة إعلان</button>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقطة</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً واحداً واحصل على (+1 نقطة) لرصيدك مباشرة</div>
+            <button class="btn-ad" onclick="watchAdForPoint()">▶️ مشاهدة إعلان (+1 نقطة)</button>
+        </div>
+
+        <!-- خانة الإعلان الثانية: زيادة سرعة التعدين كل 24 ساعة -->
+        <div class="card" style="text-align: right;">
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⚡ زيادة سرعة التعدين (24 ساعة)</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً لتفعيل مضاعفة وسرعة التعدين لمدة 24 ساعة قادمة</div>
+            <button class="btn-ad" id="boost-btn" onclick="watchAdForBoost()">🚀 تفعيل زيادة السرعة</button>
+            <div id="boost-timer" style="font-size: 11px; color: #f3ba2f; margin-top: 8px; text-align: center; display: none;"></div>
         </div>
     </div>
 
@@ -190,7 +199,6 @@
                 اربح <strong style="color:#f3ba2f;">10%</strong> من التعدين و <strong style="color:#f3ba2f;">15%</strong> من المهام لأصدقائك.
             </p>
 
-            <!-- إحصائيات الإحالات -->
             <div class="stats" style="margin-bottom: 15px;">
                 <div class="stat-box">
                     <span>الأصدقاء المدعوون</span>
@@ -212,7 +220,7 @@
     <div id="page-wallet" class="page">
         <div class="card" style="text-align: right;">
             <h3 style="text-align: center;">محفظتك</h3>
-            <p style="text-align: center;">الرصيد الكلي: <strong style="color:#f3ba2f;">80.728 🪙</strong></p>
+            <p style="text-align: center;">الرصيد الكلي: <strong id="wallet-gold" style="color:#f3ba2f;">80.728</strong> 🪙</p>
             
             <hr style="border: 0; border-top: 1px solid #23262f; margin: 15px 0;">
             
@@ -247,10 +255,10 @@
 
             <div class="section-title">⚡ التحكم في أرباح التعدين</div>
             <label style="font-size: 11px; color: #8b91a0;">الربح بالساعة (Hourly):</label>
-            <input type="number" id="setHourly" class="admin-input" placeholder="0.713">
+            <input type="number" id="setHourly" class="admin-input" placeholder="1">
 
             <label style="font-size: 11px; color: #8b91a0;">الربح اليومي (Daily):</label>
-            <input type="number" id="setDaily" class="admin-input" placeholder="17.115">
+            <input type="number" id="setDaily" class="admin-input" placeholder="24">
 
             <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px;" onclick="updateMiningRates()">💾 حفظ وتثبيت أرباح التعدين</button>
 
@@ -277,6 +285,7 @@
 
 <script>
     const ADMIN_ID = "1985474484"; 
+    let currentGold = 80.728;
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -296,12 +305,16 @@
         // رابط الإحالة
         document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${userId}`;
 
-        // جلب عدد الإحالات والأرباح المحفوظة (أو جعلها 0 افتراضياً)
         let refCount = localStorage.getItem('refCount_' + userId) || 0;
         let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.000";
 
         document.getElementById('ref-count').innerText = refCount;
         document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
+
+        if(localStorage.getItem('savedGold')) {
+            currentGold = parseFloat(localStorage.getItem('savedGold'));
+            updateGoldDisplay();
+        }
 
         if(localStorage.getItem('savedHourly')) {
             let h = localStorage.getItem('savedHourly');
@@ -310,8 +323,16 @@
             document.getElementById('display-daily').innerText = d;
             document.getElementById('display-monthly').innerText = (h * 720).toFixed(3);
         }
+
+        checkBoostTimer();
         loadTasks();
     };
+
+    function updateGoldDisplay() {
+        document.getElementById('gold').innerText = currentGold.toFixed(3);
+        document.getElementById('wallet-gold').innerText = currentGold.toFixed(3);
+        localStorage.setItem('savedGold', currentGold);
+    }
 
     function copyRefLink() {
         let refInput = document.getElementById('refLink');
@@ -332,8 +353,56 @@
         alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
     }
 
-    function watchAd() {
-        alert("جاري تحميل الإعلان... (تم إضافة المكافأة)");
+    // دالة ربح نقطة واحدة عبر الإعلان
+    function watchAdForPoint() {
+        alert("جاري تحميل الإعلان... (يرجى الانتظار)");
+        setTimeout(() => {
+            currentGold += 1;
+            updateGoldDisplay();
+            alert("🎉 تهانينا! تمت إضافة (+1 نقطة) إلى رصيدك بنجاح.");
+        }, 1000);
+    }
+
+    // دالة زيادة سرعة التعدين لمدة 24 ساعة عبر الإعلان
+    function watchAdForBoost() {
+        alert("جاري تشغيل إعلان زيادة السرعة...");
+        setTimeout(() => {
+            let boostEnd = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ساعة من الآن
+            localStorage.setItem('boostEndTime', boostEnd);
+            checkBoostTimer();
+            alert("⚡ رائع! تم تفعيل زيادة سرعة التعدين بنجاح لمدة 24 ساعة قادمة.");
+        }, 1000);
+    }
+
+    function checkBoostTimer() {
+        let boostEnd = localStorage.getItem('boostEndTime');
+        let btn = document.getElementById('boost-btn');
+        let timerDiv = document.getElementById('boost-timer');
+
+        if (boostEnd) {
+            let now = new Date().getTime();
+            let distance = boostEnd - now;
+
+            if (distance > 0) {
+                btn.style.display = 'none';
+                timerDiv.style.display = 'block';
+                
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerDiv.innerText = `⏳ التعدين السريع مفعل: متبقي ${hours}س ${minutes}د ${seconds}ث`;
+
+                setTimeout(checkBoostTimer, 1000);
+            } else {
+                localStorage.removeItem('boostEndTime');
+                btn.style.display = 'block';
+                timerDiv.style.display = 'none';
+            }
+        } else {
+            btn.style.display = 'block';
+            timerDiv.style.display = 'none';
+        }
     }
 
     function submitWithdraw() {
