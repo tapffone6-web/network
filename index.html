@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mining Bot & Admin</title>
+    <title>Mining Bot & Admin Panel</title>
     <style>
         body {
             background-color: #0c0d10;
@@ -85,6 +85,7 @@
             color: #fff;
             border-radius: 8px;
             box-sizing: border-box;
+            font-size: 13px;
         }
         .nav-bar {
             display: flex;
@@ -121,6 +122,14 @@
             justify-content: space-between;
             align-items: center;
         }
+        .section-title {
+            font-size: 13px;
+            color: #f3ba2f;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -141,15 +150,15 @@
             <div class="stats">
                 <div class="stat-box">
                     <span>HOURLY</span>
-                    <strong>0.713</strong>
+                    <strong id="display-hourly">0.713</strong>
                 </div>
                 <div class="stat-box">
                     <span>DAILY</span>
-                    <strong>17.115</strong>
+                    <strong id="display-daily">17.115</strong>
                 </div>
                 <div class="stat-box">
                     <span>MONTHLY</span>
-                    <strong>513.450</strong>
+                    <strong id="display-monthly">513.450</strong>
                 </div>
             </div>
             <div style="margin: 10px 0; color: #8b91a0; font-size: 13px;">الوقت الباقي للتعدين: <span id="timer" style="color:#fff;">11:59:56</span></div>
@@ -165,11 +174,13 @@
 
     <!-- صفحة المهام -->
     <div id="page-earn" class="page">
-        <div class="card">
+        <div class="card" style="text-align: right;">
             <h3>مهام الربح</h3>
-            <div class="task-item">
-                <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
-                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">إنجاز</button>
+            <div id="tasks-container">
+                <div class="task-item">
+                    <span>انضم لقناة اليوتيوب (+10 رصيد)</span>
+                    <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;">إنجاز</button>
+                </div>
             </div>
         </div>
     </div>
@@ -203,21 +214,43 @@
         </div>
     </div>
 
-    <!-- لوحة تحكم الأدمن -->
+    <!-- لوحة تحكم الأدمن الشاملة -->
     <div id="page-admin" class="page">
         <div class="card" style="text-align: right;">
-            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن</h3>
+            <h3 style="color: #f3ba2f; text-align: center;">🛠️ لوحة تحكم الأدمن الشاملة</h3>
             
-            <label style="font-size: 12px; color: #8b91a0;">معرف المستخدم (User ID):</label>
+            <!-- إدارة الأرصدة والسحب والحظر -->
+            <div class="section-title">👤 إدارة المستخدمين</div>
+            <label style="font-size: 11px; color: #8b91a0;">معرف المستخدم (User ID):</label>
             <input type="text" id="adminUserId" class="admin-input" placeholder="أدخل ID المستخدم">
 
-            <label style="font-size: 12px; color: #8b91a0;">الكمية (الرصيد):</label>
+            <label style="font-size: 11px; color: #8b91a0;">الكمية (الرصيد):</label>
             <input type="number" id="adminAmount" class="admin-input" placeholder="مثال: 50">
 
-            <button class="btn-mine" style="background:#28a745; margin-top:5px;" onclick="adminAction('add')">➕ إضافة رصيد</button>
-            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px;" onclick="adminAction('sub')">➖ نقص رصيد</button>
-            <button class="btn-mine" style="background:#ffc107; margin-top:5px;" onclick="adminAction('withdraw')">✅ قبول السحب</button>
-            <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
+            <button class="btn-mine" style="background:#28a745; margin-top:5px; padding:10px;" onclick="adminAction('add')">➕ إضافة رصيد للمستخدم</button>
+            <button class="btn-mine" style="background:#dc3545; color:#fff; margin-top:5px; padding:10px;" onclick="adminAction('sub')">➖ خصم رصيد من المستخدم</button>
+            <button class="btn-mine" style="background:#ffc107; margin-top:5px; padding:10px;" onclick="adminAction('withdraw')">✅ قبول طلب السحب</button>
+            <button class="btn-mine" style="background:#343a40; color:#ff4d4d; margin-top:5px; padding:10px;" onclick="adminAction('ban')">🚫 حظر المستخدم</button>
+
+            <!-- التحكم في أرباح التعدين -->
+            <div class="section-title">⚡ التحكم في أرباح التعدين</div>
+            <label style="font-size: 11px; color: #8b91a0;">الربح بالساعة (Hourly):</label>
+            <input type="number" id="setHourly" class="admin-input" placeholder="0.713">
+
+            <label style="font-size: 11px; color: #8b91a0;">الربح اليومي (Daily):</label>
+            <input type="number" id="setDaily" class="admin-input" placeholder="17.115">
+
+            <button class="btn-mine" style="background:#17a2b8; color:#fff; margin-top:5px; padding:10px;" onclick="updateMiningRates()">💾 حفظ وتحديث أرباح التعدين</button>
+
+            <!-- إضافة المهام -->
+            <div class="section-title">📝 إضافة مهمة جديدة للعبة</div>
+            <label style="font-size: 11px; color: #8b91a0;">عنوان المهمة (مثال: انضم للقناة):</label>
+            <input type="text" id="taskTitleInput" class="admin-input" placeholder="اكتب اسم المهمة...">
+
+            <label style="font-size: 11px; color: #8b91a0;">مكافأة المهمة (الرصيد):</label>
+            <input type="number" id="taskRewardInput" class="admin-input" placeholder="مثال: 10">
+
+            <button class="btn-mine" style="background:#f3ba2f; margin-top:5px; padding:10px;" onclick="addNewTask()">➕ نشر المهمة في صفحة المهام</button>
         </div>
     </div>
 </div>
@@ -270,6 +303,36 @@
         else if(action === 'sub') alert(`تم خصم ${amt} من المستخدم ${uid}.`);
         else if(action === 'withdraw') alert(`تم قبول طلب سحب المستخدم ${uid} بنجاح.`);
         else if(action === 'ban') alert(`تم حظر المستخدم ${uid} من المنصة.`);
+    }
+
+    function updateMiningRates() {
+        let h = document.getElementById('setHourly').value;
+        let d = document.getElementById('setDaily').value;
+        if(h) {
+            document.getElementById('display-hourly').innerText = h;
+            document.getElementById('display-monthly').innerText = (h * 720).toFixed(3);
+        }
+        if(d) {
+            document.getElementById('display-daily').innerText = d;
+        }
+        alert("تم تحديث أرباح التعدين بنجاح في الواجهة!");
+    }
+
+    function addNewTask() {
+        let title = document.getElementById('taskTitleInput').value;
+        let reward = document.getElementById('taskRewardInput').value;
+        if(!title || !reward) {
+            alert("الرجاء إدخال عنوان المهمة والمكافأة!");
+            return;
+        }
+        let container = document.getElementById('tasks-container');
+        let newTask = document.createElement('div');
+        newTask.className = 'task-item';
+        newTask.innerHTML = `<span>${title} (+${reward} رصيد)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="alert('تم إنجاز المهمة بنجاح!')">إنجاز</button>`;
+        container.appendChild(newTask);
+        alert("تمت إضافة المهمة بنجاح إلى صفحة المهام!");
+        document.getElementById('taskTitleInput').value = '';
+        document.getElementById('taskRewardInput').value = '';
     }
 </script>
 
