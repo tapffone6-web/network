@@ -64,17 +64,22 @@
             cursor: pointer;
             margin-top: 10px;
         }
-        .btn-ad {
-            background: #1f2229;
-            color: #ffffff;
-            border: 1px solid #f3ba2f;
+        .btn-ad-style {
+            background: linear-gradient(135deg, #f3ba2f, #e89e00);
+            color: #000;
+            border: none;
             width: 100%;
-            padding: 12px;
-            font-size: 14px;
+            padding: 14px;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 12px;
             cursor: pointer;
             margin-top: 10px;
+        }
+        .btn-ad-style:disabled {
+            background: #333;
+            color: #777;
+            cursor: not-allowed;
         }
         .admin-input, .withdraw-input, .ref-input {
             width: 100%;
@@ -169,17 +174,18 @@
 
         <!-- خانة الإعلان الأولى -->
         <div class="card" style="text-align: right;">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً لرصيدك</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً واحداً واربح نقطة تضاف مباشرة لقيمته</div>
-            <button class="btn-ad" onclick="watchAdForPoint()">▶️ مشاهدة إعلان</button>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً لرصيدك (1)</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">شاهد إعلاناً واحداً واربح نقطة تضاف مباشرة لقيمته</div>
+            <div style="font-size: 11px; color: #f3ba2f; margin-bottom: 10px;">المتبقي اليوم: <span id="ads-count-1">150</span> / 150</div>
+            <button class="btn-ad-style" id="ad-btn-1" onclick="watchAd(1)">مشاهدة إعلان 🟠</button>
         </div>
 
-        <!-- خانة الإعلان الثانية: زيادة سرعة التعدين + ربح نقاط -->
+        <!-- خانة الإعلان الثانية -->
         <div class="card" style="text-align: right;">
-            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⚡ زيادة السرعة + ربح نقاط (مرة كل 24 ساعة)</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 10px;">شاهد إعلاناً لزيادة السرعة وكسب نقاط إضافية (متاحة مرة كل 24 ساعة)</div>
-            <button class="btn-ad" id="boost-btn" onclick="watchAdForDailyBoost()">🚀 زيادة السرعة وكسب نقاط</button>
-            <div id="boost-timer" style="font-size: 11px; color: #f3ba2f; margin-top: 8px; text-align: center; display: none;"></div>
+            <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً لرصيدك (2)</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">شاهد إعلاناً واحداً واربح نقطة تضاف مباشرة لقيمته</div>
+            <div style="font-size: 11px; color: #f3ba2f; margin-bottom: 10px;">المتبقي اليوم: <span id="ads-count-2">150</span> / 150</div>
+            <button class="btn-ad-style" id="ad-btn-2" onclick="watchAd(2)">مشاهدة إعلان 🟠</button>
         </div>
     </div>
 
@@ -285,8 +291,9 @@
 
 <script>
     const ADMIN_ID = "1985474484"; 
-    let userPoints = 80; // نبدأ بـ 80 نقطة افتراضياً بناءً على طلبك
-    const POINT_VALUE = 0.0001; // كل 1 نقطة تساوي 0.0001
+    let userPoints = 80; 
+    const POINT_VALUE = 0.0001; 
+    const MAX_ADS = 150;
 
     window.onload = function() {
         let userId = "1985474484"; 
@@ -303,7 +310,6 @@
             }
         }
 
-        // رابط الإحالة
         document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${userId}`;
 
         let refCount = localStorage.getItem('refCount_' + userId) || 0;
@@ -312,11 +318,10 @@
         document.getElementById('ref-count').innerText = refCount;
         document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
 
-        // استرجاع عدد النقاط المخزن أو البدء بـ 80
         if(localStorage.getItem('savedUserPoints')) {
             userPoints = parseFloat(localStorage.getItem('savedUserPoints'));
         } else {
-            userPoints = 80; // القيمة الافتراضية 80 نقطة لتساوي 0.0080
+            userPoints = 80; 
         }
         updateGoldDisplay();
 
@@ -328,7 +333,7 @@
             document.getElementById('display-monthly').innerText = (h * 720).toFixed(4);
         }
 
-        checkDailyBoostTimer();
+        initAdsData();
         loadTasks();
     };
 
@@ -358,60 +363,73 @@
         alert("تم تحديث الحالة: التعدين جارٍ بنجاح!");
     }
 
-    // دالة ربح نقطة واحدة عبر الإعلان الأول (تزيد نقطة واحدة ليصبح المجموع 81 وهكذا)
-    function watchAdForPoint() {
+    // إدارة عدادات الإعلانات اليومية لكل خانة
+    function getTodayDateString() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function initAdsData() {
+        let today = getTodayDateString();
+        let lastDate = localStorage.getItem('adsDate');
+
+        if (lastDate !== today) {
+            localStorage.setItem('adsDate', today);
+            localStorage.setItem('adsWatched_1', '0');
+            localStorage.setItem('adsWatched_2', '0');
+        }
+
+        updateAdsUI();
+    }
+
+    function updateAdsUI() {
+        let watched1 = parseInt(localStorage.getItem('adsWatched_1')) || 0;
+        let watched2 = parseInt(localStorage.getItem('adsWatched_2')) || 0;
+
+        let left1 = MAX_ADS - watched1;
+        let left2 = MAX_ADS - watched2;
+
+        document.getElementById('ads-count-1').innerText = left1 > 0 ? left1 : 0;
+        document.getElementById('ads-count-2').innerText = left2 > 0 ? left2 : 0;
+
+        if (left1 <= 0) {
+            let btn1 = document.getElementById('ad-btn-1');
+            btn1.disabled = true;
+            btn1.innerText = "لقد استنفذت إعلانات اليوم";
+        }
+
+        if (left2 <= 0) {
+            let btn2 = document.getElementById('ad-btn-2');
+            btn2.disabled = true;
+            btn2.innerText = "لقد استنفذت إعلانات اليوم";
+        }
+    }
+
+    function watchAd(adBoxIndex) {
+        let today = getTodayDateString();
+        if (localStorage.getItem('adsDate') !== today) {
+            localStorage.setItem('adsDate', today);
+            localStorage.setItem('adsWatched_1', '0');
+            localStorage.setItem('adsWatched_2', '0');
+        }
+
+        let watched = parseInt(localStorage.getItem('adsWatched_' + adBoxIndex)) || 0;
+        if (watched >= MAX_ADS) {
+            alert("لقد وصلت إلى الحد الأقصى لمشاهدة الإعلانات لهذه الخانة اليوم (150 إعلاناً).");
+            updateAdsUI();
+            return;
+        }
+
         alert("جاري تحميل الإعلان... (يرجى الانتظار)");
         setTimeout(() => {
-            userPoints += 1; // زيادة نقطة واحدة
+            watched += 1;
+            localStorage.setItem('adsWatched_' + adBoxIndex, watched);
+
+            userPoints += 1; 
             updateGoldDisplay();
-            alert(`🎉 تهانينا! تمت إضافة نقطة واحدة لرصيدك.`);
+            updateAdsUI();
+
+            alert(`🎉 تهانينا! تمت إضافة نقطة واحدة لرصيدك (المشاهدات المتبقية: ${MAX_ADS - watched}).`);
         }, 1000);
-    }
-
-    // دالة زيادة سرعة التعدين + ربح نقطة (مرة كل 24 ساعة)
-    function watchAdForDailyBoost() {
-        alert("جاري تشغيل الإعلان لزيادة سرعة التعدين وكسب النقاط...");
-        setTimeout(() => {
-            let nextBoostTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ساعة قادمة
-            localStorage.setItem('nextBoostTime', nextBoostTime);
-            
-            userPoints += 1; // إضافة نقطة مع السرعة
-            updateGoldDisplay();
-
-            checkDailyBoostTimer();
-            alert(`🚀 ممتاز! تم تطبيق زيادة السرعة وإضافة نقطة واحدة لرصيدك بنجاح.`);
-        }, 1000);
-    }
-
-    function checkDailyBoostTimer() {
-        let nextBoostTime = localStorage.getItem('nextBoostTime');
-        let btn = document.getElementById('boost-btn');
-        let timerDiv = document.getElementById('boost-timer');
-
-        if (nextBoostTime) {
-            let now = new Date().getTime();
-            let distance = nextBoostTime - now;
-
-            if (distance > 0) {
-                btn.style.display = 'none';
-                timerDiv.style.display = 'block';
-                
-                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                timerDiv.innerText = `⏳ متبقي لتفعيل الزيادة وكسب النقطة: ${hours}س ${minutes}د ${seconds}ث`;
-
-                setTimeout(checkDailyBoostTimer, 1000);
-            } else {
-                localStorage.removeItem('nextBoostTime');
-                btn.style.display = 'block';
-                timerDiv.style.display = 'none';
-            }
-        } else {
-            btn.style.display = 'block';
-            timerDiv.style.display = 'none';
-        }
     }
 
     function submitWithdraw() {
