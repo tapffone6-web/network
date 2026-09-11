@@ -186,11 +186,23 @@
     <div id="page-friends" class="page">
         <div class="card">
             <h3>دعوة الأصدقاء 👥</h3>
-            <p style="color:#8b91a0; font-size:12px; margin-bottom:10px;">
-                اربح <strong style="color:#f3ba2f;">10%</strong> من أرباح التعدين لأصدقائك، و <strong style="color:#f3ba2f;">15%</strong> من أرباح إنجازهم للمهام!
+            <p style="color:#8b91a0; font-size:12px; margin-bottom:15px;">
+                اربح <strong style="color:#f3ba2f;">10%</strong> من التعدين و <strong style="color:#f3ba2f;">15%</strong> من المهام لأصدقائك.
             </p>
+
+            <!-- إحصائيات الإحالات -->
+            <div class="stats" style="margin-bottom: 15px;">
+                <div class="stat-box">
+                    <span>الأصدقاء المدعوون</span>
+                    <strong id="ref-count">0</strong>
+                </div>
+                <div class="stat-box">
+                    <span>أرباح الإحالات</span>
+                    <strong id="ref-earnings">0.000 🪙</strong>
+                </div>
+            </div>
             
-            <input type="text" id="refLink" class="ref-input" readonly value="https://t.me/your_bot?start=1985474484">
+            <input type="text" id="refLink" class="ref-input" readonly value="">
             
             <button class="btn-mine" onclick="copyRefLink()">🔗 نسخ رابط الإحالة</button>
         </div>
@@ -267,8 +279,8 @@
     const ADMIN_ID = "1985474484"; 
 
     window.onload = function() {
-        let userId = "1985474484"; // افتراضي
-        let botUsername = "Miningbot"; // يوزرنيم البوت الافتراضي
+        let userId = "1985474484"; 
+        let botUsername = "Miningbot"; 
 
         if (window.Telegram && window.Telegram.WebApp) {
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
@@ -281,8 +293,15 @@
             }
         }
 
-        // توليد رابط الإحالة الحقيقي للمستخدم
+        // رابط الإحالة
         document.getElementById('refLink').value = `https://t.me/${botUsername}?start=${userId}`;
+
+        // جلب عدد الإحالات والأرباح المحفوظة (أو جعلها 0 افتراضياً)
+        let refCount = localStorage.getItem('refCount_' + userId) || 0;
+        let refEarnings = localStorage.getItem('refEarnings_' + userId) || "0.000";
+
+        document.getElementById('ref-count').innerText = refCount;
+        document.getElementById('ref-earnings').innerText = refEarnings + " 🪙";
 
         if(localStorage.getItem('savedHourly')) {
             let h = localStorage.getItem('savedHourly');
