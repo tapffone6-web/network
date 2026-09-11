@@ -23,7 +23,7 @@ async def send_welcome(message: types.Message):
     )
     
     await message.reply(
-        "مرحباً بك في بوت التعدين الخاص بك! ⛏️\nاضغط على الزر أسفله للتجربة:", 
+        "مرحبا عزيز المستخدم في بوت التعدين الخاص بك! ⛏️\nاضغط على الزر أسفله للتجربة:", 
         reply_markup=markup
     )
 
