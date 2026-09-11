@@ -292,6 +292,9 @@
             <label style="font-size: 11px; color: #8b91a0;">عنوان المهمة (مثال: انضم للقناة):</label>
             <input type="text" id="taskTitleInput" class="admin-input" placeholder="اكتب اسم المهمة...">
 
+            <label style="font-size: 11px; color: #8b91a0;">رابط المهمة (مثل رابط قناتك أو يوتيوب):</label>
+            <input type="text" id="taskLinkInput" class="admin-input" placeholder="https://youtube.com/...">
+
             <label style="font-size: 11px; color: #8b91a0;">مكافأة المهمة (بالنقاط):</label>
             <input type="number" id="taskRewardInput" class="admin-input" placeholder="مثال: 10">
 
@@ -470,7 +473,6 @@
         }
     }
 
-    // دالة عرض إعلان GigaPub الحقيقي
     function watchAd(adBoxIndex) {
         let today = getTodayDateString();
         if (localStorage.getItem('adsDate') !== today) {
@@ -491,7 +493,6 @@
             return;
         }
 
-        // استدعاء إعلان GigaPub
         window.showGiga().then(() => {
             watched += 1;
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
@@ -561,43 +562,61 @@
 
     function addNewTask() {
         let title = document.getElementById('taskTitleInput').value;
+        let link = document.getElementById('taskLinkInput').value;
         let reward = parseFloat(document.getElementById('taskRewardInput').value);
-        if(!title || isNaN(reward)) {
-            alert("الرجاء إدخال عنوان المهمة والمكافأة بالنقاط بشكل صحيح!");
+        
+        if(!title || !link || isNaN(reward)) {
+            alert("الرجاء إدخال عنوان المهمة والرابط والمكافأة بشكل صحيح!");
             return;
         }
 
         let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
-        tasks.push({ title: title, reward: reward });
+        tasks.push({ title: title, link: link, reward: reward });
         localStorage.setItem('savedTasks', JSON.stringify(tasks));
 
         loadTasks();
         alert("تمت إضافة المهمة وحفظها بنجاح!");
         document.getElementById('taskTitleInput').value = '';
+        document.getElementById('taskLinkInput').value = '';
         document.getElementById('taskRewardInput').value = '';
     }
 
     function loadTasks() {
         let container = document.getElementById('tasks-container');
+        // المهمة الافتتاحية الأولى مع رابط افتتاحي
         container.innerHTML = `
             <div class="task-item">
                 <span>انضم لقناة اليوتيوب (+10 نقاط)</span>
-                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="completeTask(10)">إنجاز</button>
+                <button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('https://youtube.com', 10)">إنجاز</button>
             </div>
         `;
         let tasks = JSON.parse(localStorage.getItem('savedTasks')) || [];
         tasks.forEach(t => {
             let newTask = document.createElement('div');
             newTask.className = 'task-item';
-            newTask.innerHTML = `<span>${t.title} (+${t.reward} نقاط)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="completeTask(${t.reward})">إنجاز</button>`;
+            newTask.innerHTML = `<span>${t.title} (+${t.reward} نقاط)</span><button style="background:#f3ba2f; border:none; padding:5px 10px; border-radius:5px; font-weight:bold; cursor:pointer;" onclick="startTask('${t.link}', ${t.reward})">إنجاز</button>`;
             container.appendChild(newTask);
         });
     }
 
-    function completeTask(rewardPoints) {
-        userPoints += rewardPoints;
-        updateGoldDisplay();
-        alert(`🎉 تهانينا! تمت إضافة ${rewardPoints} نقطة إلى رصيدك بنجاح.`);
+    // دالة تجبر المستخدم على فتح الرابط والانتظار قليلاً قبل الحصول على المكافأة
+    function startTask(url, rewardPoints) {
+        // فتح رابط المهمة في صفحة جديدة
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+            window.Telegram.WebApp.openLink(url);
+        } else {
+            window.open(url, '_blank');
+        }
+
+        // تنبيه المستخدم بالذهاب للمهمة ثم العودة لاستلام الجائزة
+        setTimeout(() => {
+            let userCompleted = confirm(`هل أكملت المهمة وعُدت؟\nاضغط "موافق" للحصول على مكافأة بقيمة ${rewardPoints} نقطة.`);
+            if (userCompleted) {
+                userPoints += rewardPoints;
+                updateGoldDisplay();
+                alert(`🎉 تهانينا! تمت إضافة ${rewardPoints} نقطة إلى رصيدك بنجاح.`);
+            }
+        }, 1500);
     }
 </script>
 
