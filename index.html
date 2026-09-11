@@ -245,14 +245,14 @@
 
         <div class="card" style="text-align: right;">
             <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً وزد سرعة التعدين (1)</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">كل إعلان يشاهده المستخدم يرفع أرباح الساعة بقيمة +0.5 نقطة</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">كل إعلان يشاهده المستخدم يرفع أرباح الساعة بقيمة +0.05 نقطة</div>
             <div style="font-size: 11px; color: #f3ba2f; margin-bottom: 10px;">المتبقي اليوم: <span id="ads-count-1">150</span> / 150</div>
             <button class="btn-ad-style" id="ad-btn-1" onclick="watchAd(1)">مشاهدة إعلان 🟠</button>
         </div>
 
         <div class="card" style="text-align: right;">
             <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">⭐ شاهد إعلان واربح نقاطاً وزد سرعة التعدين (2)</div>
-            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">كل إعلان يشاهده المستخدم يرفع أرباح الساعة بقيمة +0.5 نقطة</div>
+            <div style="font-size: 12px; color: #8b91a0; margin-bottom: 5px;">كل إعلان يشاهده المستخدم يرفع أرباح الساعة بقيمة +0.05 نقطة</div>
             <div style="font-size: 11px; color: #f3ba2f; margin-bottom: 10px;">المتبقي اليوم: <span id="ads-count-2">150</span> / 150</div>
             <button class="btn-ad-style" id="ad-btn-2" onclick="watchAd(2)">مشاهدة إعلان 🟠</button>
         </div>
@@ -542,14 +542,14 @@
             localStorage.setItem('adsWatched_' + adBoxIndex, watched);
 
             userPoints += 1; 
-            hourlyMiningRate += 0.5;
+            hourlyMiningRate += 0.05; // تم التعديل لتصبح الزيادة 0.05
             localStorage.setItem('hourlyMiningRate', hourlyMiningRate);
 
             updateGoldDisplay();
             updateMiningRatesDisplay();
             updateAdsUI();
 
-            alert(`🎉 أحسنت! تمت إضافة نقطة لرصيدك، وارتفعت سرعة أرباح التعدين بالساعة لتصبح (${hourlyMiningRate.toFixed(1)} نقطة/ساعة)!`);
+            alert(`🎉 أحسنت! تمت إضافة نقطة لرصيدك، وارتفعت سرعة أرباح التعدين بالساعة لتصبح (${hourlyMiningRate.toFixed(2)} نقطة/ساعة)!`);
         }).catch(e => {
             console.log("Ad skipped or failed", e);
             alert("لم تكمل مشاهدة الإعلان، لذلك لم يتم احتساب المكافأة.");
